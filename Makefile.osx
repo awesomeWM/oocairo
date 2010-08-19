@@ -1,0 +1,47 @@
+VERSION=$(shell head -1 Changes | sed 's/ .*//')
+RELEASEDATE=$(shell head -1 Changes | sed 's/.* //')
+PREFIX=/usr/local
+LUA_CPATH=
+
+MANPAGES = $(wildcard doc/*.3)
+
+CFLAGS = -O2 -ansi -pedantic -Wall -W -Wshadow -Wpointer-arith \
+          -Wcast-align -Wwrite-strings -Wstrict-prototypes \
+          -Wmissing-prototypes -Wnested-externs -Wno-long-long \
+          $(shell pkg-config --cflags lua cairo) \
+          -DVERSION=\"$(VERSION)\"
+LDFLAGS = $(shell pkg-config --libs lua cairo)
+
+SO = oocairo.so
+
+#---
+all: $(SO) $(MANPAGES)
+
+test: all
+	echo 'lunit.main({...})' | lua51 -llunit - test/*.lua
+
+$(SO): oocairo.c
+	$(CC) -bundle $(CFLAGS) $(LDFLAGS) -o $@ $<
+
+oocairo.c: obj*.c
+
+doc/lua-%.3: doc/lua-%.pod Changes
+	sed 's/E<copy>/(c)/g' <$< | sed 's/E<trade>/(tm)/g' <$< | sed 's/E<ndash>/-/g' | sed 's/E<pi>/pi/g' | \
+	    pod2man --center="Lua OO Cairo binding" \
+	            --name="$(shell echo $< | sed 's/^doc\///' | sed 's/\.pod$$//' | tr a-z A-Z)" --section=3 \
+	            --release="$(VERSION)" --date="$(RELEASEDATE)" >$@
+
+install: all
+	mkdir -p $(LUA_CPATH)
+	install -m 644 $(SO) $(LUA_CPATH)/oocairo.so
+	mkdir -p $(PREFIX)/share/man/man3
+	for manpage in $(MANPAGES); do \
+	    gzip -c $$manpage >$(PREFIX)/share/man/man3/$$(echo $$manpage | sed -e 's/^doc\///').gz; \
+	done
+
+clean:
+	rm -f *.o $(SO)
+	rm -f gmon.out *.bb *.bbg *.da *.gcov
+	rm -f $(MANPAGES)
+
+.PHONY: all install test clean

@@ -1,0 +1,94 @@
+=head1 Name
+
+lua-oocairo-scaledfont - Scaled font face object
+
+=head1 Introduction
+
+Scaled font objects represent Cairo font faces which have been scaled to
+a particular point size.  They can be created from a font face object with
+the C<scaled_font_create> function in the main module table (see
+L<lua-oocairo(3)>), or the C<get_scaled_font> method on context objects
+(see L<lua-oocairo-context(3)>).
+
+Scaled font objects can be compared with the C<==> operator.  This will compare
+the identity of the objects, so different Lua objects which refer to the
+same C<cairo_font_face_t> will compare as equal.
+
+=head1 Methods
+
+Scaled font objects provide the following methods.
+
+=over
+
+=item font:extents ()
+
+Returns a table containing metrics information about the font.  The return
+value is in the same format as that of the C<font_extents> method on context
+objects (see L<lua-oocairo-context(3)>).
+
+=item font:get_ctm ()
+
+Returns the coordinate transformation matrix (CTM) associated with the
+font.  This maps user coordinates into device coordinates on the surface
+with which the font is used.
+See L<lua-oocairo-matrix(3)> for details of the return value type.
+
+=item font:get_font_face ()
+
+Returns an object representing the unscaled font face used to create this
+font.  See L<lua-oocairo-fontface(3)> for details of its methods.
+
+=item font:get_font_matrix ()
+
+Returns the matrix representing the scaling of the font into user coordinates.
+See L<lua-oocairo-matrix(3)> for details of the return value type.
+
+=item cr:get_font_options ()
+
+Returns a font options object (see L<lua-oocairo-fontopt(3)>) containing
+the rendering options that were supplied when creating this font.
+
+=item font:get_scale_matrix ()
+
+Returns a matrix table representing the scaling of the font to the coordinate
+space of the surface it is used on.  This is the matrix obtained by
+multiplying the font matrix by the surface CTM.  See L<lua-oocairo-matrix(3)>
+for details of the return value type.
+Only available with S<Cairo 1.8> or better.
+
+=item font:get_type ()
+
+Returns a string indicating which back-end library provides the font face
+information.  The return value will be one of the same strings returned
+by the C<get_type> method on a font face object
+(see L<lua-oocairo-fontface(3)>).
+
+=item font:glyph_extents (glyphs)
+
+Same as C<font:text_extents()>, but instead of a string, the I<glyphs> value
+should be table in the format accepted by the C<show_glyphs()> method
+on context objects (see L<lua-oocairo-context(3)>).
+
+=item font:text_extents (text)
+
+Returns a table containing measurements of the given UTF-8 text as it would
+be rendered in this font.  The return value is in the same format as that
+of the C<text_extents> method on context objects (see
+L<lua-oocairo-context(3)>).
+
+=item font:text_to_glyphs (x, y, text)
+
+Given some UTF-8 text in the string I<text>, and starting coordinates of
+I<x> and I<y>, this works out which glyphs need to be drawn to represent
+the text, and which glyphs correspond to the bytes in I<text>.  The method
+returns two tables, the first an array of glyphs suitable for supplying to
+methods like C<show_glyphs> and C<glyph_extents>, and the second is a table
+of text clusters suitable for supplying to the C<show_text_glyphs> method
+on a context object.
+
+Only available with S<Cairo 1.8> or better.
+
+=back
+
+=for comment
+vi:ts=4 sw=4 expandtab

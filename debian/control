@@ -1,0 +1,26 @@
+Source: lua-oocairo
+Section: interpreters
+Priority: optional
+Maintainer: Geoff Richards <geoff@laxan.com>
+Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 5), dpatch, lua5.1-policy-dev (>= 8), libcairo2-dev
+Standards-Version: 3.7.2
+
+Package: liblua5.1-oocairo0
+Architecture: any
+Depends: ${shlibs:Depends}, libcairo2
+Description: Cairo binding for Lua
+ Lua-oocairo provides access to almost the complete Cairo graphics library
+ from Lua code, using a somewhat object-oriented API.
+ .
+ The latest source code and documentation is always available from the
+ module's website: <http://www.daizucms.org/lua/library/oocairo/>
+
+Package: liblua5.1-oocairo-dev
+Architecture: any
+Depends: liblua5.1-oocairo0 (= ${binary:Version})
+Description: documentation for the Lua oocairo module
+ This package contains documentation for the liblua5.1-oocairo package,
+ in the lua-oocairo(3) man page and others.  This describes the complete
+ API of the Lua module.  A more attractive version of the same thing is
+ available on the module's website:
+ <http://www.daizucms.org/lua/library/oocairo/doc/>

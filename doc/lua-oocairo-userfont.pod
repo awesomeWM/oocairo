@@ -1,0 +1,114 @@
+=head1 Name
+
+lua-oocairo - Lua API for the Cairo vector graphics library
+
+=head1 Introduction
+
+User fonts are created by calling the C<user_font_face_create> function
+in the main module hash, and passing in a table of callbacks which Cairo
+will call when necessary.  The C<render_glyph> callback function must be
+supplied, but all the others are optional.
+
+A user font can be created and set to be used like this:
+
+=for syntax-highlight lua
+
+    local function render_glyph (...) end
+
+    local font = Cairo.user_font_face_create({
+        init = function () print("initializing") end,
+        render_glyph = render_glyph,
+    })
+    cr:set_font_face(font)
+    cr:set_font_size(12)
+
+=head1 Callbacks
+
+The following callbacks can be supplied (the names here being the keys
+you should use in the table when creating the font).  The I<font>
+value is always the scaled font object representing the user font at
+the size it's being used at.
+
+=over
+
+=item init (font, cr, extents)
+
+This is called once, and can be used to set up the font and provide Cairo
+with metrics information, by filling in the font I<extents> table supplied.
+The extents information is in the same format as that returned by the
+C<font_extents> method on context objects (see L<lua-oocairo-context(3)>),
+except that all measurements are in font units, which will be scaled
+according to the font size.
+
+The I<font> value isn't fully created when this function is called, and
+using it is likely to break things.
+
+Return values are ignored.
+
+=item render_glyph (font, glyph, cr, extents)
+
+This callback is required, and will be called for each glyph which needs
+to be displayed.  It should draw the glyph using I<cr>, which is a special
+Cairo context object which will be scaled to font coordinates.  The
+callback must not change the source on I<cr> (so multi-coloured fonts are
+out of the question, and rendering bitmap images from another surface needs
+to be done with the C<mask> method).
+
+The value of the I<glyph> parameter will be the glyph index number of
+the glyph which Cairo wants drawn.  This will be whatever is determined
+to be appropriate by the other callbacks, or the Unicode codepoint number
+as a default.
+
+Glyph images are cached, so you can't have a font where each occurrence
+of the letter ‘e’ is slightly different, for example.
+
+The callback should set the C<x_advance> value in the I<extents>
+table to an appropriate value (measured in font coordinates).
+Return values are ignored.
+
+This example draws all glyphs as a simple triangle shape, except
+for the space character (assuming that doesn't end up with some
+other glyph index):
+
+=for syntax-highlight lua
+
+    local function render_glyph (font, glyph, cr, extents)
+        extents.x_advance = 1   -- distance to move to next glyph
+
+        if glyph == 32 then return end  -- space, draw nothing
+
+        cr:move_to(0, 0)
+        cr:line_to(1, 0)
+        cr:line_to(0, 1)
+        cr:fill()
+    end
+
+=item text_to_glyphs (font, text, want_clusters)
+
+Called to translate text into glyphs.  The I<text> parameter is UTF-8
+encoded text.  The callback should return a table of glyphs which would
+be appropriate for rendering it, including appropriate I<x> and I<y>
+coordinates for each one, in the same format as accepted by the
+C<show_glyphs> and C<show_text_glyphs> methods on context objects.
+The coordinates should be in font coordinates.
+
+If the I<want_clusters> parameter is true then the font is being used on
+a surface which can make use of text cluster information (mapping bytes
+in I<text> to glyphs returned).  In this case the callback can optionally
+return a second value, an array of pairs in the same format as accepted
+by the C<show_text_glyphs> method on context objects.  If I<want_clusters>
+is false then any text clusters information returned will just be
+ignored.
+
+=item unicode_to_glyph (font, unicode)
+
+Called when there is no C<text_to_glyphs> callback, or it doesn't provide
+any glyphs.  The I<unicode> parameter is a Unicode codepoint for a character
+being drawn, and the callback should return the glyph index appropriate
+for rendering it.  With this simpler callback each Unicode character has to
+map to exactly one glyph.
+
+=back
+
+=for comment
+vi:ts=4 sw=4 expandtab

@@ -1,0 +1,39 @@
+1.2     2008-11-07
+
+ * Integration with Lua-Gnome for drawing in GUIs:
+    + New constructor: context_create_gdk
+    + New methods on contexts to set source based on Gdk object:
+      set_source_gdk_color, set_source_pixbuf, set_source_pixmap
+    + New method on image surfaces: get_gdk_pixbuf
+    + Examples which show Cairo drawing in GUI applications.
+ * Translate between image surfaces and raw pixel data:
+    + New constructor: image_surface_create_from_data
+    + New method on image surfaces: get_data
+      (based on a patch by Julien Danjou)
+    + New top-level function 'format_stride_for_width' and constant
+      'BYTE_ORDER' to allow creating suitable data for constructor
+
+1.1     2008-10-17
+
+ * Include MacOS X makefile, and fix compilation bug with Cairo 1.8,
+   both thanks to Asko Kauppi.
+ * Added font options objects:
+    + New constructor: font_options_create
+    + New getter method 'get_font_options' on context and surface classes
+    + New setter method 'set_font_options' on context class
+ * Added scaled font objects:
+    + New constructor: scaled_font_create
+    + Accessors on context class: get_scaled_font, set_scaled_font
+ * Most of the new functionality in Cairo 1.8 is now bound:
+    + New font face constructor functions: toy_font_face_create,
+      user_font_face_create
+    + New methods on toy font faces: get_family, get_slant, get_weight
+    + The 'text_to_glyphs' method on scaled fonts, and 'show_text_glyphs'
+      method on context objects, with text clusters bound as a Lua table.
+    + New 'has_show_text_glyphs' method on surface objects
+    + New feature flag: HAS_USER_FONT
+ * Plugged memory leaks in some functions which accept a table of glyphs.
+
+1.0     2008-09-12
+
+ * Initial release.

@@ -1,0 +1,80 @@
+=head1 Name
+
+lua-oocairo-fontface - Unscaled font face object
+
+=head1 Introduction
+
+Cairo font face objects are returned by the C<get_font_face> method
+on context objects (see L<lua-oocairo-context(3)>).  They represent
+a font selection, but not including the scaling used to create a
+font of a particular size.  See L<lua-oocairo-scaledfont(3)> for details
+about fonts at a particular size, which can be created by scaling one of
+these font face objects.
+
+Font face objects can be compared with the C<==> operator.  This will compare
+the identity of the objects, so different Lua objects which refer to the
+same C<cairo_font_face_t> will compare as equal.
+
+=head1 Methods
+
+Font face objects provide the following methods.  Some of these will not
+be defined if the module was compiled against a version of Cairo too old
+to support them.
+
+=over
+
+=item fontface:get_family ()
+
+Returns a string containing the name of the family selected with the
+C<select_font_face> method.  Throws an exception if called on a font face
+which wasn't created with the ‘toy’ API.
+Only available with S<Cairo 1.8> or better.
+
+=item fontface:get_slant ()
+
+Returns the slant style of the font face created with the toy API, or
+throws an exception for other font faces.  The return value will be a string,
+with one of the values accepted by the C<select_font_face> method.
+Only available with S<Cairo 1.8> or better.
+
+=item fontface:get_type ()
+
+Returns a string indicating what backend library handles this font.
+The return value will be one of the following:
+
+=over
+
+=item toy
+
+Created using Cairo's ‘toy’ font API, probably selected with
+the C<select_font_face> method.
+
+=item ft
+
+Created with the FreeType API.
+
+=item win32
+
+A Windows native font.
+
+=item quartz
+
+A MacOS X native font.
+
+=item user
+
+A font created with custom code.
+
+=back
+
+=item fontface:get_weight ()
+
+Returns the weight of the font face created with the toy API, or
+throws an exception for other font faces.  The return value will be a string,
+with one of the values accepted by the C<select_font_face> method.
+Only available with S<Cairo 1.8> or better.
+
+=back
+
+=for comment
+vi:ts=4 sw=4 expandtab

@@ -1,0 +1,39 @@
+check status more often, at least to check for memory allocation errors
+when creating a new object.
+
+Probably should use Lua allocator instead of malloc.
+
+Maybe provide a Lua API for other modules to use from C to create objects
+using my metatables but based on existing pointers supplied as light user
+data.  Also the reverse: return a light user data containing the actual
+pointer from a userdata (or can I just tell people what metatable name to
+use and let them dereference it).
+
+These functions aren't bound at all yet:
+cairo_copy_clip_rectangle_list
+cairo_ft_font_face_create_for_ft_face
+cairo_ft_font_face_create_for_pattern
+cairo_ft_font_options_substitute
+cairo_ps_surface_dsc_begin_page_setup
+cairo_ps_surface_dsc_begin_setup
+cairo_ps_surface_dsc_comment
+cairo_ps_surface_restrict_to_level
+cairo_surface_mark_dirty
+cairo_surface_mark_dirty_rectangle
+cairo_svg_surface_restrict_to_version
+
+It may be worth having bindings for these, but for now at least it's OK
+to just call the Lua-Gnome bindings for them:
+gtk.gdk_cairo_region(cr, gtk.new"GdkRegion")
+gtk.gdk_cairo_rectangle(cr, event.expose.area)
+
+Interact with bindings for:
+FontConfig
+FreeType
+Pango
+Win32 font API
+
+Surface types not supported:
+Win32
+Quartz
+XLib

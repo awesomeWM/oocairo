@@ -1,0 +1,65 @@
+=head1 Name
+
+lua-oocairo-matrix - Transformation matrix table
+
+=head1 Introduction
+
+Matrix objects are used in Cairo to represent affine transformations
+like rotation and scaling.  They are used for transforming both fonts
+and paths drawn on surfaces.
+
+This binding uses normal Lua tables for matrices, with each matrix
+being an array of six numbers.  You can use any such table when supplying
+a matrix to a method, but the ones returned by this module have a metatable
+set so that the methods listed below can be called on it.
+
+The C<matrix_create> function in the module table can be used to create
+a new identity matrix.
+
+=head1 Methods
+
+The following methods can be called on a matrix object.  Unless otherwise
+stated they do not return any values.  The transformations alter the matrix
+you supply by adjusting the numbers in the table, rather than creating a
+new table.
+
+=over
+
+=item mat:invert ()
+
+Set I<mat> to its inverse, which will result in a transformation which
+reverses what it did originally.  Not all matrices have an inverse, and if
+none can be found then an exception will be thrown.
+
+=item mat1:multiply (mat2)
+
+Multiply I<mat1> by I<mat2>, leaving I<mat2> unchanged.  This has the effect
+of combining the transformations represented by the two matrices.
+
+=item mat:rotate (ang)
+
+Apply a rotation by I<ang> radians to I<mat>.
+
+=item mat:scale (sx, sy)
+
+Apply a scaling transformation to I<mat>.
+
+=item mat:transform_distance (x, y)
+
+Transform the distance given, using I<mat>, and return two numbers
+giving the resulting distance.  This will have the same effect as
+C<mat:transform_point()> but without any translation taking place.
+
+=item mat:transform_point (x, y)
+
+Transform the position of the coordinates, which must be numbers, to the
+matrix, and return two numbers giving the resulting position.
+
+=item mat:translate (x, y)
+
+Apply a translation to I<mat>.
+
+=back
+
+=for comment
+vi:ts=4 sw=4 expandtab

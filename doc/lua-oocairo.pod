@@ -1,0 +1,393 @@
+=head1 Name
+
+lua-oocairo - Lua API for the Cairo vector graphics library
+
+=head1 Introduction
+
+This is a Lua binding for the Cairo graphics library, with an object
+oriented style of API.  There is at least one other Cairo binding
+available in Lua, but it has a more C-like API and is much less complete.
+
+=head1 Simple Example
+
+The code below is a complete example showing how to load this module and
+do some basic drawing with it.  Other features are demonstrated by the
+files in the I<examples> directory included with the module.
+
+First load the module.  The module doesn't create a global variable,
+so you have to assign it to something.
+
+=for syntax-highlight lua
+
+    local Cairo = require "oocairo"
+
+Create a bitmap image B<surface> for drawing on, and create a context
+object which is used to do the drawing:
+
+=for syntax-highlight lua
+
+    local surface = Cairo.image_surface_create("rgb24", 200, 200)
+    local cr = Cairo.context_create(surface)
+
+Fill whole image with white.  The C<paint> method will copy the whole of
+the B<source> to the surface.  In this case the source is a solid colour,
+but it can be other things like an image or gradient.  The default source
+is solid fully opaque black.  Since the default colour of the image surface
+is also black, nothing would happen if we didn't set the source to something
+else before painting.
+
+=for syntax-highlight lua
+
+    cr:set_source_rgb(1, 1, 1)
+    cr:paint()
+
+Define an arbitrary shape, then fill it in purple.  The C<move_to> and
+C<line_to> methods, among others, define the shape of the path which is
+used for drawing operations like filling.
+
+=for syntax-highlight lua
+
+    cr:move_to(0, 0)
+    cr:line_to(190, 100)
+    cr:line_to(100, 185)
+    cr:line_to(200, 200)
+    cr:line_to(30, 130)
+    cr:close_path()
+    cr:set_source_rgb(0.8, 0.4, 1)
+    cr:fill()
+
+Another shape, this time both filled and with a line drawn along it's edge.
+The path is normally discarded after a drawing operation, so here
+C<fill_preserve> is used to keep it so that it can also be stoked.
+Note that the stroked line won't go all the way around the filled area,
+because the path wasn't closed with C<close_path>.  The black outline
+created by the C<stroke> method will be three pixels wide, and will be
+centered on the path, half of it inside the filled area.
+
+=for syntax-highlight lua
+
+    cr:move_to(180, 30)
+    cr:line_to(100, 20)
+    cr:line_to(80, 120)
+    cr:set_source_rgb(0.5, 0.7, 0.3)
+    cr:fill_preserve()
+
+    cr:set_line_width(3)
+    cr:set_source_rgb(0, 0, 0)
+    cr:stroke()
+
+Finally, write the output to a file in PNG format.
+
+=for syntax-highlight lua
+
+    surface:write_to_png("simple-example.png")
+
+=head1 Surface constructor functions
+
+The following functions can be accessed from the module table (the table
+returned from C<require>).  One of them must be used to create a surface
+on which to draw on before Cairo can be used for anything interesting.
+These all return a surface object, for which the methods are documented
+at L<lua-oocairo-surface(3)>.  Most drawing is done through a context
+object, which should be constructed with a call to the C<context_create>
+function (also in the module table), passing the surface object as its
+only argument.  The methods for context objects are documented at
+L<lua-oocairo-context(3)>.
+
+=over
+
+=item image_surface_create (format, width, height)
+
+Return a surface object for drawing an image in memory.  The I<width>
+and I<height> values must be numbers and are measured in pixels.  The
+value of I<format> can be any of the following strings:
+
+=over
+
+=item argb32
+
+Each pixel is 32 bits, encoding both colour and alpha (transparency) values.
+
+=item rgb24
+
+Each pixel is 32 bits with only 24 bits used, encoding a colour value.
+All pixels are implicitly 100% opaque.
+
+=item a8
+
+Each pixel is a single byte encoding the alpha (transparency) value, with
+no colour information.
+
+=item a1
+
+Each pixel is a single bit encoding whether a pixel is transparent or opaque,
+with no colour information.
+
+=back
+
+The image created will be black by default, and fully transparent if
+the pixels have an alpha component.
+
+=item image_surface_create_from_data (data, format, width, height, stride)
+
+Creates a new image surface with the size I<width> by I<height> pixels,
+using I<format> just as the C<image_surface_create> function does, but
+the image is initialized using pixel data from the string I<data>.
+The I<stride> value should be whatever is returned from the
+C<format_stride_for_width> function for the given width and pixel format.
+The data should be encoded in the format described for the C<surf:get_data()>
+method in L<lua-oocairo-surface(3)>.
+
+Note that since Lua strings are immutable, a copy of the data is made and
+used as the live buffer.  There is currently no support for sharing an image
+surface buffer between Cairo and something else.
+
+This binds the native Cairo function C<cairo_image_surface_create_for_data>,
+but has a slightly different name because the data you provide is only used
+at construction time, not kept around for drawing.
+
+=item image_surface_create_from_png (file/filename)
+
+Creates a new image surface containing the image in a PNG file.  The
+file is read from the filename or file handle specified.  See below
+for details about what kind of file handles can be used.
+
+=item pdf_surface_create (file/filename, width, height)
+
+Create a surface which writes drawing instructions out to a PDF file,
+at the given filename or through a file handle.  The I<width> and I<height>
+values must be numbers and are measured in points.
+
+=item ps_surface_create (file/filename, width, height)
+
+Create a surface which writes drawing instructions out to an AdobeE<trade>
+file, at the given filename or through a file handle.  The I<width> and
+I<height> values must be numbers and are measured in points.
+
+=item surface_create_similar (surface, content, width, height)
+
+Create a new surface of the same type as I<surface>, but with the width
+and height specified.  The I<content> value indicates whether the surface
+should include colour and/or transparency information, and must be one of
+the following strings:
+
+=over
+
+=item color
+
+Surface will have only colour content.
+
+=item alpha
+
+Surface will have only transparency content.
+
+=item color-alpha
+
+Surface will have colour and transparency content.
+
+=back
+
+=item svg_surface_create (file/filename, width, height)
+
+Create a surface which writes drawing instructions out to an SVG file,
+at the given filename or through a file handle.  The I<width> and I<height>
+values must be numbers and are measured in points.
+
+=back
+
+=head1 Other top-level functions
+
+The following additional methods are available.  The are rarely needed
+except for C<context_create> and the gradient constructors.
+
+=over
+
+=item BYTE_ORDER
+
+Not actually a function, this is a string indicating which order colour
+components are stored in pixels in raw image data on this platform.
+This will be C<argb> on big-endian systems and C<bgra> on little-endian
+ones.  This is the order in which the bytes for each pixel are stored
+on C<rgb24> and C<argb32> image surfaces.  For C<a1> it indicates the
+order the pixels are encoded as bits.  It can be ignored when the image
+format is C<a8>.
+
+=item context_create (surface)
+
+Return a new context object for drawing on I<surface>.
+See L<lua-oocairo-context(3)> for methods which can be called on this object.
+
+=item context_create_gdk (drawable)
+
+Return a new context object for drawing on the GdkDrawable object I<drawable>,
+which must be from the Lua-Gnome library.
+
+Fails unless Lua-Gnome has been loaded and the C<gtk> module is available
+as a global variable.
+
+See example programs I<gtk-image.lua> and I<gtk-drawing.lua> for examples
+of how to use this.
+
+=item font_options_create ()
+
+Returns a new Cairo font options object, with all its options set to
+default values.  See L<lua-oocairo-fontopt(3)> for information about
+what you can do with it.
+
+=item format_stride_for_width (format, width)
+
+Returns the number of bytes Cairo will used for storing a single row of
+pixels in the raw data of an image surface.  This can be used as the
+I<stride> value for the C<image_surface_create_from_data()> function
+and the image surface method C<get_data()>.  The I<format> value should
+be one of the pixel format strings such as C<rgb24>, and the width should
+be a number.
+
+=item matrix_create ()
+
+Return a new copy of the identity matrix.  All transformation matrices
+returned to Lua are in the format of a table of six numbers.
+See L<lua-oocairo-matrix(3)> for methods which can be called on these.
+
+=item pattern_create_for_surface (surface)
+
+Return a new pattern object representing the image on the surface.
+See L<lua-oocairo-pattern(3)> for methods which can be called on pattern
+objects.
+
+=item pattern_create_linear (x1, y1, x2, y2)
+
+Return a new pattern object representing a linear gradient, where the
+offset numbers go from zero at the point specified by the two numbers
+S<(I<x1>, I<y1>)> to the point S<(I<x2>, I<y2>)>.
+
+=item pattern_create_radial (x1, y1, r1, x2, y2, r2)
+
+Return a new pattern object representing a radial gradient, where offsets
+move from the circle defined by the three numbers S<(I<x1>, I<y1>, I<r1>)>,
+where I<r1> is the radius, to the circle S<(I<x2>, I<y2>, I<r2>)>.
+
+=item pattern_create_rgb (r, g, b)
+
+Return a new pattern object representing a solid colour.  The red, green,
+and blue values specified should all be numbers in the range zero to one
+inclusive.
+
+=item pattern_create_rgba (r, g, b, a)
+
+Same as C<pattern_create_rgb>, but accepts an alpha value, so the solid
+colour can be semitransparent.
+
+=item ps_get_levels ()
+
+Return a table containing a list of strings indicating what levels of
+PostScript are supported by Cairo.
+
+=item scaled_font_create (face, font_matrix, ctm, options)
+
+Creates a new scaled font object, representing a scaled version of I<face>.
+See L<lua-oocairo-scaledfont(3)> for information about these objects.
+
+The I<font_matrix> and I<ctm> values must be matrices (any table containing
+six numbers, see L<lua-oocairo-matrix(3)> for details).  The I<options>
+argument can be nil for the default options, or a font options object
+as returned by the C<font_options_create> function.
+
+=item svg_get_versions ()
+
+Return a table containing a list of strings indicating what versions of
+SVG are supported by Cairo.
+
+=item toy_font_face_create (family, slant, weight)
+
+Create and return a toy font face object (see L<lua-oocairo-fontface(3)>).
+See the context method C<select_font_face> for details of the arguments.
+This does the same, but returns the object instead of applying it to a
+context.
+Only available with S<Cairo 1.8> or better, otherwise this method won't
+exist.
+
+=item user_font_face_create (callbacks)
+
+Returns a font face object which uses the supplied callbacks for rendering
+and such.  This is intended to be used for creating special fancy font
+effects or for providing access to obscure font formats which aren't
+supported by Cairo.  The I<callbacks> value must be a table, with string
+keys for the callbacks.  The C<render_glyph> callback is required, the
+others optional.
+
+See L<lua-oocairo-userfont(3)> for details of how to write the callbacks.
+Only available with S<Cairo 1.8> or better.
+
+=back
+
+=head1 I/O through file handles
+
+Functions in this module which are advertised as accepting a C<file/filename>
+value can accept a filename (a simple string) or a Lua file handle.  They
+will also work with any other object (a userdata value or table) which
+provides the appropriate input or output method.
+
+For files which are to be used for output, a file handle object needs to
+provide a method called C<write>, which will be called with a single
+string every time more output is available.  Any return values from
+the method are ignored, but it can throw an exception if there's an error.
+
+For files which are used for input, a file handle needs to provide a
+method called C<read>, which will be called with a number indicating the
+number of bytes it should read.  It should return a string containing
+exactly that number of bytes.
+
+The C<memoryfile> module available from LuaForge can be used to write
+output into a buffer in memory which can then be accessed as a Lua string.
+This can be useful as a way to get an image into another graphics library
+such as GD, where it can be written in other formats other than PNG.
+
+=head1 Feature flags
+
+When the module is compiled, it will only enable support for the features
+which were compiled into your copy of the Cairo library.  For example, if
+you built Cairo without the PDF backend, then the module will not include
+the functions for creating a PDF surface.
+
+There are flags in the module table which indicate which features are
+available.  These are all wither C<true> or C<false>:
+
+=over
+
+=item HAS_PDF_SURFACE
+
+Support for creating a surface which writes drawing instructions out to
+an SVG file.
+
+=item HAS_PNG_FUNCTIONS
+
+Support for loading a PNG bitmap and creating an image surface from it,
+or for writing the contents of an image surface out to a PNG.
+
+=item HAS_PS_SURFACE
+
+Support for creating a surface which writes to a PostScript or EPS file.
+
+=item HAS_SVG_SURFACE
+
+Support for creating a surface which writes to a PDF file.
+
+=item HAS_USER_FONT
+
+Support for custom fonts defined by callback functions.  If true then
+the C<user_font_face_create> function should be available in the main
+module table.
+
+=back
+
+=head1 Copyright
+
+This software and documentation is Copyright E<copy> 2008 Geoff Richards
+E<lt>geoff@laxan.comE<gt>.  It is free software; you can redistribute it
+and/or modify it under the terms of the S<Lua 5.0> license.  The full terms
+are given in the file F<COPYRIGHT> supplied with the source code package,
+and are also available here: L<http://www.lua.org/license.html>
+
+=for comment
+vi:ts=4 sw=4 expandtab
