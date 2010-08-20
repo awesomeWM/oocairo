@@ -602,6 +602,15 @@ create_surface_userdata (lua_State *L) {
     return ud;
 }
 
+int
+oocairo_surface_push (lua_State *L, cairo_surface_t *surface)
+{
+    SurfaceUserdata *ud;
+    ud = create_surface_userdata(L);
+    ud->surface = cairo_surface_reference(surface);
+    return 1;
+}
+
 static void
 free_surface_userdata (SurfaceUserdata *ud) {
     if (ud->surface) {

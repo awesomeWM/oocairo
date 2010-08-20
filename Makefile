@@ -1,3 +1,4 @@
+CC=gcc
 PACKAGE=lua-oocairo
 VERSION=$(shell head -1 Changes | sed 's/ .*//')
 RELEASEDATE=$(shell head -1 Changes | sed 's/.* //')
