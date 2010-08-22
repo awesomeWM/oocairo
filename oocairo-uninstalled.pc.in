@@ -7,7 +7,7 @@ includedir=@includedir@
 srcdir=@abs_srcdir@
 builddir=@abs_builddir@
 INC_PATH=-I${srcdir}
-mylibdir=${builddir}
+mylibdir=${builddir}/.libs
 
 Name: oocairo
 Description: Cairo bindings for lua
