@@ -4,7 +4,6 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([config])
 LT_INIT([disable-static])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
-AM_SILENT_RULES([yes])
 AM_MAINTAINER_MODE([enable])
 
 AC_PROG_LN_S

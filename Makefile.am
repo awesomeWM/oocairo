@@ -15,8 +15,15 @@ include_HEADERS = oocairo.h
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = oocairo.pc
 
+TESTS_ENVIRONMENT = echo 'lunit.main({...})' | LUA_PATH='?.lua' LUA_CPATH='.libs/lib?.so' lua -llunit -
+TESTS = tests/*.lua
+
 # Make this library loadable by lua
 install-exec-hook:
 	$(MKDIR_P) $(DESTDIR)$(lualibdir)
 	rm -f $(lualibdir)/oocairo.so
 	$(LN_S) $(DESTDIR)$(libdir)/liboocairo.so $(lualibdir)/oocairo.so
+
+# Test whether loading oocairo works
+installcheck-local:
+	LUA_PATH='?.lua' LUA_CPATH='@lualibdir@/?.so' lua ${srcdir}/test-loading.lua
