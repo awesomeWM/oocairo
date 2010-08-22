@@ -7,6 +7,7 @@ AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AM_SILENT_RULES([yes])
 AM_MAINTAINER_MODE([enable])
 
+AC_PROG_LN_S
 PKG_CHECK_MODULES(DEPS, lua5.1 cairo)
 
 AC_MSG_CHECKING([lua library dir])
