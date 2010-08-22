@@ -1,0 +1,18 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+# This and the following three lines should be the only differences to znc.pc.in
+srcdir=@abs_srcdir@
+builddir=@abs_builddir@
+INC_PATH=-I${srcdir}
+mylibdir=${builddir}
+
+Name: oocairo
+Description: Cairo bindings for lua
+Version: @PACKAGE_VERSION@
+#URL: http://znc.in
+Require: lua5.1 cairo
+Libs: -L${mylibdir} -loocairo
+Cflags: ${INC_PATH}

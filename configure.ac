@@ -9,5 +9,16 @@ AM_MAINTAINER_MODE([enable])
 
 PKG_CHECK_MODULES(DEPS, lua5.1 cairo)
 
-AC_CONFIG_FILES([Makefile])
+AC_MSG_CHECKING([lua library dir])
+# First, we need to figure out the prefix
+MY_PREFIX=${prefix}
+if test "x${MY_PREFIX}" = "xNONE" ; then
+	MY_PREFIX=${ac_default_prefix}
+fi
+lualibdir=`$PKG_CONFIG lua5.1 --define-variable=prefix=${MY_PREFIX} --variable=INSTALL_CMOD`
+AC_SUBST([lualibdir])
+AC_MSG_RESULT([$lualibdir])
+
+
+AC_CONFIG_FILES([Makefile oocairo.pc oocairo-uninstalled.pc])
 AC_OUTPUT

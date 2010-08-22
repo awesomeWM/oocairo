@@ -1,0 +1,15 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+mylibdir=@lualibdir@
+INC_PATH=-I${includedir}/oocairo
+
+Name: oocairo
+Description: Cairo bindings for lua
+Version: @PACKAGE_VERSION@
+#URL: http://znc.in
+Require: lua5.1 cairo
+Libs: -L${mylibdir} -loocairo
+Cflags: ${INC_PATH}
