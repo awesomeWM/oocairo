@@ -1,4 +1,4 @@
-AC_INIT([FULL-PACKAGE-NAME], [VERSION], [BUG-REPORT-ADDRESS])
+AC_INIT([oocairo], [0.9], [psychon@znc.in])
 AC_CONFIG_SRCDIR([oocairo.c])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([config])

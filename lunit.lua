@@ -496,6 +496,10 @@ function lunit.run()
     end
   end
   report("done")
+
+  if stats.failed > 0 or stats.errors > 0 then
+    os.exit(1)
+  end
 end
 traceback_hide(run)
 

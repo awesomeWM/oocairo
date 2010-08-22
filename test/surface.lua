@@ -15,7 +15,7 @@ end
 
 teardown = clean_up_temp_files
 
-local WOOD_FILENAME = "examples/images/wood1.png"
+local WOOD_FILENAME = (srcdir or ".") .. "/examples/images/wood1.png"
 local WOOD_WIDTH, WOOD_HEIGHT = 96, 96
 
 local function check_image_surface (surface, desc)
