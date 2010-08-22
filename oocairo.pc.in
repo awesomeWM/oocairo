@@ -4,7 +4,7 @@ libdir=@libdir@
 includedir=@includedir@
 
 mylibdir=@lualibdir@
-INC_PATH=-I${includedir}/oocairo
+INC_PATH=-I${includedir}
 
 Name: oocairo
 Description: Cairo bindings for lua
