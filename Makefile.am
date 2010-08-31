@@ -47,11 +47,15 @@ dist_doc_DATA += examples/fill-rule.lua examples/text-userfont.lua
 EXTRA_DIST += doc/lua-oocairo.pod doc/lua-oocairo-context.pod doc/lua-oocairo-fontface.pod doc/lua-oocairo-fontopt.pod
 EXTRA_DIST += doc/lua-oocairo-matrix.pod doc/lua-oocairo-path.pod doc/lua-oocairo-userfont.pod
 EXTRA_DIST += doc/lua-oocairo-pattern.pod doc/lua-oocairo-scaledfont.pod doc/lua-oocairo-surface.pod
-man_MANS  = doc/lua-oocairo.3 doc/lua-oocairo-context.3 doc/lua-oocairo-fontface.3 doc/lua-oocairo-fontopt.3
-man_MANS += doc/lua-oocairo-matrix.3 doc/lua-oocairo-path.3 doc/lua-oocairo-userfont.3
-man_MANS += doc/lua-oocairo-pattern.3 doc/lua-oocairo-scaledfont.3 doc/lua-oocairo-surface.3
+manpages  = doc/lua-oocairo.3 doc/lua-oocairo-context.3 doc/lua-oocairo-fontface.3 doc/lua-oocairo-fontopt.3
+manpages += doc/lua-oocairo-matrix.3 doc/lua-oocairo-path.3 doc/lua-oocairo-userfont.3
+manpages += doc/lua-oocairo-pattern.3 doc/lua-oocairo-scaledfont.3 doc/lua-oocairo-surface.3
+man_MANS = $(manpages)
+MOSTLYCLEANFILES = $(manpages)
 
+# All our manpages are under doc/, but for VPATH builds that dir might not exist yet
 .pod.3:
+	@$(MKDIR_P) doc/
 	$(POD2MAN) --center="Lua OO Cairo binding" --release="$(VERSION)" $< $@
 
 
