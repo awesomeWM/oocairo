@@ -15,8 +15,8 @@ end
 
 teardown = clean_up_temp_files
 
-local WOOD_FILENAME = (srcdir or ".") .. "/examples/images/wood1.png"
-local WOOD_WIDTH, WOOD_HEIGHT = 96, 96
+local FILENAME = (srcdir or ".") .. "/examples/images/pattern.png"
+local WIDTH, HEIGHT = 15, 10
 
 local function check_image_surface (surface, desc)
     assert_userdata(surface, desc .. ", userdata")
@@ -153,13 +153,13 @@ end
 
 local function check_wood_image_surface (surface)
     check_image_surface(surface, "load PNG from filename")
-    assert_equal(WOOD_WIDTH, surface:get_width())
-    assert_equal(WOOD_HEIGHT, surface:get_height())
+    assert_equal(WIDTH, surface:get_width())
+    assert_equal(HEIGHT, surface:get_height())
 end
 
 if Cairo.HAS_PNG_FUNCTIONS then
     function test_create_from_png ()
-        local surface = Cairo.image_surface_create_from_png(WOOD_FILENAME)
+        local surface = Cairo.image_surface_create_from_png(FILENAME)
         check_wood_image_surface(surface)
     end
 
@@ -173,7 +173,7 @@ if Cairo.HAS_PNG_FUNCTIONS then
     end
 
     function test_create_from_png_stream ()
-        local fh = assert(io.open(WOOD_FILENAME, "rb"))
+        local fh = assert(io.open(FILENAME, "rb"))
         local surface = Cairo.image_surface_create_from_png(fh)
         fh:close()
         check_wood_image_surface(surface)
@@ -182,7 +182,7 @@ end
 
 if MemFile and Cairo.HAS_PNG_FUNCTIONS then
     function test_create_from_png_string ()
-        local fh = assert(io.open(WOOD_FILENAME, "rb"))
+        local fh = assert(io.open(FILENAME, "rb"))
         local data = fh:read("*a")
         fh:close()
         fh = MemFile.open(data)

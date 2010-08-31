@@ -28,7 +28,6 @@ TESTS += test/ps_surface.lua
 TESTS += test/scaled_font.lua
 TESTS += test/surface.lua
 TESTS += test/svg_surface.lua
-EXTRA_DIST += examples/images/wood1.png
 EXTRA_DIST += $(TESTS) lunit.lua test-setup.lua lunit-console.lua test-loading.lua
 
 # Documentation
@@ -36,7 +35,7 @@ dist_doc_DATA  = examples/stroke-style.lua examples/text-extents.lua examples/si
 dist_doc_DATA += examples/transform.lua examples/get-data.lua examples/gtk-drawing.lua
 dist_doc_DATA += examples/gtk-drawing.glade examples/text-path.lua examples/gtk-drawing.ui
 dist_doc_DATA += examples/text-userfont2.lua examples/inside-tests.lua examples/groups.lua
-dist_doc_DATA += examples/create-from-data.lua examples/gtk-image.ui examples/images/wood1.png
+dist_doc_DATA += examples/create-from-data.lua examples/gtk-image.ui examples/images/pattern.png
 dist_doc_DATA += examples/images/smiley.xpm examples/images/bronze.jpg examples/images/snow.jpg
 dist_doc_DATA += examples/images/README examples/images/flowers.jpg examples/gtk-image.lua
 dist_doc_DATA += examples/arc.lua examples/simple-svg.lua examples/tolerance.lua
