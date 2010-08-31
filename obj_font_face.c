@@ -217,15 +217,15 @@ user_font_face_create (lua_State *L) {
 
 static int
 fontface_eq (lua_State *L) {
-    cairo_font_face_t **obj1 = luaL_checkudata(L, 1, MT_NAME_FONTFACE);
-    cairo_font_face_t **obj2 = luaL_checkudata(L, 2, MT_NAME_FONTFACE);
+    cairo_font_face_t **obj1 = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTFACE);
+    cairo_font_face_t **obj2 = luaL_checkudata(L, 2, OOCAIRO_MT_NAME_FONTFACE);
     lua_pushboolean(L, *obj1 == *obj2);
     return 1;
 }
 
 static int
 fontface_gc (lua_State *L) {
-    cairo_font_face_t **obj = luaL_checkudata(L, 1, MT_NAME_FONTFACE);
+    cairo_font_face_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTFACE);
     cairo_font_face_destroy(*obj);
     *obj = 0;
     return 0;
@@ -233,14 +233,14 @@ fontface_gc (lua_State *L) {
 
 static int
 fontface_get_type (lua_State *L) {
-    cairo_font_face_t **obj = luaL_checkudata(L, 1, MT_NAME_FONTFACE);
+    cairo_font_face_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTFACE);
     return font_type_to_lua(L, cairo_font_face_get_type(*obj));
 }
 
 #if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 8, 0)
 static int
 fontface_get_family (lua_State *L) {
-    cairo_font_face_t **obj = luaL_checkudata(L, 1, MT_NAME_FONTFACE);
+    cairo_font_face_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTFACE);
     if (cairo_font_face_get_type(*obj) != CAIRO_FONT_TYPE_TOY)
         return luaL_error(L, "'get_family' only works on toy font faces");
     lua_pushstring(L, cairo_toy_font_face_get_family(*obj));
@@ -249,7 +249,7 @@ fontface_get_family (lua_State *L) {
 
 static int
 fontface_get_slant (lua_State *L) {
-    cairo_font_face_t **obj = luaL_checkudata(L, 1, MT_NAME_FONTFACE);
+    cairo_font_face_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTFACE);
     if (cairo_font_face_get_type(*obj) != CAIRO_FONT_TYPE_TOY)
         return luaL_error(L, "'get_slant' only works on toy font faces");
     return font_slant_to_lua(L, cairo_toy_font_face_get_slant(*obj));
@@ -257,7 +257,7 @@ fontface_get_slant (lua_State *L) {
 
 static int
 fontface_get_weight (lua_State *L) {
-    cairo_font_face_t **obj = luaL_checkudata(L, 1, MT_NAME_FONTFACE);
+    cairo_font_face_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTFACE);
     if (cairo_font_face_get_type(*obj) != CAIRO_FONT_TYPE_TOY)
         return luaL_error(L, "'get_weight' only works on toy font faces");
     return font_weight_to_lua(L, cairo_toy_font_face_get_weight(*obj));

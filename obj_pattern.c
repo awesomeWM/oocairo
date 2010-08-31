@@ -18,7 +18,7 @@ pattern_create_rgba (lua_State *L) {
 
 static int
 pattern_create_for_surface (lua_State *L) {
-    cairo_surface_t **surface = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **surface = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     cairo_pattern_t **obj = create_pattern_userdata(L);
     *obj = cairo_pattern_create_for_surface(*surface);
     return 1;
@@ -46,15 +46,15 @@ pattern_create_radial (lua_State *L) {
 
 static int
 pattern_eq (lua_State *L) {
-    cairo_pattern_t **obj1 = luaL_checkudata(L, 1, MT_NAME_PATTERN);
-    cairo_pattern_t **obj2 = luaL_checkudata(L, 2, MT_NAME_PATTERN);
+    cairo_pattern_t **obj1 = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
+    cairo_pattern_t **obj2 = luaL_checkudata(L, 2, OOCAIRO_MT_NAME_PATTERN);
     lua_pushboolean(L, *obj1 == *obj2);
     return 1;
 }
 
 static int
 pattern_gc (lua_State *L) {
-    cairo_pattern_t **obj = luaL_checkudata(L, 1, MT_NAME_PATTERN);
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
     cairo_pattern_destroy(*obj);
     *obj = 0;
     return 0;
@@ -62,7 +62,7 @@ pattern_gc (lua_State *L) {
 
 static int
 pattern_add_color_stop_rgb (lua_State *L) {
-    cairo_pattern_t **obj = luaL_checkudata(L, 1, MT_NAME_PATTERN);
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
     cairo_pattern_type_t type = cairo_pattern_get_type(*obj);
     if (type != CAIRO_PATTERN_TYPE_LINEAR && type != CAIRO_PATTERN_TYPE_RADIAL)
         return luaL_error(L, "add_color_stop_rgb() only works on gradient"
@@ -74,7 +74,7 @@ pattern_add_color_stop_rgb (lua_State *L) {
 
 static int
 pattern_add_color_stop_rgba (lua_State *L) {
-    cairo_pattern_t **obj = luaL_checkudata(L, 1, MT_NAME_PATTERN);
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
     cairo_pattern_type_t type = cairo_pattern_get_type(*obj);
     if (type != CAIRO_PATTERN_TYPE_LINEAR && type != CAIRO_PATTERN_TYPE_RADIAL)
         return luaL_error(L, "add_color_stop_rgba() only works on gradient"
@@ -87,7 +87,7 @@ pattern_add_color_stop_rgba (lua_State *L) {
 
 static int
 pattern_get_color_stops (lua_State *L) {
-    cairo_pattern_t **obj = luaL_checkudata(L, 1, MT_NAME_PATTERN);
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
     int count, i;
     double offset, r, g, b, a;
     if (cairo_pattern_get_color_stop_count(*obj, &count)
@@ -114,19 +114,19 @@ pattern_get_color_stops (lua_State *L) {
 
 static int
 pattern_get_extend (lua_State *L) {
-    cairo_pattern_t **obj = luaL_checkudata(L, 1, MT_NAME_PATTERN);
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
     return extend_to_lua(L, cairo_pattern_get_extend(*obj));
 }
 
 static int
 pattern_get_filter (lua_State *L) {
-    cairo_pattern_t **obj = luaL_checkudata(L, 1, MT_NAME_PATTERN);
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
     return filter_to_lua(L, cairo_pattern_get_filter(*obj));
 }
 
 static int
 pattern_get_linear_points (lua_State *L) {
-    cairo_pattern_t **obj = luaL_checkudata(L, 1, MT_NAME_PATTERN);
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
     double x0, y0, x1, y1;
     if (cairo_pattern_get_linear_points(*obj, &x0, &y0, &x1, &y1)
             == CAIRO_STATUS_PATTERN_TYPE_MISMATCH)
@@ -140,7 +140,7 @@ pattern_get_linear_points (lua_State *L) {
 
 static int
 pattern_get_matrix (lua_State *L) {
-    cairo_pattern_t **obj = luaL_checkudata(L, 1, MT_NAME_PATTERN);
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
     cairo_matrix_t mat;
     cairo_pattern_get_matrix(*obj, &mat);
     create_lua_matrix(L, &mat);
@@ -149,7 +149,7 @@ pattern_get_matrix (lua_State *L) {
 
 static int
 pattern_get_radial_circles (lua_State *L) {
-    cairo_pattern_t **obj = luaL_checkudata(L, 1, MT_NAME_PATTERN);
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
     double x0, y0, r0, x1, y1, r1;
     if (cairo_pattern_get_radial_circles(*obj, &x0, &y0, &r0, &x1, &y1, &r1)
             == CAIRO_STATUS_PATTERN_TYPE_MISMATCH)
@@ -165,7 +165,7 @@ pattern_get_radial_circles (lua_State *L) {
 
 static int
 pattern_get_rgba (lua_State *L) {
-    cairo_pattern_t **obj = luaL_checkudata(L, 1, MT_NAME_PATTERN);
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
     double r, g, b, a;
     if (cairo_pattern_get_rgba(*obj, &r, &g, &b, &a)
             == CAIRO_STATUS_PATTERN_TYPE_MISMATCH)
@@ -179,7 +179,7 @@ pattern_get_rgba (lua_State *L) {
 
 static int
 pattern_get_surface (lua_State *L) {
-    cairo_pattern_t **obj = luaL_checkudata(L, 1, MT_NAME_PATTERN);
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
     cairo_surface_t *surface;
     SurfaceUserdata *surfobj;
     if (cairo_pattern_get_surface(*obj, &surface)
@@ -193,7 +193,7 @@ pattern_get_surface (lua_State *L) {
 
 static int
 pattern_get_type (lua_State *L) {
-    cairo_pattern_t **obj = luaL_checkudata(L, 1, MT_NAME_PATTERN);
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
     switch (cairo_pattern_get_type(*obj)) {
         case CAIRO_PATTERN_TYPE_SOLID:   lua_pushliteral(L, "solid");    break;
         case CAIRO_PATTERN_TYPE_SURFACE: lua_pushliteral(L, "surface");  break;
@@ -206,21 +206,21 @@ pattern_get_type (lua_State *L) {
 
 static int
 pattern_set_extend (lua_State *L) {
-    cairo_pattern_t **obj = luaL_checkudata(L, 1, MT_NAME_PATTERN);
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
     cairo_pattern_set_extend(*obj, extend_from_lua(L, 2));
     return 0;
 }
 
 static int
 pattern_set_filter (lua_State *L) {
-    cairo_pattern_t **obj = luaL_checkudata(L, 1, MT_NAME_PATTERN);
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
     cairo_pattern_set_filter(*obj, filter_from_lua(L, 2));
     return 0;
 }
 
 static int
 pattern_set_matrix (lua_State *L) {
-    cairo_pattern_t **obj = luaL_checkudata(L, 1, MT_NAME_PATTERN);
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
     cairo_matrix_t mat;
     from_lua_matrix(L, &mat, 2);
     cairo_pattern_set_matrix(*obj, &mat);

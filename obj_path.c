@@ -1,6 +1,6 @@
 static int
 path_gc (lua_State *L) {
-    cairo_path_t **obj = luaL_checkudata(L, 1, MT_NAME_PATH);
+    cairo_path_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATH);
     cairo_path_destroy(*obj);
     *obj = 0;
     return 0;
@@ -8,7 +8,7 @@ path_gc (lua_State *L) {
 
 static int
 path_each_iter (lua_State *L) {
-    cairo_path_t *path = *(cairo_path_t **) luaL_checkudata(L, 1, MT_NAME_PATH);
+    cairo_path_t *path = *(cairo_path_t **) luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATH);
     cairo_path_data_t *data;
     int i;
 
@@ -70,7 +70,7 @@ path_each_iter (lua_State *L) {
 
 static int
 path_each (lua_State *L) {
-    luaL_checkudata(L, 1, MT_NAME_PATH);
+    luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATH);
     lua_pushcfunction(L, path_each_iter);
     lua_pushvalue(L, 1);
     return 2;

@@ -1,6 +1,6 @@
 static int
 context_create (lua_State *L) {
-    cairo_surface_t **surface = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **surface = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     cairo_t **obj = create_context_userdata(L);
     *obj = cairo_create(*surface);
     return 1;
@@ -22,14 +22,14 @@ context_create_gdk (lua_State *L) {
                           " a userdata");
     /* Switch to using my metatable for the object.  This of course relies
      * on Lua-Gnome using the same format for storing the pointer. */
-    luaL_getmetatable(L, MT_NAME_CONTEXT);
+    luaL_getmetatable(L, OOCAIRO_MT_NAME_CONTEXT);
     lua_setmetatable(L, -2);
     return 1;
 }
 
 static int
 cr_gc (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_destroy(*obj);
     *obj = 0;
     return 0;
@@ -37,15 +37,15 @@ cr_gc (lua_State *L) {
 
 static int
 cr_append_path (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
-    cairo_path_t **path = luaL_checkudata(L, 2, MT_NAME_PATH);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
+    cairo_path_t **path = luaL_checkudata(L, 2, OOCAIRO_MT_NAME_PATH);
     cairo_append_path(*obj, *path);
     return 0;
 }
 
 static int
 cr_arc (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_arc(*obj, luaL_checknumber(L, 2), luaL_checknumber(L, 3),
               luaL_checknumber(L, 4), luaL_checknumber(L, 5),
               luaL_checknumber(L, 6));
@@ -54,7 +54,7 @@ cr_arc (lua_State *L) {
 
 static int
 cr_arc_negative (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_arc_negative(*obj, luaL_checknumber(L, 2), luaL_checknumber(L, 3),
                        luaL_checknumber(L, 4), luaL_checknumber(L, 5),
                        luaL_checknumber(L, 6));
@@ -63,14 +63,14 @@ cr_arc_negative (lua_State *L) {
 
 static int
 cr_clip (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_clip(*obj);
     return 0;
 }
 
 static int
 cr_clip_extents (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     double x1, y1, x2, y2;
     cairo_clip_extents(*obj, &x1, &y1, &x2, &y2);
     lua_pushnumber(L, x1);
@@ -82,24 +82,24 @@ cr_clip_extents (lua_State *L) {
 
 static int
 cr_clip_preserve (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_clip_preserve(*obj);
     return 0;
 }
 
 static int
 cr_close_path (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_close_path(*obj);
     return 0;
 }
 
 static int
 cr_copy_path (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_path_t **path = lua_newuserdata(L, sizeof(cairo_path_t *));
     *path = 0;
-    luaL_getmetatable(L, MT_NAME_PATH);
+    luaL_getmetatable(L, OOCAIRO_MT_NAME_PATH);
     lua_setmetatable(L, -2);
     *path = cairo_copy_path(*obj);
     return 1;
@@ -107,10 +107,10 @@ cr_copy_path (lua_State *L) {
 
 static int
 cr_copy_path_flat (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_path_t **path = lua_newuserdata(L, sizeof(cairo_path_t *));
     *path = 0;
-    luaL_getmetatable(L, MT_NAME_PATH);
+    luaL_getmetatable(L, OOCAIRO_MT_NAME_PATH);
     lua_setmetatable(L, -2);
     *path = cairo_copy_path_flat(*obj);
     return 1;
@@ -118,7 +118,7 @@ cr_copy_path_flat (lua_State *L) {
 
 static int
 cr_curve_to (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_curve_to(*obj, luaL_checknumber(L, 2), luaL_checknumber(L, 3),
                    luaL_checknumber(L, 4), luaL_checknumber(L, 5),
                    luaL_checknumber(L, 6), luaL_checknumber(L, 7));
@@ -127,7 +127,7 @@ cr_curve_to (lua_State *L) {
 
 static int
 cr_device_to_user (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     double x = luaL_checknumber(L, 2), y = luaL_checknumber(L, 3);
     cairo_device_to_user(*obj, &x, &y);
     lua_pushnumber(L, x);
@@ -137,7 +137,7 @@ cr_device_to_user (lua_State *L) {
 
 static int
 cr_device_to_user_distance (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     double x = luaL_checknumber(L, 2), y = luaL_checknumber(L, 3);
     cairo_device_to_user_distance(*obj, &x, &y);
     lua_pushnumber(L, x);
@@ -147,14 +147,14 @@ cr_device_to_user_distance (lua_State *L) {
 
 static int
 cr_fill (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_fill(*obj);
     return 0;
 }
 
 static int
 cr_fill_extents (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     double x1, y1, x2, y2;
     cairo_fill_extents(*obj, &x1, &y1, &x2, &y2);
     lua_pushnumber(L, x1);
@@ -166,14 +166,14 @@ cr_fill_extents (lua_State *L) {
 
 static int
 cr_fill_preserve (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_fill_preserve(*obj);
     return 0;
 }
 
 static int
 cr_font_extents (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_font_extents_t extents;
     cairo_font_extents(*obj, &extents);
     create_lua_font_extents(L, &extents);
@@ -182,13 +182,13 @@ cr_font_extents (lua_State *L) {
 
 static int
 cr_get_antialias (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     return antialias_to_lua(L, cairo_get_antialias(*obj));
 }
 
 static int
 cr_get_current_point (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     double x, y;
     if (!cairo_has_current_point(*obj))
         return 0;
@@ -200,7 +200,7 @@ cr_get_current_point (lua_State *L) {
 
 static int
 cr_get_dash (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     int cnt, i;
     double *dashes = 0, offset;
 
@@ -226,13 +226,13 @@ cr_get_dash (lua_State *L) {
 
 static int
 cr_get_fill_rule (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     return fill_rule_to_lua(L, cairo_get_fill_rule(*obj));
 }
 
 static int
 cr_get_font_face (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_font_face_t **face = create_fontface_userdata(L);
     *face = cairo_get_font_face(*obj);
     cairo_font_face_reference(*face);
@@ -241,7 +241,7 @@ cr_get_font_face (lua_State *L) {
 
 static int
 cr_get_font_matrix (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_matrix_t mat;
     cairo_get_font_matrix(*obj, &mat);
     create_lua_matrix(L, &mat);
@@ -250,7 +250,7 @@ cr_get_font_matrix (lua_State *L) {
 
 static int
 cr_get_font_options (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_font_options_t **opt = create_fontopt_userdata(L);
     *opt = cairo_font_options_create();
     cairo_get_font_options(*obj, *opt);
@@ -259,7 +259,7 @@ cr_get_font_options (lua_State *L) {
 
 static int
 cr_get_group_target (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     SurfaceUserdata *surface = create_surface_userdata(L);
     surface->surface = cairo_get_group_target(*obj);
     cairo_surface_reference(surface->surface);
@@ -268,26 +268,26 @@ cr_get_group_target (lua_State *L) {
 
 static int
 cr_get_line_cap (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     return line_cap_to_lua(L, cairo_get_line_cap(*obj));
 }
 
 static int
 cr_get_line_join (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     return line_join_to_lua(L, cairo_get_line_join(*obj));
 }
 
 static int
 cr_get_line_width (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     lua_pushnumber(L, cairo_get_line_width(*obj));
     return 1;
 }
 
 static int
 cr_get_matrix (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_matrix_t mat;
     cairo_get_matrix(*obj, &mat);
     create_lua_matrix(L, &mat);
@@ -296,20 +296,20 @@ cr_get_matrix (lua_State *L) {
 
 static int
 cr_get_miter_limit (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     lua_pushnumber(L, cairo_get_miter_limit(*obj));
     return 1;
 }
 
 static int
 cr_get_operator (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     return operator_to_lua(L, cairo_get_operator(*obj));
 }
 
 static int
 cr_get_scaled_font (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_scaled_font_t **font = create_scaledfont_userdata(L);
     *font = cairo_get_scaled_font(*obj);
     cairo_scaled_font_reference(*font);
@@ -318,7 +318,7 @@ cr_get_scaled_font (lua_State *L) {
 
 static int
 cr_get_source (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_pattern_t **pattern = create_pattern_userdata(L);
     *pattern = cairo_get_source(*obj);
     cairo_pattern_reference(*pattern);
@@ -327,7 +327,7 @@ cr_get_source (lua_State *L) {
 
 static int
 cr_get_target (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     SurfaceUserdata *surface = create_surface_userdata(L);
     surface->surface = cairo_get_target(*obj);
     cairo_surface_reference(surface->surface);
@@ -336,14 +336,14 @@ cr_get_target (lua_State *L) {
 
 static int
 cr_get_tolerance (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     lua_pushnumber(L, cairo_get_tolerance(*obj));
     return 1;
 }
 
 static int
 cr_glyph_extents (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_glyph_t *glyphs;
     int num_glyphs;
     cairo_text_extents_t extents;
@@ -357,7 +357,7 @@ cr_glyph_extents (lua_State *L) {
 
 static int
 cr_glyph_path (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_glyph_t *glyphs;
     int num_glyphs;
     from_lua_glyph_array(L, &glyphs, &num_glyphs, 2);
@@ -369,21 +369,21 @@ cr_glyph_path (lua_State *L) {
 
 static int
 cr_has_current_point (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     lua_pushboolean(L, cairo_has_current_point(*obj));
     return 1;
 }
 
 static int
 cr_identity_matrix (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_identity_matrix(*obj);
     return 0;
 }
 
 static int
 cr_in_fill (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     lua_pushboolean(L,
         cairo_in_fill(*obj, luaL_checknumber(L, 2), luaL_checknumber(L, 3)));
     return 1;
@@ -391,7 +391,7 @@ cr_in_fill (lua_State *L) {
 
 static int
 cr_in_stroke (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     lua_pushboolean(L,
         cairo_in_stroke(*obj, luaL_checknumber(L, 2), luaL_checknumber(L, 3)));
     return 1;
@@ -399,21 +399,21 @@ cr_in_stroke (lua_State *L) {
 
 static int
 cr_line_to (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_line_to(*obj, luaL_checknumber(L, 2), luaL_checknumber(L, 3));
     return 0;
 }
 
 static int
 cr_move_to (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_move_to(*obj, luaL_checknumber(L, 2), luaL_checknumber(L, 3));
     return 0;
 }
 
 static int
 cr_mask (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     void *p;
     cairo_pattern_t **pattern;
     cairo_surface_t **surface;
@@ -424,7 +424,7 @@ cr_mask (lua_State *L) {
 
     if ((p = lua_touserdata(L, 2))) {
         if (lua_getmetatable(L, 2)) {
-            lua_getfield(L, LUA_REGISTRYINDEX, MT_NAME_PATTERN);
+            lua_getfield(L, LUA_REGISTRYINDEX, OOCAIRO_MT_NAME_PATTERN);
             if (lua_rawequal(L, -1, -2)) {
                 pattern = p;
                 cairo_mask(*obj, *pattern);
@@ -432,7 +432,7 @@ cr_mask (lua_State *L) {
             }
             lua_pop(L, 1);
 
-            lua_getfield(L, LUA_REGISTRYINDEX, MT_NAME_SURFACE);
+            lua_getfield(L, LUA_REGISTRYINDEX, OOCAIRO_MT_NAME_SURFACE);
             if (lua_rawequal(L, -1, -2)) {
                 surface = p;
                 cairo_mask_surface(*obj, *surface,
@@ -449,35 +449,35 @@ cr_mask (lua_State *L) {
 
 static int
 cr_new_path (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_new_path(*obj);
     return 0;
 }
 
 static int
 cr_new_sub_path (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_new_sub_path(*obj);
     return 0;
 }
 
 static int
 cr_paint (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_paint(*obj);
     return 0;
 }
 
 static int
 cr_paint_with_alpha (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_paint_with_alpha(*obj, luaL_checknumber(L, 2));
     return 0;
 }
 
 static int
 cr_path_extents (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     double x1, y1, x2, y2;
     cairo_path_extents(*obj, &x1, &y1, &x2, &y2);
     lua_pushnumber(L, x1);
@@ -489,7 +489,7 @@ cr_path_extents (lua_State *L) {
 
 static int
 cr_pop_group (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_pattern_t **pattern = create_pattern_userdata(L);
     *pattern = cairo_pop_group(*obj);
     return 1;
@@ -497,14 +497,14 @@ cr_pop_group (lua_State *L) {
 
 static int
 cr_pop_group_to_source (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_pop_group_to_source(*obj);
     return 0;
 }
 
 static int
 cr_push_group (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_content_t content = CAIRO_CONTENT_COLOR_ALPHA;
     if (!lua_isnoneornil(L, 2))
         content = content_from_lua(L, 2);
@@ -514,7 +514,7 @@ cr_push_group (lua_State *L) {
 
 static int
 cr_rectangle (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_rectangle(*obj, luaL_checknumber(L, 2), luaL_checknumber(L, 3),
                     luaL_checknumber(L, 4), luaL_checknumber(L, 5));
     return 0;
@@ -522,7 +522,7 @@ cr_rectangle (lua_State *L) {
 
 static int
 cr_rel_curve_to (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_rel_curve_to(*obj, luaL_checknumber(L, 2), luaL_checknumber(L, 3),
                        luaL_checknumber(L, 4), luaL_checknumber(L, 5),
                        luaL_checknumber(L, 6), luaL_checknumber(L, 7));
@@ -531,56 +531,56 @@ cr_rel_curve_to (lua_State *L) {
 
 static int
 cr_rel_line_to (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_rel_line_to(*obj, luaL_checknumber(L, 2), luaL_checknumber(L, 3));
     return 0;
 }
 
 static int
 cr_rel_move_to (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_rel_move_to(*obj, luaL_checknumber(L, 2), luaL_checknumber(L, 3));
     return 0;
 }
 
 static int
 cr_reset_clip (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_reset_clip(*obj);
     return 0;
 }
 
 static int
 cr_restore (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_restore(*obj);
     return 0;
 }
 
 static int
 cr_rotate (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_rotate(*obj, luaL_checknumber(L, 2));
     return 0;
 }
 
 static int
 cr_save (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_save(*obj);
     return 0;
 }
 
 static int
 cr_scale (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_scale(*obj, luaL_checknumber(L, 2), luaL_checknumber(L, 3));
     return 0;
 }
 
 static int
 cr_select_font_face (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_font_slant_t slant = CAIRO_FONT_SLANT_NORMAL;
     cairo_font_weight_t weight = CAIRO_FONT_WEIGHT_NORMAL;
     if (!lua_isnoneornil(L, 3))
@@ -593,14 +593,14 @@ cr_select_font_face (lua_State *L) {
 
 static int
 cr_set_antialias (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_set_antialias(*obj, antialias_from_lua(L, 2));
     return 0;
 }
 
 static int
 cr_set_dash (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     int num_dashes, i;
     double *dashes = 0, offset, n, dashtotal;
 
@@ -646,24 +646,24 @@ cr_set_dash (lua_State *L) {
 
 static int
 cr_set_fill_rule (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_set_fill_rule(*obj, fill_rule_from_lua(L, 2));
     return 0;
 }
 
 static int
 cr_set_font_face (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_font_face_t *face = 0;
     if (!lua_isnoneornil(L, 2))
-        face = *(cairo_font_face_t **) luaL_checkudata(L, 2, MT_NAME_FONTFACE);
+        face = *(cairo_font_face_t **) luaL_checkudata(L, 2, OOCAIRO_MT_NAME_FONTFACE);
     cairo_set_font_face(*obj, face);
     return 0;
 }
 
 static int
 cr_set_font_matrix (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_matrix_t mat;
     from_lua_matrix(L, &mat, 2);
     cairo_set_font_matrix(*obj, &mat);
@@ -672,36 +672,36 @@ cr_set_font_matrix (lua_State *L) {
 
 static int
 cr_set_font_options (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
-    cairo_font_options_t **opt = luaL_checkudata(L, 2, MT_NAME_FONTOPT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
+    cairo_font_options_t **opt = luaL_checkudata(L, 2, OOCAIRO_MT_NAME_FONTOPT);
     cairo_set_font_options(*obj, *opt);
     return 0;
 }
 
 static int
 cr_set_font_size (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_set_font_size(*obj, luaL_checknumber(L, 2));
     return 0;
 }
 
 static int
 cr_set_line_cap (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_set_line_cap(*obj, line_cap_from_lua(L, 2));
     return 0;
 }
 
 static int
 cr_set_line_join (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_set_line_join(*obj, line_join_from_lua(L, 2));
     return 0;
 }
 
 static int
 cr_set_line_width (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     double n = luaL_checknumber(L, 2);
     luaL_argcheck(L, n >= 0, 2, "line width cannot be negative");
     cairo_set_line_width(*obj, n);
@@ -710,7 +710,7 @@ cr_set_line_width (lua_State *L) {
 
 static int
 cr_set_matrix (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_matrix_t mat;
     from_lua_matrix(L, &mat, 2);
     cairo_set_matrix(*obj, &mat);
@@ -719,29 +719,29 @@ cr_set_matrix (lua_State *L) {
 
 static int
 cr_set_miter_limit (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_set_miter_limit(*obj, luaL_checknumber(L, 2));
     return 0;
 }
 
 static int
 cr_set_operator (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_set_operator(*obj, operator_from_lua(L, 2));
     return 0;
 }
 
 static int
 cr_set_scaled_font (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
-    cairo_scaled_font_t **font = luaL_checkudata(L, 2, MT_NAME_SCALEDFONT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
+    cairo_scaled_font_t **font = luaL_checkudata(L, 2, OOCAIRO_MT_NAME_SCALEDFONT);
     cairo_set_scaled_font(*obj, *font);
     return 0;
 }
 
 static int
 cr_set_source (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     void *p;
     cairo_pattern_t **pattern;
     cairo_surface_t **surface;
@@ -752,7 +752,7 @@ cr_set_source (lua_State *L) {
 
     if ((p = lua_touserdata(L, 2))) {
         if (lua_getmetatable(L, 2)) {
-            lua_getfield(L, LUA_REGISTRYINDEX, MT_NAME_PATTERN);
+            lua_getfield(L, LUA_REGISTRYINDEX, OOCAIRO_MT_NAME_PATTERN);
             if (lua_rawequal(L, -1, -2)) {
                 pattern = p;
                 cairo_set_source(*obj, *pattern);
@@ -760,7 +760,7 @@ cr_set_source (lua_State *L) {
             }
             lua_pop(L, 1);
 
-            lua_getfield(L, LUA_REGISTRYINDEX, MT_NAME_SURFACE);
+            lua_getfield(L, LUA_REGISTRYINDEX, OOCAIRO_MT_NAME_SURFACE);
             if (lua_rawequal(L, -1, -2)) {
                 surface = p;
                 cairo_set_source_surface(*obj, *surface,
@@ -794,7 +794,7 @@ get_color_component_from_lua (lua_State *L, int pos, const char *field) {
  * GtkColorButton for example. */
 static int
 cr_set_source_gdk_color (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     double red   = get_color_component_from_lua(L, 2, "red");
     double green = get_color_component_from_lua(L, 2, "green");
     double blue  = get_color_component_from_lua(L, 2, "blue");
@@ -814,7 +814,7 @@ cr_set_source_gdk_color (lua_State *L) {
  * having another compile-time dependency. */
 static int
 cr_set_source_pixbuf (lua_State *L) {
-    luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     luaL_argcheck(L, !lua_isnoneornil(L, 2), 2, "expected GdkPixbuf object");
     luaL_argcheck(L, lua_isnumber(L, 3), 3, "expected number for x");
     luaL_argcheck(L, lua_isnumber(L, 4), 4, "expected number for y");
@@ -829,7 +829,7 @@ cr_set_source_pixbuf (lua_State *L) {
 
 static int
 cr_set_source_pixmap (lua_State *L) {
-    luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     luaL_argcheck(L, !lua_isnoneornil(L, 2), 2, "expected GdkPixmap object");
     luaL_argcheck(L, lua_isnumber(L, 3), 3, "expected number for x");
     luaL_argcheck(L, lua_isnumber(L, 4), 4, "expected number for y");
@@ -844,7 +844,7 @@ cr_set_source_pixmap (lua_State *L) {
 
 static int
 cr_set_source_rgb (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_set_source_rgb(*obj, luaL_checknumber(L, 2), luaL_checknumber(L, 3),
                          luaL_checknumber(L, 4));
     return 0;
@@ -852,7 +852,7 @@ cr_set_source_rgb (lua_State *L) {
 
 static int
 cr_set_source_rgba (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_set_source_rgba(*obj, luaL_checknumber(L, 2), luaL_checknumber(L, 3),
                           luaL_checknumber(L, 4), luaL_checknumber(L, 5));
     return 0;
@@ -860,14 +860,14 @@ cr_set_source_rgba (lua_State *L) {
 
 static int
 cr_set_tolerance (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_set_tolerance(*obj, luaL_checknumber(L, 2));
     return 0;
 }
 
 static int
 cr_show_glyphs (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_glyph_t *glyphs;
     int num_glyphs;
     from_lua_glyph_array(L, &glyphs, &num_glyphs, 2);
@@ -879,7 +879,7 @@ cr_show_glyphs (lua_State *L) {
 
 static int
 cr_show_text (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_show_text(*obj, luaL_checkstring(L, 2));
     return 0;
 }
@@ -887,7 +887,7 @@ cr_show_text (lua_State *L) {
 #if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 8, 0)
 static int
 cr_show_text_glyphs (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     size_t text_len;
     const char *text = luaL_checklstring(L, 2, &text_len);
     cairo_glyph_t *glyphs;
@@ -910,14 +910,14 @@ cr_show_text_glyphs (lua_State *L) {
 
 static int
 cr_stroke (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_stroke(*obj);
     return 0;
 }
 
 static int
 cr_stroke_extents (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     double x1, y1, x2, y2;
     cairo_stroke_extents(*obj, &x1, &y1, &x2, &y2);
     lua_pushnumber(L, x1);
@@ -929,14 +929,14 @@ cr_stroke_extents (lua_State *L) {
 
 static int
 cr_stroke_preserve (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_stroke_preserve(*obj);
     return 0;
 }
 
 static int
 cr_text_extents (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_text_extents_t extents;
     cairo_text_extents(*obj, luaL_checkstring(L, 2), &extents);
     create_lua_text_extents(L, &extents);
@@ -945,14 +945,14 @@ cr_text_extents (lua_State *L) {
 
 static int
 cr_text_path (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_text_path(*obj, luaL_checkstring(L, 2));
     return 0;
 }
 
 static int
 cr_transform (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_matrix_t mat;
     from_lua_matrix(L, &mat, 2);
     cairo_transform(*obj, &mat);
@@ -961,14 +961,14 @@ cr_transform (lua_State *L) {
 
 static int
 cr_translate (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     cairo_translate(*obj, luaL_checknumber(L, 2), luaL_checknumber(L, 3));
     return 0;
 }
 
 static int
 cr_user_to_device (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     double x = luaL_checknumber(L, 2), y = luaL_checknumber(L, 3);
     cairo_user_to_device(*obj, &x, &y);
     lua_pushnumber(L, x);
@@ -978,7 +978,7 @@ cr_user_to_device (lua_State *L) {
 
 static int
 cr_user_to_device_distance (lua_State *L) {
-    cairo_t **obj = luaL_checkudata(L, 1, MT_NAME_CONTEXT);
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     double x = luaL_checknumber(L, 2), y = luaL_checknumber(L, 3);
     cairo_user_to_device_distance(*obj, &x, &y);
     lua_pushnumber(L, x);

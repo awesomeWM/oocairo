@@ -239,7 +239,7 @@ static void
 create_lua_matrix (lua_State *L, cairo_matrix_t *mat) {
     lua_createtable(L, 6, 0);
     to_lua_matrix(L, mat, lua_gettop(L));
-    luaL_getmetatable(L, MT_NAME_MATRIX);
+    luaL_getmetatable(L, OOCAIRO_MT_NAME_MATRIX);
     lua_setmetatable(L, -2);
 }
 
@@ -541,7 +541,7 @@ static cairo_pattern_t **
 create_pattern_userdata (lua_State *L) {
     cairo_pattern_t **obj = lua_newuserdata(L, sizeof(cairo_pattern_t *));
     *obj = 0;
-    luaL_getmetatable(L, MT_NAME_PATTERN);
+    luaL_getmetatable(L, OOCAIRO_MT_NAME_PATTERN);
     lua_setmetatable(L, -2);
     return obj;
 }
@@ -550,7 +550,7 @@ static cairo_font_face_t **
 create_fontface_userdata (lua_State *L) {
     cairo_font_face_t **obj = lua_newuserdata(L, sizeof(cairo_font_face_t *));
     *obj = 0;
-    luaL_getmetatable(L, MT_NAME_FONTFACE);
+    luaL_getmetatable(L, OOCAIRO_MT_NAME_FONTFACE);
     lua_setmetatable(L, -2);
     return obj;
 }
@@ -560,7 +560,7 @@ create_scaledfont_userdata (lua_State *L) {
     cairo_scaled_font_t **obj
             = lua_newuserdata(L, sizeof(cairo_scaled_font_t *));
     *obj = 0;
-    luaL_getmetatable(L, MT_NAME_SCALEDFONT);
+    luaL_getmetatable(L, OOCAIRO_MT_NAME_SCALEDFONT);
     lua_setmetatable(L, -2);
     return obj;
 }
@@ -570,7 +570,7 @@ create_fontopt_userdata (lua_State *L) {
     cairo_font_options_t **obj
             = lua_newuserdata(L, sizeof(cairo_font_options_t *));
     *obj = 0;
-    luaL_getmetatable(L, MT_NAME_FONTOPT);
+    luaL_getmetatable(L, OOCAIRO_MT_NAME_FONTOPT);
     lua_setmetatable(L, -2);
     return obj;
 }
@@ -579,7 +579,7 @@ static cairo_t **
 create_context_userdata (lua_State *L) {
     cairo_t **obj = lua_newuserdata(L, sizeof(cairo_t *));
     *obj = 0;
-    luaL_getmetatable(L, MT_NAME_CONTEXT);
+    luaL_getmetatable(L, OOCAIRO_MT_NAME_CONTEXT);
     lua_setmetatable(L, -2);
     return obj;
 }
@@ -588,7 +588,7 @@ static SurfaceUserdata *
 create_surface_userdata (lua_State *L) {
     SurfaceUserdata *ud = lua_newuserdata(L, sizeof(SurfaceUserdata));
     init_surface_userdata(L, ud);
-    luaL_getmetatable(L, MT_NAME_SURFACE);
+    luaL_getmetatable(L, OOCAIRO_MT_NAME_SURFACE);
     lua_setmetatable(L, -2);
     return ud;
 }
@@ -753,7 +753,7 @@ create_object_metatable (lua_State *L, const char *mt_name,
         lua_pushvalue(L, -2);
         lua_rawset(L, -3);
 
-        if (strcmp(mt_name, MT_NAME_CONTEXT) == 0) {
+        if (strcmp(mt_name, OOCAIRO_MT_NAME_CONTEXT) == 0) {
             /* The MT for context objects has an extra field which we don't
              * use, but which allows the Lua-Gnome binding to recognize
              * the objects. */
@@ -835,21 +835,21 @@ luaopen_oocairo (lua_State *L) {
     lua_rawset(L, -3);
 
     /* Create the metatables for objects of different types. */
-    create_object_metatable(L, MT_NAME_CONTEXT, "cairo context object",
+    create_object_metatable(L, OOCAIRO_MT_NAME_CONTEXT, "cairo context object",
                             context_methods);
-    create_object_metatable(L, MT_NAME_FONTFACE, "cairo font face object",
+    create_object_metatable(L, OOCAIRO_MT_NAME_FONTFACE, "cairo font face object",
                             fontface_methods);
-    create_object_metatable(L, MT_NAME_SCALEDFONT, "cairo scaled font object",
+    create_object_metatable(L, OOCAIRO_MT_NAME_SCALEDFONT, "cairo scaled font object",
                             scaledfont_methods);
-    create_object_metatable(L, MT_NAME_FONTOPT, "cairo font options object",
+    create_object_metatable(L, OOCAIRO_MT_NAME_FONTOPT, "cairo font options object",
                             fontopt_methods);
-    create_object_metatable(L, MT_NAME_MATRIX, "cairo matrix object",
+    create_object_metatable(L, OOCAIRO_MT_NAME_MATRIX, "cairo matrix object",
                             cairmat_methods);
-    create_object_metatable(L, MT_NAME_PATH, "cairo path object",
+    create_object_metatable(L, OOCAIRO_MT_NAME_PATH, "cairo path object",
                             path_methods);
-    create_object_metatable(L, MT_NAME_PATTERN, "cairo pattern object",
+    create_object_metatable(L, OOCAIRO_MT_NAME_PATTERN, "cairo pattern object",
                             pattern_methods);
-    create_object_metatable(L, MT_NAME_SURFACE, "cairo surface object",
+    create_object_metatable(L, OOCAIRO_MT_NAME_SURFACE, "cairo surface object",
                             surface_methods);
 
     return 1;

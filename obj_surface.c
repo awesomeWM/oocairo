@@ -241,7 +241,7 @@ svg_get_versions (lua_State *L) {
 
 static int
 surface_create_similar (lua_State *L) {
-    cairo_surface_t **oldobj = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **oldobj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     cairo_content_t content;
     int width, height;
     SurfaceUserdata *surface;
@@ -260,49 +260,49 @@ surface_create_similar (lua_State *L) {
 
 static int
 surface_eq (lua_State *L) {
-    cairo_surface_t **obj1 = luaL_checkudata(L, 1, MT_NAME_SURFACE);
-    cairo_surface_t **obj2 = luaL_checkudata(L, 2, MT_NAME_SURFACE);
+    cairo_surface_t **obj1 = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
+    cairo_surface_t **obj2 = luaL_checkudata(L, 2, OOCAIRO_MT_NAME_SURFACE);
     lua_pushboolean(L, *obj1 == *obj2);
     return 1;
 }
 
 static int
 surface_gc (lua_State *L) {
-    SurfaceUserdata *ud = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    SurfaceUserdata *ud = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     free_surface_userdata(ud);
     return 0;
 }
 
 static int
 surface_copy_page (lua_State *L) {
-    cairo_surface_t **obj = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     cairo_surface_copy_page(*obj);
     return 0;
 }
 
 static int
 surface_finish (lua_State *L) {
-    cairo_surface_t **obj = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     cairo_surface_finish(*obj);
     return 0;
 }
 
 static int
 surface_flush (lua_State *L) {
-    cairo_surface_t **obj = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     cairo_surface_flush(*obj);
     return 0;
 }
 
 static int
 surface_get_content (lua_State *L) {
-    cairo_surface_t **obj = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     return content_to_lua(L, cairo_surface_get_content(*obj));
 }
 
 static int
 surface_get_data (lua_State *L) {
-    cairo_surface_t **obj = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     int height = cairo_image_surface_get_height(*obj);
     int stride = cairo_image_surface_get_stride(*obj);
     const char *data = (const char *) cairo_image_surface_get_data(*obj);
@@ -315,7 +315,7 @@ surface_get_data (lua_State *L) {
 
 static int
 surface_get_device_offset (lua_State *L) {
-    cairo_surface_t **obj = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     double x, y;
     cairo_surface_get_device_offset(*obj, &x, &y);
     lua_pushnumber(L, x);
@@ -326,7 +326,7 @@ surface_get_device_offset (lua_State *L) {
 #if CAIRO_HAS_PS_SURFACE
 static int
 surface_get_eps (lua_State *L) {
-    cairo_surface_t **obj = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     if (cairo_surface_get_type(*obj) != CAIRO_SURFACE_TYPE_PS)
         return luaL_error(L, "method 'get_eps' only works on PostScript"
                           " surfaces");
@@ -338,7 +338,7 @@ surface_get_eps (lua_State *L) {
 #if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 8, 0)
 static int
 surface_get_fallback_resolution (lua_State *L) {
-    cairo_surface_t **obj = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     double x, y;
     cairo_surface_get_fallback_resolution(*obj, &x, &y);
     lua_pushnumber(L, x);
@@ -349,7 +349,7 @@ surface_get_fallback_resolution (lua_State *L) {
 
 static int
 surface_get_font_options (lua_State *L) {
-    cairo_surface_t **obj = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     cairo_font_options_t **opt = create_fontopt_userdata(L);
     *opt = cairo_font_options_create();
     cairo_surface_get_font_options(*obj, *opt);
@@ -358,7 +358,7 @@ surface_get_font_options (lua_State *L) {
 
 static int
 surface_get_format (lua_State *L) {
-    cairo_surface_t **obj = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     if (cairo_surface_get_type(*obj) != CAIRO_SURFACE_TYPE_IMAGE)
         return luaL_error(L, "method 'get_format' only works on image surfaces");
     return format_to_lua(L, cairo_image_surface_get_format(*obj));
@@ -375,7 +375,7 @@ surface_get_gdk_pixbuf (lua_State *L) {
     int x, y;
     int has_alpha;
 
-    surface = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    surface = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     if (cairo_surface_get_type(*surface) != CAIRO_SURFACE_TYPE_IMAGE)
         return luaL_error(L, "pixbufs can only be made from image surfaces");
 
@@ -463,7 +463,7 @@ surface_get_gdk_pixbuf (lua_State *L) {
 
 static int
 surface_get_height (lua_State *L) {
-    cairo_surface_t **obj = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     if (cairo_surface_get_type(*obj) != CAIRO_SURFACE_TYPE_IMAGE)
         return luaL_error(L, "method 'get_height' only works on image surfaces");
     lua_pushnumber(L, cairo_image_surface_get_height(*obj));
@@ -472,13 +472,13 @@ surface_get_height (lua_State *L) {
 
 static int
 surface_get_type (lua_State *L) {
-    cairo_surface_t **obj = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     return surface_type_to_lua(L, cairo_surface_get_type(*obj));
 }
 
 static int
 surface_get_width (lua_State *L) {
-    cairo_surface_t **obj = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     if (cairo_surface_get_type(*obj) != CAIRO_SURFACE_TYPE_IMAGE)
         return luaL_error(L, "method 'get_width' only works on image surfaces");
     lua_pushnumber(L, cairo_image_surface_get_width(*obj));
@@ -488,7 +488,7 @@ surface_get_width (lua_State *L) {
 #if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 8, 0)
 static int
 surface_has_show_text_glyphs (lua_State *L) {
-    cairo_surface_t **obj = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     lua_pushboolean(L, cairo_surface_has_show_text_glyphs(*obj));
     return 1;
 }
@@ -496,7 +496,7 @@ surface_has_show_text_glyphs (lua_State *L) {
 
 static int
 surface_set_device_offset (lua_State *L) {
-    cairo_surface_t **obj = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     cairo_surface_set_device_offset(*obj, luaL_checknumber(L, 2),
                                     luaL_checknumber(L, 3));
     return 0;
@@ -505,7 +505,7 @@ surface_set_device_offset (lua_State *L) {
 #if CAIRO_HAS_PS_SURFACE
 static int
 surface_set_eps (lua_State *L) {
-    cairo_surface_t **obj = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     if (cairo_surface_get_type(*obj) != CAIRO_SURFACE_TYPE_PS)
         return luaL_error(L, "method 'set_eps' only works on PostScript"
                           " surfaces");
@@ -516,7 +516,7 @@ surface_set_eps (lua_State *L) {
 
 static int
 surface_set_fallback_resolution (lua_State *L) {
-    cairo_surface_t **obj = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     cairo_surface_set_fallback_resolution(*obj, luaL_checknumber(L, 2),
                                           luaL_checknumber(L, 3));
     return 0;
@@ -525,7 +525,7 @@ surface_set_fallback_resolution (lua_State *L) {
 #if CAIRO_HAS_PDF_SURFACE || CAIRO_HAS_PS_SURFACE
 static int
 surface_set_size (lua_State *L) {
-    cairo_surface_t **obj = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     cairo_surface_type_t type = cairo_surface_get_type(*obj);
     double width = luaL_checknumber(L, 2), height = luaL_checknumber(L, 3);
 #if CAIRO_HAS_PDF_SURFACE
@@ -548,7 +548,7 @@ surface_set_size (lua_State *L) {
 
 static int
 surface_show_page (lua_State *L) {
-    cairo_surface_t **obj = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     cairo_surface_show_page(*obj);
     return 0;
 }
@@ -556,7 +556,7 @@ surface_show_page (lua_State *L) {
 #if CAIRO_HAS_PNG_FUNCTIONS
 static int
 surface_write_to_png (lua_State *L) {
-    cairo_surface_t **obj = luaL_checkudata(L, 1, MT_NAME_SURFACE);
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     int filetype = lua_type(L, 2);
 
     if (filetype == LUA_TSTRING || filetype == LUA_TNUMBER) {

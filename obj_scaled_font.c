@@ -4,12 +4,12 @@ scaled_font_create (lua_State *L) {
     cairo_matrix_t font_mat, ctm;
     cairo_font_options_t *options = 0;
     int options_needs_freeing = 0;
-    cairo_font_face_t **face = luaL_checkudata(L, 1, MT_NAME_FONTFACE);
+    cairo_font_face_t **face = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTFACE);
     from_lua_matrix(L, &font_mat, 2);
     from_lua_matrix(L, &ctm, 3);
     if (!lua_isnoneornil(L, 4))
         options = *(cairo_font_options_t **)
-                            luaL_checkudata(L, 4, MT_NAME_FONTOPT);
+                            luaL_checkudata(L, 4, OOCAIRO_MT_NAME_FONTOPT);
     else {
         /* This default font options object is needed because of a bug which
          * prevents Cairo from accepting NULL to indicate default options, as
@@ -28,15 +28,15 @@ scaled_font_create (lua_State *L) {
 
 static int
 scaledfont_eq (lua_State *L) {
-    cairo_scaled_font_t **obj1 = luaL_checkudata(L, 1, MT_NAME_SCALEDFONT);
-    cairo_scaled_font_t **obj2 = luaL_checkudata(L, 2, MT_NAME_SCALEDFONT);
+    cairo_scaled_font_t **obj1 = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SCALEDFONT);
+    cairo_scaled_font_t **obj2 = luaL_checkudata(L, 2, OOCAIRO_MT_NAME_SCALEDFONT);
     lua_pushboolean(L, *obj1 == *obj2);
     return 1;
 }
 
 static int
 scaledfont_gc (lua_State *L) {
-    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, MT_NAME_SCALEDFONT);
+    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SCALEDFONT);
     cairo_scaled_font_destroy(*obj);
     *obj = 0;
     return 0;
@@ -44,7 +44,7 @@ scaledfont_gc (lua_State *L) {
 
 static int
 scaledfont_extents (lua_State *L) {
-    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, MT_NAME_SCALEDFONT);
+    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SCALEDFONT);
     cairo_font_extents_t extents;
     cairo_scaled_font_extents(*obj, &extents);
     create_lua_font_extents(L, &extents);
@@ -53,7 +53,7 @@ scaledfont_extents (lua_State *L) {
 
 static int
 scaledfont_get_ctm (lua_State *L) {
-    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, MT_NAME_SCALEDFONT);
+    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SCALEDFONT);
     cairo_matrix_t mat;
     cairo_scaled_font_get_ctm(*obj, &mat);
     create_lua_matrix(L, &mat);
@@ -62,7 +62,7 @@ scaledfont_get_ctm (lua_State *L) {
 
 static int
 scaledfont_get_font_face (lua_State *L) {
-    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, MT_NAME_SCALEDFONT);
+    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SCALEDFONT);
     cairo_font_face_t **face = create_fontface_userdata(L);
     *face = cairo_scaled_font_get_font_face(*obj);
     cairo_font_face_reference(*face);
@@ -71,7 +71,7 @@ scaledfont_get_font_face (lua_State *L) {
 
 static int
 scaledfont_get_font_matrix (lua_State *L) {
-    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, MT_NAME_SCALEDFONT);
+    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SCALEDFONT);
     cairo_matrix_t mat;
     cairo_scaled_font_get_font_matrix(*obj, &mat);
     create_lua_matrix(L, &mat);
@@ -80,7 +80,7 @@ scaledfont_get_font_matrix (lua_State *L) {
 
 static int
 scaledfont_get_font_options (lua_State *L) {
-    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, MT_NAME_SCALEDFONT);
+    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SCALEDFONT);
     cairo_font_options_t **opt = create_fontopt_userdata(L);
     *opt = cairo_font_options_create();
     cairo_scaled_font_get_font_options(*obj, *opt);
@@ -90,7 +90,7 @@ scaledfont_get_font_options (lua_State *L) {
 #if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 8, 0)
 static int
 scaledfont_get_scale_matrix (lua_State *L) {
-    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, MT_NAME_SCALEDFONT);
+    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SCALEDFONT);
     cairo_matrix_t mat;
     cairo_scaled_font_get_scale_matrix(*obj, &mat);
     create_lua_matrix(L, &mat);
@@ -100,13 +100,13 @@ scaledfont_get_scale_matrix (lua_State *L) {
 
 static int
 scaledfont_get_type (lua_State *L) {
-    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, MT_NAME_SCALEDFONT);
+    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SCALEDFONT);
     return font_type_to_lua(L, cairo_scaled_font_get_type(*obj));
 }
 
 static int
 scaledfont_glyph_extents (lua_State *L) {
-    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, MT_NAME_SCALEDFONT);
+    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SCALEDFONT);
     cairo_glyph_t *glyphs;
     int num_glyphs;
     cairo_text_extents_t extents;
@@ -120,7 +120,7 @@ scaledfont_glyph_extents (lua_State *L) {
 
 static int
 scaledfont_text_extents (lua_State *L) {
-    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, MT_NAME_SCALEDFONT);
+    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SCALEDFONT);
     cairo_text_extents_t extents;
     cairo_scaled_font_text_extents(*obj, luaL_checkstring(L, 2), &extents);
     create_lua_text_extents(L, &extents);
@@ -130,7 +130,7 @@ scaledfont_text_extents (lua_State *L) {
 #if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 8, 0)
 static int
 scaledfont_text_to_glyphs (lua_State *L) {
-    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, MT_NAME_SCALEDFONT);
+    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SCALEDFONT);
     double x = luaL_checknumber(L, 2), y = luaL_checknumber(L, 3);
     size_t text_len;
     const char *text = luaL_checklstring(L, 4, &text_len);

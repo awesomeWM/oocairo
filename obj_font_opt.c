@@ -7,15 +7,15 @@ font_options_create (lua_State *L) {
 
 static int
 fontopt_eq (lua_State *L) {
-    cairo_font_options_t **obj1 = luaL_checkudata(L, 1, MT_NAME_FONTOPT);
-    cairo_font_options_t **obj2 = luaL_checkudata(L, 2, MT_NAME_FONTOPT);
+    cairo_font_options_t **obj1 = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTOPT);
+    cairo_font_options_t **obj2 = luaL_checkudata(L, 2, OOCAIRO_MT_NAME_FONTOPT);
     lua_pushboolean(L, cairo_font_options_equal(*obj1, *obj2));
     return 1;
 }
 
 static int
 fontopt_gc (lua_State *L) {
-    cairo_font_options_t **obj = luaL_checkudata(L, 1, MT_NAME_FONTOPT);
+    cairo_font_options_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTOPT);
     cairo_font_options_destroy(*obj);
     *obj = 0;
     return 0;
@@ -23,7 +23,7 @@ fontopt_gc (lua_State *L) {
 
 static int
 fontopt_copy (lua_State *L) {
-    cairo_font_options_t **orig = luaL_checkudata(L, 1, MT_NAME_FONTOPT);
+    cairo_font_options_t **orig = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTOPT);
     cairo_font_options_t **newobj = create_fontopt_userdata(L);
     *newobj = cairo_font_options_copy(*orig);
     return 1;
@@ -31,68 +31,68 @@ fontopt_copy (lua_State *L) {
 
 static int
 fontopt_get_antialias (lua_State *L) {
-    cairo_font_options_t **obj = luaL_checkudata(L, 1, MT_NAME_FONTOPT);
+    cairo_font_options_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTOPT);
     return antialias_to_lua(L, cairo_font_options_get_antialias(*obj));
 }
 
 static int
 fontopt_get_hint_metrics (lua_State *L) {
-    cairo_font_options_t **obj = luaL_checkudata(L, 1, MT_NAME_FONTOPT);
+    cairo_font_options_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTOPT);
     return hint_metrics_to_lua(L, cairo_font_options_get_hint_metrics(*obj));
 }
 
 static int
 fontopt_get_hint_style (lua_State *L) {
-    cairo_font_options_t **obj = luaL_checkudata(L, 1, MT_NAME_FONTOPT);
+    cairo_font_options_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTOPT);
     return hint_style_to_lua(L, cairo_font_options_get_hint_style(*obj));
 }
 
 static int
 fontopt_get_subpixel_order (lua_State *L) {
-    cairo_font_options_t **obj = luaL_checkudata(L, 1, MT_NAME_FONTOPT);
+    cairo_font_options_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTOPT);
     return subpixel_order_to_lua(L,
                         cairo_font_options_get_subpixel_order(*obj));
 }
 
 static int
 fontopt_hash (lua_State *L) {
-    cairo_font_options_t **obj = luaL_checkudata(L, 1, MT_NAME_FONTOPT);
+    cairo_font_options_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTOPT);
     lua_pushnumber(L, cairo_font_options_hash(*obj));
     return 1;
 }
 
 static int
 fontopt_merge (lua_State *L) {
-    cairo_font_options_t **obj1 = luaL_checkudata(L, 1, MT_NAME_FONTOPT);
-    cairo_font_options_t **obj2 = luaL_checkudata(L, 2, MT_NAME_FONTOPT);
+    cairo_font_options_t **obj1 = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTOPT);
+    cairo_font_options_t **obj2 = luaL_checkudata(L, 2, OOCAIRO_MT_NAME_FONTOPT);
     cairo_font_options_merge(*obj1, *obj2);
     return 0;
 }
 
 static int
 fontopt_set_antialias (lua_State *L) {
-    cairo_font_options_t **obj = luaL_checkudata(L, 1, MT_NAME_FONTOPT);
+    cairo_font_options_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTOPT);
     cairo_font_options_set_antialias(*obj, antialias_from_lua(L, 2));
     return 0;
 }
 
 static int
 fontopt_set_hint_metrics (lua_State *L) {
-    cairo_font_options_t **obj = luaL_checkudata(L, 1, MT_NAME_FONTOPT);
+    cairo_font_options_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTOPT);
     cairo_font_options_set_hint_metrics(*obj, hint_metrics_from_lua(L, 2));
     return 0;
 }
 
 static int
 fontopt_set_hint_style (lua_State *L) {
-    cairo_font_options_t **obj = luaL_checkudata(L, 1, MT_NAME_FONTOPT);
+    cairo_font_options_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTOPT);
     cairo_font_options_set_hint_style(*obj, hint_style_from_lua(L, 2));
     return 0;
 }
 
 static int
 fontopt_set_subpixel_order (lua_State *L) {
-    cairo_font_options_t **obj = luaL_checkudata(L, 1, MT_NAME_FONTOPT);
+    cairo_font_options_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTOPT);
     cairo_font_options_set_subpixel_order(*obj, subpixel_order_from_lua(L, 2));
     return 0;
 }
