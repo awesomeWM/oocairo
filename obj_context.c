@@ -986,6 +986,12 @@ cr_user_to_device_distance (lua_State *L) {
     return 2;
 }
 
+static int
+cr_type (lua_State *L) {
+    lua_pushstring(L, "cairo_t");
+    return 1;
+}
+
 static const luaL_Reg
 context_methods[] = {
     { "__gc", cr_gc },
@@ -1085,6 +1091,7 @@ context_methods[] = {
     { "translate", cr_translate },
     { "user_to_device", cr_user_to_device },
     { "user_to_device_distance", cr_user_to_device_distance },
+    { "type", cr_type },
     { 0, 0 }
 };
 

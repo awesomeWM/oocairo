@@ -593,6 +593,12 @@ surface_write_to_png (lua_State *L) {
 }
 #endif
 
+static int
+surface_type (lua_State *L) {
+    lua_pushstring(L, "cairo_surface_t");
+    return 1;
+}
+
 static const luaL_Reg
 surface_methods[] = {
     { "__eq", surface_eq },
@@ -628,6 +634,7 @@ surface_methods[] = {
 #if CAIRO_HAS_PNG_FUNCTIONS
     { "write_to_png", surface_write_to_png },
 #endif
+    { "type", surface_type },
     { 0, 0 }
 };
 
