@@ -9,7 +9,7 @@ INC_PATH=-I${includedir}
 Name: oocairo
 Description: Cairo bindings for lua
 Version: @PACKAGE_VERSION@
-#URL: http://znc.in
+URL: http://oocairo.naquadah.org/
 Require: lua5.1 cairo
 Libs: -L${mylibdir} -loocairo
 Cflags: ${INC_PATH}

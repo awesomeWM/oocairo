@@ -3,7 +3,7 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-# This and the following four lines should be the only differences to znc.pc.in
+# This and the following four lines should be the only differences to oocairo.pc.in
 srcdir=@abs_srcdir@
 builddir=@abs_builddir@
 INC_PATH=-I${srcdir}
@@ -12,7 +12,7 @@ mylibdir=${builddir}/.libs -Wl,-rpath,${srcdir}/.libs
 Name: oocairo
 Description: Cairo bindings for lua
 Version: @PACKAGE_VERSION@
-#URL: http://znc.in
+URL: http://oocairo.naquadah.org/
 Require: lua5.1 cairo
 Libs: -L${mylibdir} -loocairo
 Cflags: ${INC_PATH}
