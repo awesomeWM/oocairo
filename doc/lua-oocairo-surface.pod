@@ -138,7 +138,7 @@ A bitmap image stored in a memory buffer.
 
 =item pdf
 
-Vector drawing into a AdobeE<trade> PDF file.
+Vector drawing into a Adobe(tm) PDF file.
 
 =item ps
 

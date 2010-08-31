@@ -27,7 +27,7 @@ Add a curved segment to the current path which approximates a section
 of a circle centered at point S<(I<cx>, I<cy>)> with a radius of I<radius>.
 The two angles determine which part of the circle to draw.  They are both
 measured in radians.  For a complete circle I<angle1> should be zero, and
-I<angle2> should be 2E<pi>.
+I<angle2> should be 2pi.
 
 =for syntax-highlight lua
 

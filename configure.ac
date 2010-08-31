@@ -6,6 +6,7 @@ LT_INIT([disable-static])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
 AC_PROG_LN_S
+AC_PATH_PROG([POD2MAN], [pod2man])
 PKG_CHECK_MODULES(DEPS, lua5.1 cairo)
 
 AC_MSG_CHECKING([lua library dir])

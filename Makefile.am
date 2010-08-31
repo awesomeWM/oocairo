@@ -52,10 +52,7 @@ man_MANS += doc/lua-oocairo-matrix.3 doc/lua-oocairo-path.3 doc/lua-oocairo-user
 man_MANS += doc/lua-oocairo-pattern.3 doc/lua-oocairo-scaledfont.3 doc/lua-oocairo-surface.3
 
 .pod.3:
-	sed 's/E<copy>/(c)/g' <$< | sed 's/E<trade>/(tm)/g' <$< | sed 's/E<ndash>/-/g' | sed 's/E<pi>/pi/g' | \
-		pod2man --center="Lua OO Cairo binding" \
-		--name="$(shell echo $< | sed 's/^doc\///' | sed 's/\.pod$$//' | tr a-z A-Z)" --section=3 \
-		--release="$(VERSION)" >$@
+	$(POD2MAN) --center="Lua OO Cairo binding" --release="$(VERSION)" $< $@
 
 
 # Make this library loadable by lua

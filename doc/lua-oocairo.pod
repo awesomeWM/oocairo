@@ -160,7 +160,7 @@ values must be numbers and are measured in points.
 
 =item ps_surface_create (file/filename, width, height)
 
-Create a surface which writes drawing instructions out to an AdobeE<trade>
+Create a surface which writes drawing instructions out to an Adobe(tm)
 file, at the given filename or through a file handle.  The I<width> and
 I<height> values must be numbers and are measured in points.
 
@@ -383,7 +383,7 @@ module table.
 
 =head1 Copyright
 
-This software and documentation is Copyright E<copy> 2008 Geoff Richards
+This software and documentation is Copyright (c) 2008 Geoff Richards
 E<lt>geoff@laxan.comE<gt>.  It is free software; you can redistribute it
 and/or modify it under the terms of the S<Lua 5.0> license.  The full terms
 are given in the file F<COPYRIGHT> supplied with the source code package,
