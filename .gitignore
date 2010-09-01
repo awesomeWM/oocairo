@@ -10,9 +10,13 @@
 /liblua-oocairo.la
 /liboocairo.la
 /libtool
-/m4/
 /oocairo-uninstalled.pc
 /oocairo.lo
 /oocairo.o
 /oocairo.pc
 /doc/*.3
+/m4/ltoptions.m4
+/m4/ltversion.m4
+/m4/libtool.m4
+/m4/ltsugar.m4
+/m4/lt~obsolete.m4

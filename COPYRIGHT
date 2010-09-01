@@ -1,3 +1,7 @@
+The file m4/attributes.m4 is taken from "xine-lib" and is covered by the
+GPLv2 or later with an additional license exception.
+
+
 This software and documentation is distributed under the same terms as
 Lua version 5.0, the MIT/X Consortium license.  The full terms are as
 follows:
