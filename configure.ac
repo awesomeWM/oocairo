@@ -11,24 +11,14 @@ WFLAGS="$WFLAGS -Wmissing-include-dirs -Wformat-nonliteral -Wformat-security"
 WFLAGS="$WFLAGS -Wmissing-format-attribute -Wstrict-aliasing -pedantic"
 
 CC_CHECK_CFLAGS_APPEND([$WFLAGS])
-AC_PROG_CC_C99
 CC_NOUNDEFINED
+AC_PROG_CC_C99
 LDFLAGS="$LDFLAGS $LDFLAGS_NOUNDEFINED"
 
 AC_PROG_LN_S
 AC_PATH_PROG([POD2MAN], [pod2man])
 PKG_CHECK_MODULES(DEPS, lua5.1 cairo)
-
-AC_MSG_CHECKING([lua library dir])
-# First, we need to figure out our own prefix
-MY_PREFIX=${prefix}
-if test "x${MY_PREFIX}" = "xNONE" ; then
-	MY_PREFIX=${ac_default_prefix}
-fi
-# Then we ask lua where to install modules under that prefix
-lualibdir=`$PKG_CONFIG lua5.1 --define-variable=prefix=${MY_PREFIX} --variable=INSTALL_CMOD`
-AC_SUBST([lualibdir])
-AC_MSG_RESULT([$lualibdir])
+LUA_LIBDIR([lua5.1], [AC_SUBST([LUALIBDIR], [$VALUE])])
 
 AC_CONFIG_FILES([Makefile oocairo.pc oocairo-uninstalled.pc])
 AC_OUTPUT

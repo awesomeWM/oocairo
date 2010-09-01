@@ -4,7 +4,7 @@ AM_CPPFLAGS = @DEPS_CFLAGS@
 EXTRA_DIST = obj_context.c obj_font_face.c obj_font_opt.c obj_matrix.c obj_path.c obj_pattern.c obj_scaled_font.c obj_surface.c
 EXTRA_DIST += COPYRIGHT Changes
 
-lualibdir = @lualibdir@
+lualibdir = $(LUALIBDIR)
 
 lib_LTLIBRARIES = liboocairo.la
 liboocairo_la_SOURCES = oocairo.c
@@ -61,12 +61,12 @@ MOSTLYCLEANFILES = $(manpages)
 
 # Make this library loadable by lua
 install-exec-hook:
-	$(MKDIR_P) $(DESTDIR)$(lualibdir)
-	-rm -f $(DESTDIR)$(lualibdir)/oocairo.so
-	$(LN_S) $(libdir)/liboocairo.so $(DESTDIR)$(lualibdir)/oocairo.so
+	$(MKDIR_P) $(DESTDIR)$(LUALIBDIR)
+	-rm -f $(DESTDIR)$(LUALIBDIR)/oocairo.so
+	$(LN_S) $(libdir)/liboocairo.so $(DESTDIR)$(LUALIBDIR)/oocairo.so
 uninstall-local:
-	-rm -f $(DESTDIR)$(lualibdir)/oocairo.so
+	-rm -f $(DESTDIR)$(LUALIBDIR)/oocairo.so
 
 # Test whether loading oocairo works
 installcheck-local:
-	LUA_PATH='${srcdir}/?.lua' LUA_CPATH='@lualibdir@/?.so' lua ${srcdir}/test-loading.lua
+	LUA_PATH='${srcdir}/?.lua' LUA_CPATH='${LUALIBDIR}/?.so' lua ${srcdir}/test-loading.lua
