@@ -32,18 +32,6 @@ TESTS += test/svg_surface.lua
 EXTRA_DIST += $(TESTS) lunit.lua test-setup.lua lunit-console.lua test-loading.lua
 
 # Documentation
-dist_doc_DATA  = examples/stroke-style.lua examples/text-extents.lua examples/simple-example.lua
-dist_doc_DATA += examples/transform.lua examples/get-data.lua examples/gtk-drawing.lua
-dist_doc_DATA += examples/gtk-drawing.glade examples/text-path.lua examples/gtk-drawing.ui
-dist_doc_DATA += examples/text-userfont2.lua examples/inside-tests.lua examples/groups.lua
-dist_doc_DATA += examples/create-from-data.lua examples/gtk-image.ui examples/images/pattern.png
-dist_doc_DATA += examples/images/smiley.xpm examples/images/bronze.jpg examples/images/snow.jpg
-dist_doc_DATA += examples/images/README examples/images/flowers.jpg examples/gtk-image.lua
-dist_doc_DATA += examples/arc.lua examples/simple-svg.lua examples/tolerance.lua
-dist_doc_DATA += examples/loading-images.lua examples/gtk-image.glade examples/masking.lua
-dist_doc_DATA += examples/compositing.lua examples/text-font.lua examples/repeated-patterns.lua
-dist_doc_DATA += examples/fill-rule.lua examples/text-userfont.lua
-
 EXTRA_DIST += doc/lua-oocairo.pod doc/lua-oocairo-context.pod doc/lua-oocairo-fontface.pod doc/lua-oocairo-fontopt.pod
 EXTRA_DIST += doc/lua-oocairo-matrix.pod doc/lua-oocairo-path.pod doc/lua-oocairo-userfont.pod
 EXTRA_DIST += doc/lua-oocairo-pattern.pod doc/lua-oocairo-scaledfont.pod doc/lua-oocairo-surface.pod
