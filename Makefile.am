@@ -44,7 +44,7 @@ MOSTLYCLEANFILES = $(manpages)
 # All our manpages are under doc/, but for VPATH builds that dir might not exist yet
 .pod.3:
 	@$(MKDIR_P) doc/
-	$(POD2MAN) --center="Lua OO Cairo binding" --release="$(VERSION)" $< $@
+	$(POD2MAN) --section=3 --center="Lua OO Cairo binding" --release="$(VERSION)" $< $@
 
 
 # Make this library loadable by lua
