@@ -38,10 +38,10 @@ AC_DEFUN([LUA_LIBDIR], [
       MY_PREFIX=${ac_default_prefix}
     fi
     # Then we ask lua where to install modules under that prefix
-    AS_TR_SH([lua_cv_libdir_$1])=`$PKG_CONFIG $1 --define-variable=prefix=${MY_PREFIX} --variable=INSTALL_CMOD`
+    eval AS_TR_SH([lua_cv_libdir_$1])=`$PKG_CONFIG $1 --define-variable=prefix=${MY_PREFIX} --variable=INSTALL_CMOD`
     ])
 
-  VALUE="$AS_TR_SH([lua_cv_libdir_$1])"
+  eval VALUE="$AS_TR_SH([lua_cv_libdir_$1])"
   AS_IF([test x$VALUE != x],
     [$2], [$3])
 ])
