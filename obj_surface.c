@@ -629,7 +629,9 @@ surface_methods[] = {
     { "set_eps", surface_set_eps },
 #endif
     { "set_fallback_resolution", surface_set_fallback_resolution },
+#if defined(CAIRO_HAS_PDF_SURFACE) || defined(CAIRO_HAS_PS_SURFACE)
     { "set_size", surface_set_size },
+#endif
     { "show_page", surface_show_page },
 #ifdef CAIRO_HAS_PNG_FUNCTIONS
     { "write_to_png", surface_write_to_png },
