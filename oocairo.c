@@ -5,13 +5,13 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#if CAIRO_HAS_PDF_SURFACE
+#ifdef CAIRO_HAS_PDF_SURFACE
 #include <cairo-pdf.h>
 #endif
-#if CAIRO_HAS_PS_SURFACE
+#ifdef CAIRO_HAS_PS_SURFACE
 #include <cairo-ps.h>
 #endif
-#if CAIRO_HAS_SVG_SURFACE
+#ifdef CAIRO_HAS_SVG_SURFACE
 #include <cairo-svg.h>
 #endif
 
@@ -699,7 +699,7 @@ constructor_funcs[] = {
     { "format_stride_for_width", format_stride_for_width },
     { "image_surface_create", image_surface_create },
     { "image_surface_create_from_data", image_surface_create_from_data },
-#if CAIRO_HAS_PNG_FUNCTIONS
+#ifdef CAIRO_HAS_PNG_FUNCTIONS
     { "image_surface_create_from_png", image_surface_create_from_png },
 #endif
     { "matrix_create", cairmat_create },
@@ -708,23 +708,23 @@ constructor_funcs[] = {
     { "pattern_create_radial", pattern_create_radial },
     { "pattern_create_rgb", pattern_create_rgb },
     { "pattern_create_rgba", pattern_create_rgba },
-#if CAIRO_HAS_PDF_SURFACE
+#ifdef CAIRO_HAS_PDF_SURFACE
     { "pdf_surface_create", pdf_surface_create },
 #endif
-#if CAIRO_HAS_PS_SURFACE
+#ifdef CAIRO_HAS_PS_SURFACE
     { "ps_get_levels", ps_get_levels },
     { "ps_surface_create", ps_surface_create },
 #endif
     { "scaled_font_create", scaled_font_create },
     { "surface_create_similar", surface_create_similar },
-#if CAIRO_HAS_SVG_SURFACE
+#ifdef CAIRO_HAS_SVG_SURFACE
     { "svg_surface_create", svg_surface_create },
     { "svg_get_versions", svg_get_versions },
 #endif
 #if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 8, 0)
     { "toy_font_face_create", toy_font_face_create },
 #endif
-#if CAIRO_HAS_USER_FONT
+#ifdef CAIRO_HAS_USER_FONT
     { "user_font_face_create", user_font_face_create },
 #endif
     { 0, 0 }
@@ -793,35 +793,35 @@ luaopen_oocairo (lua_State *L) {
     /* Add boolean values to allow Lua code to find out what features are
      * supported in this build. */
     lua_pushliteral(L, "HAS_PDF_SURFACE");
-#if CAIRO_HAS_PDF_SURFACE
+#ifdef CAIRO_HAS_PDF_SURFACE
     lua_pushboolean(L, 1);
 #else
     lua_pushboolean(L, 0);
 #endif
     lua_rawset(L, -3);
     lua_pushliteral(L, "HAS_PNG_FUNCTIONS");
-#if CAIRO_HAS_PNG_FUNCTIONS
+#ifdef CAIRO_HAS_PNG_FUNCTIONS
     lua_pushboolean(L, 1);
 #else
     lua_pushboolean(L, 0);
 #endif
     lua_rawset(L, -3);
     lua_pushliteral(L, "HAS_PS_SURFACE");
-#if CAIRO_HAS_PS_SURFACE
+#ifdef CAIRO_HAS_PS_SURFACE
     lua_pushboolean(L, 1);
 #else
     lua_pushboolean(L, 0);
 #endif
     lua_rawset(L, -3);
     lua_pushliteral(L, "HAS_SVG_SURFACE");
-#if CAIRO_HAS_SVG_SURFACE
+#ifdef CAIRO_HAS_SVG_SURFACE
     lua_pushboolean(L, 1);
 #else
     lua_pushboolean(L, 0);
 #endif
     lua_rawset(L, -3);
     lua_pushliteral(L, "HAS_USER_FONT");
-#if CAIRO_HAS_USER_FONT
+#ifdef CAIRO_HAS_USER_FONT
     lua_pushboolean(L, 1);
 #else
     lua_pushboolean(L, 0);

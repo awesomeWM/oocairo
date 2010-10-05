@@ -14,7 +14,7 @@ toy_font_face_create (lua_State *L) {
 }
 #endif
 
-#if CAIRO_HAS_USER_FONT
+#ifdef CAIRO_HAS_USER_FONT
 typedef struct UserFontInfo_ {
     lua_State *L;
     int ref;

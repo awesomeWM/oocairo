@@ -92,7 +92,7 @@ read_chunk_from_fh (void *closure, unsigned char *buf, unsigned int lentoread)
     return CAIRO_STATUS_SUCCESS;
 }
 
-#if CAIRO_HAS_PNG_FUNCTIONS
+#ifdef CAIRO_HAS_PNG_FUNCTIONS
 static int
 image_surface_create_from_png (lua_State *L) {
     SurfaceUserdata *surface = create_surface_userdata(L);
@@ -180,7 +180,7 @@ surface_create_with_size (lua_State *L, SimpleSizeCreatorFunc simplefunc, Stream
         luaL_typerror(L, 1, "filename or file handle object");
 }
 
-#if CAIRO_HAS_PDF_SURFACE
+#ifdef CAIRO_HAS_PDF_SURFACE
 static int
 pdf_surface_create (lua_State *L) {
     surface_create_with_size(L, cairo_pdf_surface_create,
@@ -189,7 +189,7 @@ pdf_surface_create (lua_State *L) {
 }
 #endif
 
-#if CAIRO_HAS_PS_SURFACE
+#ifdef CAIRO_HAS_PS_SURFACE
 static int
 ps_surface_create (lua_State *L) {
     surface_create_with_size(L, cairo_ps_surface_create,
@@ -198,7 +198,7 @@ ps_surface_create (lua_State *L) {
 }
 #endif
 
-#if CAIRO_HAS_SVG_SURFACE
+#ifdef CAIRO_HAS_SVG_SURFACE
 static int
 svg_surface_create (lua_State *L) {
     surface_create_with_size(L, cairo_svg_surface_create,
@@ -207,7 +207,7 @@ svg_surface_create (lua_State *L) {
 }
 #endif
 
-#if CAIRO_HAS_PS_SURFACE
+#ifdef CAIRO_HAS_PS_SURFACE
 static int
 ps_get_levels (lua_State *L) {
     const cairo_ps_level_t *levels;
@@ -223,7 +223,7 @@ ps_get_levels (lua_State *L) {
 }
 #endif
 
-#if CAIRO_HAS_SVG_SURFACE
+#ifdef CAIRO_HAS_SVG_SURFACE
 static int
 svg_get_versions (lua_State *L) {
     const cairo_svg_version_t *versions;
@@ -323,7 +323,7 @@ surface_get_device_offset (lua_State *L) {
     return 2;
 }
 
-#if CAIRO_HAS_PS_SURFACE
+#ifdef CAIRO_HAS_PS_SURFACE
 static int
 surface_get_eps (lua_State *L) {
     cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
@@ -502,7 +502,7 @@ surface_set_device_offset (lua_State *L) {
     return 0;
 }
 
-#if CAIRO_HAS_PS_SURFACE
+#ifdef CAIRO_HAS_PS_SURFACE
 static int
 surface_set_eps (lua_State *L) {
     cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
@@ -522,20 +522,20 @@ surface_set_fallback_resolution (lua_State *L) {
     return 0;
 }
 
-#if CAIRO_HAS_PDF_SURFACE || CAIRO_HAS_PS_SURFACE
+#if defined(CAIRO_HAS_PDF_SURFACE) || defined(CAIRO_HAS_PS_SURFACE)
 static int
 surface_set_size (lua_State *L) {
     cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
     cairo_surface_type_t type = cairo_surface_get_type(*obj);
     double width = luaL_checknumber(L, 2), height = luaL_checknumber(L, 3);
-#if CAIRO_HAS_PDF_SURFACE
+#ifdef CAIRO_HAS_PDF_SURFACE
     if (type == CAIRO_SURFACE_TYPE_PDF)
         cairo_pdf_surface_set_size(*obj, width, height);
 #endif
-#if CAIRO_HAS_PDF_SURFACE && CAIRO_HAS_PS_SURFACE
+#if defined(CAIRO_HAS_PDF_SURFACE) && defined(CAIRO_HAS_PS_SURFACE)
     else
 #endif
-#if CAIRO_HAS_PS_SURFACE
+#ifdef CAIRO_HAS_PS_SURFACE
     if (type == CAIRO_SURFACE_TYPE_PS)
         cairo_ps_surface_set_size(*obj, width, height);
 #endif
@@ -553,7 +553,7 @@ surface_show_page (lua_State *L) {
     return 0;
 }
 
-#if CAIRO_HAS_PNG_FUNCTIONS
+#ifdef CAIRO_HAS_PNG_FUNCTIONS
 static int
 surface_write_to_png (lua_State *L) {
     cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
@@ -609,7 +609,7 @@ surface_methods[] = {
     { "get_content", surface_get_content },
     { "get_data", surface_get_data },
     { "get_device_offset", surface_get_device_offset },
-#if CAIRO_HAS_PS_SURFACE
+#ifdef CAIRO_HAS_PS_SURFACE
     { "get_eps", surface_get_eps },
 #endif
 #if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 8, 0)
@@ -625,13 +625,13 @@ surface_methods[] = {
     { "has_show_text_glyphs", surface_has_show_text_glyphs },
 #endif
     { "set_device_offset", surface_set_device_offset },
-#if CAIRO_HAS_PS_SURFACE
+#ifdef CAIRO_HAS_PS_SURFACE
     { "set_eps", surface_set_eps },
 #endif
     { "set_fallback_resolution", surface_set_fallback_resolution },
     { "set_size", surface_set_size },
     { "show_page", surface_show_page },
-#if CAIRO_HAS_PNG_FUNCTIONS
+#ifdef CAIRO_HAS_PNG_FUNCTIONS
     { "write_to_png", surface_write_to_png },
 #endif
     { "type", surface_type },
