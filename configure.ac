@@ -27,9 +27,12 @@ AS_IF([test "x$LUA_NAME" = "x"],
 AC_MSG_RESULT([$LUA_NAME])
 
 AC_PROG_LN_S
-AC_PATH_PROG([POD2MAN], [pod2man])
+AC_PATH_PROG([POD2MAN], [pod2man], [notfound])
 PKG_CHECK_MODULES([DEPS], [$LUA_NAME cairo])
 LUA_LIBDIR([$LUA_NAME], [AC_SUBST([LUALIBDIR], [$VALUE])])
+
+AS_IF([test "x$POD2MAN" = "xnotfound"],
+      [AC_ERROR([Could not find pod2man]) ])
 
 AC_CONFIG_FILES([Makefile oocairo.pc oocairo-uninstalled.pc])
 AC_OUTPUT
