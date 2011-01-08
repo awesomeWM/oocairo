@@ -43,5 +43,6 @@ AC_DEFUN([LUA_LIBDIR], [
 
   eval VALUE="$AS_TR_SH([lua_cv_libdir_$1])"
   AS_IF([test x$VALUE != x],
-    [$2], [$3])
+    [$2],
+    [m4_default([$3], [AC_MSG_ERROR([Could not find the lua CMOD path])])])
 ])
