@@ -76,17 +76,10 @@ path_each (lua_State *L) {
     return 2;
 }
 
-static int
-path_type (lua_State *L) {
-    lua_pushstring(L, "cairo_path_t");
-    return 1;
-}
-
 static const luaL_Reg
 path_methods[] = {
     { "__gc", path_gc },
     { "each", path_each },
-    { "type", path_type },
     { 0, 0 }
 };
 

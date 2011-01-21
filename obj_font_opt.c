@@ -97,12 +97,6 @@ fontopt_set_subpixel_order (lua_State *L) {
     return 0;
 }
 
-static int
-fontopt_type (lua_State *L) {
-    lua_pushstring(L, "cairo_font_options_t");
-    return 1;
-}
-
 static const luaL_Reg
 fontopt_methods[] = {
     { "__eq", fontopt_eq },
@@ -118,7 +112,6 @@ fontopt_methods[] = {
     { "set_hint_metrics", fontopt_set_hint_metrics },
     { "set_hint_style", fontopt_set_hint_style },
     { "set_subpixel_order", fontopt_set_subpixel_order },
-    { "type", fontopt_type },
     { 0, 0 }
 };
 

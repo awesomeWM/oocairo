@@ -264,12 +264,6 @@ fontface_get_weight (lua_State *L) {
 }
 #endif
 
-static int
-fontface_type (lua_State *L) {
-    lua_pushstring(L, "cairo_font_face_t");
-    return 1;
-}
-
 static const luaL_Reg
 fontface_methods[] = {
     { "__eq", fontface_eq },
@@ -280,7 +274,6 @@ fontface_methods[] = {
     { "get_slant", fontface_get_slant },
     { "get_weight", fontface_get_weight },
 #endif
-    { "type", fontface_type },
     { 0, 0 }
 };
 

@@ -76,12 +76,6 @@ cairmat_translate (lua_State *L) {
     return 0;
 }
 
-static int
-cairmat_type (lua_State *L) {
-    lua_pushstring(L, "cairo_matrix_t");
-    return 1;
-}
-
 static const luaL_Reg
 cairmat_methods[] = {
     { "invert", cairmat_invert },
@@ -91,7 +85,6 @@ cairmat_methods[] = {
     { "transform_distance", cairmat_transform_distance },
     { "transform_point", cairmat_transform_point },
     { "translate", cairmat_translate },
-    { "type", cairmat_type },
     { 0, 0 }
 };
 

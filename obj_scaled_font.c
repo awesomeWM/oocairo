@@ -153,12 +153,6 @@ scaledfont_text_to_glyphs (lua_State *L) {
 }
 #endif
 
-static int
-scaledfont_type (lua_State *L) {
-    lua_pushstring(L, "cairo_scaled_font_t");
-    return 1;
-}
-
 static const luaL_Reg
 scaledfont_methods[] = {
     { "__eq", scaledfont_eq },
@@ -177,7 +171,6 @@ scaledfont_methods[] = {
 #if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 8, 0)
     { "text_to_glyphs", scaledfont_text_to_glyphs },
 #endif
-    { "type", scaledfont_type },
     { 0, 0 }
 };
 

@@ -227,12 +227,6 @@ pattern_set_matrix (lua_State *L) {
     return 0;
 }
 
-static int
-pattern_type (lua_State *L) {
-    lua_pushstring(L, "cairo_pattern_t");
-    return 1;
-}
-
 static const luaL_Reg
 pattern_methods[] = {
     { "__eq", pattern_eq },
@@ -251,7 +245,6 @@ pattern_methods[] = {
     { "set_extend", pattern_set_extend },
     { "set_filter", pattern_set_filter },
     { "set_matrix", pattern_set_matrix },
-    { "type", pattern_type },
     { 0, 0 }
 };
 
