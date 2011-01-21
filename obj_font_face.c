@@ -102,19 +102,13 @@ user_font_text_to_glyphs (cairo_scaled_font_t *font, const char *utf8,
     if (lua_isnil(info->L, -2))
         *num_glyphs = -1;
     else {
-        if (*glyphs) {
-            GLYPHS_FREE(*glyphs);
-            *glyphs = 0;
-        }
+        *glyphs = 0;
         from_lua_glyph_array(info->L, glyphs, num_glyphs,
                              lua_gettop(info->L) - 1);
     }
 
     if (clusters && !lua_isnil(info->L, -1)) {
-        if (*clusters) {
-            cairo_text_cluster_free(*clusters);
-            *clusters = 0;
-        }
+        *clusters = 0;
         from_lua_clusters_table(info->L, clusters, num_clusters, cluster_flags,
                                 lua_gettop(info->L));
     }
