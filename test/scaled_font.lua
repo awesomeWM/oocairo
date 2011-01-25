@@ -31,7 +31,7 @@ function test_create ()
     local font = mk_scaled_font(face, 23)
     assert_userdata(font)
     assert_equal("cairo scaled font object", font._NAME)
-    assert_true(face == font:get_font_face())
+    assert_equal("cairo font face object", font:get_font_face()._NAME)
     assert_string(font:get_type())
 end
 
