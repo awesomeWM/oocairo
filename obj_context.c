@@ -403,6 +403,16 @@ cr_identity_matrix (lua_State *L) {
     return 0;
 }
 
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 10, 0)
+static int
+cr_in_clip (lua_State *L) {
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
+    lua_pushboolean(L,
+        cairo_in_fill(*obj, luaL_checknumber(L, 2), luaL_checknumber(L, 3)));
+    return 1;
+}
+#endif
+
 static int
 cr_in_fill (lua_State *L) {
     cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
@@ -1049,6 +1059,9 @@ context_methods[] = {
     { "glyph_path", cr_glyph_path },
     { "has_current_point", cr_has_current_point },
     { "identity_matrix", cr_identity_matrix },
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 10, 0)
+    { "in_clip", cr_in_clip },
+#endif
     { "in_fill", cr_in_fill },
     { "in_stroke", cr_in_stroke },
     { "line_to", cr_line_to },
