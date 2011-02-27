@@ -339,4 +339,36 @@ function test_equality ()
     assert_false(surface1 == surface3)
 end
 
+if Cairo.HAS_RECORDING_SURFACE then
+    function test_recording_surface ()
+        local function test(surface, expected_x, expected_y, expected_width, expected_height)
+            local x, y, width, height = Cairo.recording_surface_ink_extents(surface)
+            assert_equal(0, x)
+            assert_equal(0, y)
+            assert_equal(0, width)
+            assert_equal(0, height)
+
+            local cr = Cairo.context_create(surface)
+            cr:set_source_rgb(1, 0, 0)
+            cr:paint()
+
+            x, y, width, height = Cairo.recording_surface_ink_extents(surface)
+            assert_equal(expected_x, x)
+            assert_equal(expected_y, y)
+            assert_equal(expected_width, width)
+            assert_equal(expected_height, height)
+        end
+        -- unbounded
+        local surface = Cairo.recording_surface_create("color")
+        test(surface, -8388608, -8388608, -1, -1)
+
+        -- bounded
+        surface = Cairo.recording_surface_create("color-alpha", -10, -10, 20, 20)
+        test(surface, -10, -10, 20, 20)
+
+        -- negative size
+        assert_error(function() Cairo.recording_surface_create("alpha", 0, 0, -10, -10) end)
+    end
+end
+
 -- vi:ts=4 sw=4 expandtab

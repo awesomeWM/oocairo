@@ -749,6 +749,11 @@ constructor_funcs[] = {
 #ifdef CAIRO_HAS_USER_FONT
     { "user_font_face_create", user_font_face_create },
 #endif
+    /* New in cairo 1.10 */
+#ifdef CAIRO_HAS_RECORDING_SURFACE
+    { "recording_surface_create", recording_surface_create },
+    { "recording_surface_ink_extents", recording_surface_ink_extents },
+#endif
     { 0, 0 }
 };
 
@@ -844,6 +849,13 @@ luaopen_oocairo (lua_State *L) {
     lua_rawset(L, -3);
     lua_pushliteral(L, "HAS_USER_FONT");
 #ifdef CAIRO_HAS_USER_FONT
+    lua_pushboolean(L, 1);
+#else
+    lua_pushboolean(L, 0);
+#endif
+    lua_rawset(L, -3);
+    lua_pushliteral(L, "HAS_RECORDING_SURFACE");
+#ifdef CAIRO_HAS_RECORDING_SURFACE
     lua_pushboolean(L, 1);
 #else
     lua_pushboolean(L, 0);

@@ -245,6 +245,44 @@ ps_get_levels (lua_State *L) {
 }
 #endif
 
+#ifdef CAIRO_HAS_RECORDING_SURFACE
+static int
+recording_surface_create (lua_State *L) {
+    cairo_content_t content;
+    SurfaceUserdata *surface;
+    cairo_rectangle_t extents;
+    cairo_rectangle_t *pextents = NULL;
+
+    content = content_from_lua(L, 1);
+    if (lua_gettop(L) != 1) {
+        extents.x      = luaL_checknumber(L, 2);
+        extents.y      = luaL_checknumber(L, 3);
+        extents.width  = luaL_checknumber(L, 4);
+        extents.height = luaL_checknumber(L, 5);
+        pextents = &extents;
+        luaL_argcheck(L, extents.width >= 0, 4, "recording surface width cannot be negative");
+        luaL_argcheck(L, extents.height >= 0, 5, "recording surface height cannot be negative");
+    }
+
+    surface = create_surface_userdata(L);
+    surface->surface = cairo_recording_surface_create(content, pextents);
+    return 1;
+}
+
+static int
+recording_surface_ink_extents (lua_State *L) {
+    double x0, y0, width, height;
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
+
+    cairo_recording_surface_ink_extents(*obj, &x0, &y0, &width, &height);
+    lua_pushnumber(L, x0);
+    lua_pushnumber(L, y0);
+    lua_pushnumber(L, width);
+    lua_pushnumber(L, height);
+    return 4;
+}
+#endif
+
 #ifdef CAIRO_HAS_SVG_SURFACE
 static int
 svg_get_versions (lua_State *L) {
