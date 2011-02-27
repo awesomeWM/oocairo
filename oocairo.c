@@ -246,6 +246,16 @@ static const cairo_surface_type_t surface_type_values[] = {
 };
 ENUM_VAL_TO_LUA_STRING_FUNC(surface_type)
 
+#if defined(CAIRO_HAS_PDF_SURFACE) && CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 10, 0)
+static const char *pdf_version_names[] = {
+    "1.4", "1.5", 0
+};
+static const cairo_pdf_version_t pdf_version_values[] = {
+    CAIRO_PDF_VERSION_1_4, CAIRO_PDF_VERSION_1_5
+};
+ENUM_VAL_FROM_LUA_STRING_FUNC(pdf_version)
+#endif
+
 static void
 to_lua_matrix (lua_State *L, cairo_matrix_t *mat, int pos) {
     double *matnums;

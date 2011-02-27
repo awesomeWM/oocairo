@@ -653,6 +653,15 @@ surface_write_to_png (lua_State *L) {
 }
 #endif
 
+#if defined(CAIRO_HAS_PDF_SURFACE) && CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 10, 0)
+static int
+restrict_to_version (lua_State *L){
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
+    cairo_pdf_surface_restrict_to_version(*obj, pdf_version_from_lua(L, 2));
+    return 0;
+}
+#endif
+
 static const luaL_Reg
 surface_methods[] = {
     { "__eq", surface_eq },
@@ -677,6 +686,9 @@ surface_methods[] = {
     { "get_width", surface_get_width },
 #if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 8, 0)
     { "has_show_text_glyphs", surface_has_show_text_glyphs },
+#endif
+#if defined(CAIRO_HAS_PDF_SURFACE) && CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 10, 0)
+    { "restrict_to_version", restrict_to_version },
 #endif
     { "set_device_offset", surface_set_device_offset },
 #ifdef CAIRO_HAS_PS_SURFACE

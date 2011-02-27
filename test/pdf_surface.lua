@@ -56,6 +56,12 @@ if Cairo.HAS_PDF_SURFACE then
         draw_arbitrary_stuff(Cairo, surface)
         surface:finish()
     end
+
+    function test_restrict ()
+        local surface = Cairo.pdf_surface_create(tmpname(), 300, 200)
+        surface:restrict_to_version("1.4")
+        surface:restrict_to_version("1.5")
+    end
 end
 
 -- vi:ts=4 sw=4 expandtab
