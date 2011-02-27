@@ -295,6 +295,15 @@ function test_get_data ()
     check_pixel_in_data(data, stride, 2, 1, 255, 0, 0, 255)
 end
 
+if Cairo.check_version(0, 10, 0) then
+    function test_subsurface()
+        local surface = Cairo.image_surface_create("rgb24", 23, 45)
+        local sub = surface:create_for_rectangle(10, 11, 12, 13)
+        assert_equal("subsurface", sub:get_type())
+        assert_error(function() sub:create_for_rectangle(0, 0, -1, -1) end)
+    end
+end
+
 if pcall(require, "gtk") then
     function test_get_gdk_pixbuf_argb32 ()
         local surface = Cairo.image_surface_create("argb32", 23, 14)

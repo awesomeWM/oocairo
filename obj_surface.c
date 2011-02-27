@@ -662,10 +662,33 @@ restrict_to_version (lua_State *L){
 }
 #endif
 
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 10, 0)
+static int
+create_for_rectangle(lua_State *L)
+{
+    SurfaceUserdata *surface;
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
+    double x = luaL_checknumber(L, 2);
+    double y = luaL_checknumber(L, 3);
+    double width = luaL_checknumber(L, 4);
+    double height = luaL_checknumber(L, 5);
+
+    luaL_argcheck(L, width >= 0, 3, "surface width cannot be negative");
+    luaL_argcheck(L, height >= 0, 4, "surface height cannot be negative");
+
+    surface = create_surface_userdata(L);
+    surface->surface = cairo_surface_create_for_rectangle(*obj, x, y, width, height);
+    return 1;
+}
+#endif
+
 static const luaL_Reg
 surface_methods[] = {
     { "__eq", surface_eq },
     { "__gc", surface_gc },
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 10, 0)
+    { "create_for_rectangle", create_for_rectangle },
+#endif
     { "copy_page", surface_copy_page },
     { "finish", surface_finish },
     { "flush", surface_flush },
