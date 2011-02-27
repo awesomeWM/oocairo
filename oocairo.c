@@ -234,7 +234,12 @@ static const char * const surface_type_names[] = {
     "quartz", "win32",
     "beos", "directfb",
     "svg", "os2",
-    "win32-printing", "quartz-image", 0
+    "win32-printing", "quartz-image",
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 10, 0)
+    "script", "qt", "recording", "vg", "gl", "drm", "tee",
+    "xml", "skia", "subsurface",
+#endif
+    0
 };
 static const cairo_surface_type_t surface_type_values[] = {
     CAIRO_SURFACE_TYPE_IMAGE, CAIRO_SURFACE_TYPE_PDF, CAIRO_SURFACE_TYPE_PS,
@@ -242,7 +247,16 @@ static const cairo_surface_type_t surface_type_values[] = {
     CAIRO_SURFACE_TYPE_QUARTZ, CAIRO_SURFACE_TYPE_WIN32,
     CAIRO_SURFACE_TYPE_BEOS, CAIRO_SURFACE_TYPE_DIRECTFB,
     CAIRO_SURFACE_TYPE_SVG, CAIRO_SURFACE_TYPE_OS2,
-    CAIRO_SURFACE_TYPE_WIN32_PRINTING, CAIRO_SURFACE_TYPE_QUARTZ_IMAGE
+    CAIRO_SURFACE_TYPE_WIN32_PRINTING,
+#if CAIRO_VERSION < CAIRO_VERSION_ENCODE(1, 10, 0)
+    CAIRO_SURFACE_TYPE_QUARTZ_IMAGE
+#else
+    CAIRO_SURFACE_TYPE_QUARTZ_IMAGE, CAIRO_SURFACE_TYPE_SCRIPT,
+    CAIRO_SURFACE_TYPE_QT, CAIRO_SURFACE_TYPE_RECORDING, CAIRO_SURFACE_TYPE_VG,
+    CAIRO_SURFACE_TYPE_GL, CAIRO_SURFACE_TYPE_DRM, CAIRO_SURFACE_TYPE_TEE,
+    CAIRO_SURFACE_TYPE_XML, CAIRO_SURFACE_TYPE_SKIA,
+    CAIRO_SURFACE_TYPE_SUBSURFACE,
+#endif
 };
 ENUM_VAL_TO_LUA_STRING_FUNC(surface_type)
 
