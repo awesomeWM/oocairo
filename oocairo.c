@@ -723,8 +723,28 @@ format_stride_for_width (lua_State *L) {
     return 1;
 }
 
+#define CHECK_VER(func, version)                                  \
+static int                                                        \
+func (lua_State *L) {                                             \
+    int major = luaL_checknumber(L, 1);                           \
+    int minor = luaL_checknumber(L, 2);                           \
+    int micro = luaL_checknumber(L, 3);                           \
+                                                                  \
+    if ((version) >= CAIRO_VERSION_ENCODE(major, minor, micro)) { \
+        lua_pushboolean(L, 1);                                    \
+    } else {                                                      \
+        lua_pushboolean(L, 0);                                    \
+    }                                                             \
+    return 1;                                                     \
+}
+
+CHECK_VER(check_version, CAIRO_VERSION)
+CHECK_VER(check_runtime_version, cairo_version())
+
 static const luaL_Reg
 constructor_funcs[] = {
+    { "check_version", check_version },
+    { "check_runtime_version", check_runtime_version },
     { "context_create", context_create },
     { "context_create_gdk", context_create_gdk },
     { "font_options_create", font_options_create },
@@ -823,6 +843,9 @@ luaopen_oocairo (lua_State *L) {
     lua_pushliteral(L, VERSION);
     lua_rawset(L, -3);
     lua_pushliteral(L, "_CAIRO_VERSION");
+    lua_pushstring(L, CAIRO_VERSION_STRING);
+    lua_rawset(L, -3);
+    lua_pushliteral(L, "_CAIRO_RUNTIME_VERSION");
     lua_pushstring(L, cairo_version_string());
     lua_rawset(L, -3);
     add_funcs_to_table(L, constructor_funcs);
