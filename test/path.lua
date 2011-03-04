@@ -52,6 +52,15 @@ end
 
 function test_clipping ()
     local x1, y1, x2, y2 = cr:clip_extents()
+
+    -- Wrapper functions to make this work with older cairo versions
+    local function in_clip(cr, x, y, expected)
+        if cr.in_clip then
+            return cr:in_clip(3, 4)
+        end
+        return expected
+    end
+
     assert_equal(0, x1)
     assert_equal(0, y1)
     assert_equal(23, x2)
@@ -63,10 +72,10 @@ function test_clipping ()
     cr:close_path()
     cr:clip_preserve()
     assert_true(cr:has_current_point())
-    assert_true(cr:in_clip(3, 4))
+    assert_true(in_clip(cr, 3, 4, true))
     cr:clip()
     assert_false(cr:has_current_point())
-    assert_false(cr:in_clip(3, 4))
+    assert_false(in_clip(cr, 3, 4, false))
     x1, y1, x2, y2 = cr:clip_extents()
     assert_equal(1, x1)
     assert_equal(3, y1)
@@ -74,7 +83,7 @@ function test_clipping ()
     assert_equal(7, y2)
 
     cr:reset_clip()
-    assert_false(cr:in_clip(3, 4))
+    assert_false(in_clip(cr, 3, 4, false))
     x1, y1, x2, y2 = cr:clip_extents()
     assert_equal(0, x1)
     assert_equal(0, y1)
