@@ -119,6 +119,12 @@ fontopt_set_subpixel_order (lua_State *L) {
     return 0;
 }
 
+static int
+fontopt_status (lua_State *L) {
+    cairo_font_options_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTOPT);
+    return push_cairo_status(L, cairo_font_options_status(*obj));
+}
+
 static const luaL_Reg
 fontopt_methods[] = {
     { "__eq", fontopt_eq },
@@ -134,6 +140,7 @@ fontopt_methods[] = {
     { "set_hint_metrics", fontopt_set_hint_metrics },
     { "set_hint_style", fontopt_set_hint_style },
     { "set_subpixel_order", fontopt_set_subpixel_order },
+    { "status", fontopt_status },
     { 0, 0 }
 };
 

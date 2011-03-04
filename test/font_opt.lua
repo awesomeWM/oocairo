@@ -8,6 +8,7 @@ function test_create ()
     local opt = Cairo.font_options_create()
     assert_userdata(opt)
     assert_equal("cairo font options object", opt._NAME)
+    assert_equal(nil, opt:status())
 end
 
 function test_double_gc ()

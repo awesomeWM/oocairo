@@ -280,6 +280,12 @@ fontface_get_weight (lua_State *L) {
 }
 #endif
 
+static int
+fontface_status (lua_State *L) {
+    cairo_font_face_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_FONTFACE);
+    return push_cairo_status(L, cairo_font_face_status(*obj));
+}
+
 static const luaL_Reg
 fontface_methods[] = {
     { "__eq", fontface_eq },
@@ -290,6 +296,7 @@ fontface_methods[] = {
     { "get_slant", fontface_get_slant },
     { "get_weight", fontface_get_weight },
 #endif
+    { "status", fontface_status },
     { 0, 0 }
 };
 

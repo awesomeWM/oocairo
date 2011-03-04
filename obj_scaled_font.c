@@ -175,6 +175,12 @@ scaledfont_text_to_glyphs (lua_State *L) {
 }
 #endif
 
+static int
+scaledfont_status (lua_State *L) {
+    cairo_scaled_font_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SCALEDFONT);
+    return push_cairo_status(L, cairo_scaled_font_status(*obj));
+}
+
 static const luaL_Reg
 scaledfont_methods[] = {
     { "__eq", scaledfont_eq },
@@ -193,6 +199,7 @@ scaledfont_methods[] = {
 #if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 8, 0)
     { "text_to_glyphs", scaledfont_text_to_glyphs },
 #endif
+    { "status", scaledfont_status },
     { 0, 0 }
 };
 

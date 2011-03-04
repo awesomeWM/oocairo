@@ -682,6 +682,12 @@ create_for_rectangle(lua_State *L)
 }
 #endif
 
+static int
+surface_status (lua_State *L) {
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
+    return push_cairo_status(L, cairo_surface_status(*obj));
+}
+
 static const luaL_Reg
 surface_methods[] = {
     { "__eq", surface_eq },
@@ -722,6 +728,7 @@ surface_methods[] = {
     { "set_size", surface_set_size },
 #endif
     { "show_page", surface_show_page },
+    { "status", surface_status },
 #ifdef CAIRO_HAS_PNG_FUNCTIONS
     { "write_to_png", surface_write_to_png },
 #endif

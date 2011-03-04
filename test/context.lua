@@ -16,6 +16,8 @@ function setup ()
     cr = Cairo.context_create(surface)
 end
 function teardown ()
+    assert_equal(nil, cr:status(), "Error status on context")
+    assert_equal(nil, surface:status(), "Error status on surface")
     surface = nil
     cr = nil
 end

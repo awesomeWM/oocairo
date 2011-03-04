@@ -32,6 +32,7 @@ function test_create ()
     assert_userdata(font)
     assert_equal("cairo scaled font object", font._NAME)
     assert_equal("cairo font face object", font:get_font_face()._NAME)
+    assert_equal(nil, font:status(), "Error status on scaled font")
     assert_string(font:get_type())
 end
 
@@ -130,6 +131,8 @@ function test_font_options ()
     assert_equal("gray", gotopt:get_antialias())
     assert_equal("vbgr", gotopt:get_subpixel_order())
     assert_true(gotopt == origopt)
+    assert_equal(nil, font:status(), "Error status on scaled font")
+    assert_equal(nil, gotopt:status(), "Error status on font options")
 end
 
 -- vi:ts=4 sw=4 expandtab

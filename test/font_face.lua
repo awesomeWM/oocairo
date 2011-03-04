@@ -18,6 +18,7 @@ function test_select_get_set_font_face ()
 
     cr:select_font_face("sans", "normal", "normal")
     local sans = cr:get_font_face()
+    assert_equal(nil, sans:status(), "Error status on font face")
     assert_userdata(sans)
     assert_equal("cairo font face object", sans._NAME)
     assert_equal("toy", sans:get_type())

@@ -249,6 +249,12 @@ pattern_set_matrix (lua_State *L) {
     return 0;
 }
 
+static int
+pattern_status (lua_State *L) {
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
+    return push_cairo_status(L, cairo_pattern_status(*obj));
+}
+
 static const luaL_Reg
 pattern_methods[] = {
     { "__eq", pattern_eq },
@@ -267,6 +273,7 @@ pattern_methods[] = {
     { "set_extend", pattern_set_extend },
     { "set_filter", pattern_set_filter },
     { "set_matrix", pattern_set_matrix },
+    { "status", pattern_status },
     { 0, 0 }
 };
 

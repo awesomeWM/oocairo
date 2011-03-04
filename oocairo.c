@@ -720,6 +720,14 @@ get_gtk_module_function (lua_State *L, const char *name) {
     lua_remove(L, -2);
 }
 
+static int
+push_cairo_status (lua_State *L, cairo_status_t status) {
+    if (status == CAIRO_STATUS_SUCCESS)
+        return 0;
+    lua_pushstring(L, cairo_status_to_string(status));
+    return 1;
+}
+
 #include "obj_context.c"
 #include "obj_font_face.c"
 #include "obj_font_opt.c"

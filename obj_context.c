@@ -1018,6 +1018,12 @@ cr_user_to_device_distance (lua_State *L) {
     return 2;
 }
 
+static int
+cr_status (lua_State *L) {
+    cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
+    return push_cairo_status(L, cairo_status(*obj));
+}
+
 static const luaL_Reg
 context_methods[] = {
     { "__gc", cr_gc },
@@ -1111,6 +1117,7 @@ context_methods[] = {
 #if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 8, 0)
     { "show_text_glyphs", cr_show_text_glyphs },
 #endif
+    { "status", cr_status },
     { "stroke", cr_stroke },
     { "stroke_extents", cr_stroke_extents },
     { "stroke_preserve", cr_stroke_preserve },
