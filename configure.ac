@@ -8,8 +8,7 @@ AM_INIT_AUTOMAKE([-Wall -Werror foreign dist-bzip2])
 WFLAGS="-Wall -Wextra -Wcast-align -Wmissing-declarations -Winit-self -Wundef"
 WFLAGS="$WFLAGS -Wredundant-decls -Wwrite-strings -Wformat=2 -Wlogical-op"
 WFLAGS="$WFLAGS -Wmissing-include-dirs -Wformat-nonliteral -Wformat-security"
-WFLAGS="$WFLAGS -Wmissing-format-attribute -Wstrict-aliasing -pedantic"
-WFLAGS="-Wunused"
+WFLAGS="$WFLAGS -Wunused -Wmissing-format-attribute -Wstrict-aliasing -pedantic"
 
 CC_CHECK_CFLAGS_APPEND([$WFLAGS])
 CC_NOUNDEFINED
