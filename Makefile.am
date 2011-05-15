@@ -8,7 +8,7 @@ lualibdir = $(LUALIBDIR)
 
 lib_LTLIBRARIES = liboocairo.la
 liboocairo_la_SOURCES = oocairo.c
-liboocairo_la_LDFLAGS = -version 0:0:0
+liboocairo_la_LDFLAGS = -version 0:0:0 -no-undefined
 liboocairo_la_LIBADD = @DEPS_LIBS@
 
 include_HEADERS = oocairo.h
