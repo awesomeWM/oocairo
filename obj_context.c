@@ -408,7 +408,7 @@ static int
 cr_in_clip (lua_State *L) {
     cairo_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_CONTEXT);
     lua_pushboolean(L,
-        cairo_in_fill(*obj, luaL_checknumber(L, 2), luaL_checknumber(L, 3)));
+        cairo_in_clip(*obj, luaL_checknumber(L, 2), luaL_checknumber(L, 3)));
     return 1;
 }
 #endif
