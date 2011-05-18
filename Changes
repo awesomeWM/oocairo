@@ -1,3 +1,8 @@
+1.4     2011-05-18
+
+ * Fixed various minor problems with the build system.
+ * Added bindings for some newer cairo symbols.
+
 1.3     2010-08-31
 
  * Move to autotools.
