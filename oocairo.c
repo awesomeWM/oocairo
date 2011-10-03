@@ -270,6 +270,16 @@ static const cairo_pdf_version_t pdf_version_values[] = {
 ENUM_VAL_FROM_LUA_STRING_FUNC(pdf_version)
 #endif
 
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 10, 0)
+static const char *region_overlap_names[] = {
+    "overlap-in", "overlap-out", "overlap-part", 0
+};
+static const cairo_region_overlap_t region_overlap_values[] = {
+    CAIRO_REGION_OVERLAP_IN, CAIRO_REGION_OVERLAP_OUT, CAIRO_REGION_OVERLAP_PART
+};
+ENUM_VAL_TO_LUA_STRING_FUNC(region_overlap)
+#endif
+
 static void
 to_lua_matrix (lua_State *L, cairo_matrix_t *mat, int pos) {
     double *matnums;
@@ -303,6 +313,38 @@ from_lua_matrix (lua_State *L, cairo_matrix_t *mat, int pos) {
         lua_pop(L, 1);
     }
 }
+
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 10, 0)
+static int
+to_lua_rectangle (lua_State *L, cairo_rectangle_int_t *rect) {
+    lua_newtable(L);
+#define DO(t) \
+    lua_pushstring(L, #t); \
+    lua_pushnumber(L, rect->t); \
+    lua_settable(L, -3)
+    DO(x);
+    DO(y);
+    DO(width);
+    DO(height);
+#undef DO
+    return 1;
+}
+
+static void
+from_lua_rectangle (lua_State *L, cairo_rectangle_int_t *rect, int pos) {
+    luaL_checktype(L, pos, LUA_TTABLE);
+#define DO(t) \
+    lua_pushstring(L, #t); \
+    lua_gettable(L, pos); \
+    rect->t = luaL_checkint(L, -1); \
+    lua_pop(L, 1)
+    DO(x);
+    DO(y);
+    DO(width);
+    DO(height);
+#undef DO
+}
+#endif
 
 static void
 create_lua_font_extents (lua_State *L, cairo_font_extents_t *extents) {
@@ -621,6 +663,17 @@ create_fontopt_userdata (lua_State *L) {
     return obj;
 }
 
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 10, 0)
+static cairo_region_t **
+create_region_userdata (lua_State *L) {
+    cairo_region_t **obj = lua_newuserdata(L, sizeof(cairo_region_t *));
+    *obj = 0;
+    luaL_getmetatable(L, OOCAIRO_MT_NAME_REGION);
+    lua_setmetatable(L, -2);
+    return obj;
+}
+#endif
+
 static cairo_t **
 create_context_userdata (lua_State *L) {
     cairo_t **obj = lua_newuserdata(L, sizeof(cairo_t *));
@@ -736,6 +789,7 @@ push_cairo_status (lua_State *L, cairo_status_t status) {
 #include "obj_pattern.c"
 #include "obj_scaled_font.c"
 #include "obj_surface.c"
+#include "obj_region.c"
 
 static int
 format_stride_for_width (lua_State *L) {
@@ -805,6 +859,11 @@ constructor_funcs[] = {
 #ifdef CAIRO_HAS_RECORDING_SURFACE
     { "recording_surface_create", recording_surface_create },
     { "recording_surface_ink_extents", recording_surface_ink_extents },
+#endif
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 10, 0)
+    { "region_create", region_create },
+    { "region_create_rectangle", region_create_rectangle },
+    { "region_create_rectangles", region_create_rectangles },
 #endif
     { 0, 0 }
 };
@@ -950,6 +1009,10 @@ luaopen_oocairo (lua_State *L) {
                             pattern_methods);
     create_object_metatable(L, OOCAIRO_MT_NAME_SURFACE, "cairo surface object",
                             surface_methods);
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 10, 0)
+    create_object_metatable(L, OOCAIRO_MT_NAME_REGION, "cairo region object",
+                            region_methods);
+#endif
 
     return 1;
 }

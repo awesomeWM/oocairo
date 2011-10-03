@@ -35,6 +35,7 @@
 #define OOCAIRO_MT_NAME_PATTERN    ("6dd49a26-6711-11dd-88fd-00e081225ce5")
 #define OOCAIRO_MT_NAME_SCALEDFONT ("b8012f94-98b0-11dd-b174-00e081225ce5")
 #define OOCAIRO_MT_NAME_SURFACE    ("6d31a064-6711-11dd-bdd8-00e081225ce5")
+#define OOCAIRO_MT_NAME_REGION     ("047833B0-11e0-11dd-a561-00e081225ce5")
 
 int luaopen_oocairo (lua_State *L);
 

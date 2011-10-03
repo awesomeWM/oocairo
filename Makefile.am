@@ -29,6 +29,7 @@ TESTS += test/ps_surface.lua
 TESTS += test/scaled_font.lua
 TESTS += test/surface.lua
 TESTS += test/svg_surface.lua
+TESTS += test/region.lua
 EXTRA_DIST += examples/images/pattern.png
 EXTRA_DIST += $(TESTS) lunit.lua test-setup.lua lunit-console.lua test-loading.lua
 
