@@ -680,6 +680,46 @@ create_for_rectangle(lua_State *L)
     surface->surface = cairo_surface_create_for_rectangle(*obj, x, y, width, height);
     return 1;
 }
+
+static int
+set_mime_data(lua_State *L)
+{
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
+    const char *mime_type = luaL_checkstring(L, 2);
+    unsigned char *mime_priv;
+    size_t data_length;
+
+    if (lua_isnil(L, 3)) {
+        data_length = 0;
+        mime_priv = NULL;
+    } else {
+        const char *mime_data;
+
+        mime_data = luaL_checklstring(L, 3, &data_length);
+        mime_priv = malloc(data_length);
+        if (!mime_priv) {
+            return push_cairo_status(L, CAIRO_STATUS_NO_MEMORY);
+        }
+        memcpy(mime_priv, mime_data, data_length);
+    }
+
+    return push_cairo_status(L, cairo_surface_set_mime_data(*obj, mime_type, mime_priv, data_length, free, mime_priv));
+}
+
+static int
+get_mime_data(lua_State *L)
+{
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
+    const char *mime_type = luaL_checkstring(L, 2);
+    const unsigned char *data = NULL;
+    unsigned long length = 0;
+
+    cairo_surface_get_mime_data(*obj, mime_type, &data, &length);
+    if (data == NULL)
+        return 0;
+    lua_pushlstring(L, (const char *) data, length);
+    return 1;
+}
 #endif
 
 static int
@@ -694,6 +734,8 @@ surface_methods[] = {
     { "__gc", surface_gc },
 #if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 10, 0)
     { "create_for_rectangle", create_for_rectangle },
+    { "set_mime_data", set_mime_data },
+    { "get_mime_data", get_mime_data },
 #endif
     { "copy_page", surface_copy_page },
     { "finish", surface_finish },

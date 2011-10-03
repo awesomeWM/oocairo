@@ -916,6 +916,16 @@ luaopen_oocairo (lua_State *L) {
     lua_pushboolean(L, 0);
 #endif
     lua_rawset(L, -3);
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 10, 0)
+#define ADD_MIME_TYPE(TYPE) \
+    lua_pushliteral(L, #TYPE); \
+    lua_pushstring(L, CAIRO_ ## TYPE); \
+    lua_rawset(L, -3);
+    ADD_MIME_TYPE(MIME_TYPE_JP2);
+    ADD_MIME_TYPE(MIME_TYPE_JPEG);
+    ADD_MIME_TYPE(MIME_TYPE_PNG);
+    ADD_MIME_TYPE(MIME_TYPE_URI);
+#endif
 
     /* This is needed to test the byte order which Cairo will use for storing
     * pixel components. */
