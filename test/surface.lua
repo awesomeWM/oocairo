@@ -387,8 +387,7 @@ if Cairo.check_version(1, 10, 0) then
             assert_equal(surface:set_mime_data(mime_type, data), nil)
             assert_equal(surface:get_mime_data(mime_type), data)
             assert_equal(surface:set_mime_data(mime_type, nil), nil)
-            print("Meh, we are hitting a cairo bug here")
-            --assert_equal(surface:get_mime_data(mime_type), nil)
+            assert_equal(surface:get_mime_data(mime_type), nil)
         end
         test(Cairo.MIME_TYPE_JP2, "JP2 data")
         test(Cairo.MIME_TYPE_JPEG, "JPEG data")

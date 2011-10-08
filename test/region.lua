@@ -98,10 +98,31 @@ if Cairo.check_version(1, 10, 0) then
     end
 
     function test_region_create ()
-        local rect = { x = 0, y = 0, width = 1, height = 1 }
-        Cairo.region_create()
-        Cairo.region_create_rectangle(rect)
-        Cairo.region_create_rectangles({ rect })
+        local rect1 = { x = 0, y = 0, width = 1, height = 1 }
+        local rect2 = { x = 10, y = 10, width = 1, height = 1 }
+        local rects = { rect1, rect2 }
+
+        local reg = Cairo.region_create()
+
+        local reg = Cairo.region_create_rectangle(rect1)
+        local rect = reg:get_rectangles()
+        assert_equal(#rect, 1)
+        assert_equal(rect[1].x, 0)
+        assert_equal(rect[1].y, 0)
+        assert_equal(rect[1].width, 1)
+        assert_equal(rect[1].height, 1)
+
+        local reg = Cairo.region_create_rectangles(rects)
+        local rect = reg:get_rectangles()
+        assert_equal(#rect, 2)
+        assert_equal(rect[1].x, 0)
+        assert_equal(rect[1].y, 0)
+        assert_equal(rect[1].width, 1)
+        assert_equal(rect[1].height, 1)
+        assert_equal(rect[2].x, 10)
+        assert_equal(rect[2].y, 10)
+        assert_equal(rect[2].width, 1)
+        assert_equal(rect[2].height, 1)
     end
 end
 

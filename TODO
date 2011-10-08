@@ -41,10 +41,3 @@ XLib
 cairo 1.10 added cairo_device_t, but I don't think how it would make sense to
 add bindings for this. E.g. we can't test this since only the gl, xcb and xlib
 surfaces uses devices and the test suite can't create such a surface.
-
-Current test suite failures:
-
-test/surface.lua: print("Meh, we are hitting a cairo bug here")
-
-  1) Error! (test.region.test_region_create):
-./test/region.lua:104: Cairo.region_create_rectangles() not implemented

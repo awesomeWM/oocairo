@@ -39,7 +39,24 @@ region_create_rectangle (lua_State *L) {
 
 static int
 region_create_rectangles (lua_State *L) {
-    return luaL_error(L, "Cairo.region_create_rectangles() not implemented");
+    size_t max_entries = lua_objlen (L, 1);
+    cairo_rectangle_int_t *rects = calloc(max_entries, sizeof(*rects));
+    size_t i = 0;
+
+    /* Now iterate over the table */
+    lua_pushnil(L);
+    while (lua_next(L, 1) != 0) {
+        if (i >= max_entries)
+            return luaL_error(L, "Cairo.region_create_rectangles(): Internal error, table larger than table?!");
+        from_lua_rectangle (L, &rects[i], 3);
+        i++;
+        lua_pop(L, 1);
+    }
+
+    cairo_region_t **reg = create_region_userdata(L);
+    *reg = cairo_region_create_rectangles(rects, i);
+    free(rects);
+    return 1;
 }
 
 static int
