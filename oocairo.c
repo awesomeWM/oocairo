@@ -692,12 +692,37 @@ create_surface_userdata (lua_State *L) {
     return ud;
 }
 
+#define PUSH(name, type, func, reference) \
+int \
+oocairo_ ## name ## _push (lua_State *L, type *obj) \
+{ \
+    type **o = create_ ## func ## _userdata(L); \
+    *o = reference(obj); \
+    return 1; \
+}
+
+PUSH(pattern, cairo_pattern_t, pattern, cairo_pattern_reference)
+PUSH(font_face, cairo_font_face_t, fontface, cairo_font_face_reference)
+PUSH(scaled_font, cairo_scaled_font_t, scaledfont, cairo_scaled_font_reference)
+PUSH(font_options, cairo_font_options_t, fontopt, cairo_font_options_copy)
+PUSH(context, cairo_t, context, cairo_reference)
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 10, 0)
+PUSH(region, cairo_region_t, region, cairo_region_reference)
+#endif
+
 int
 oocairo_surface_push (lua_State *L, cairo_surface_t *surface)
 {
     SurfaceUserdata *ud;
     ud = create_surface_userdata(L);
     ud->surface = cairo_surface_reference(surface);
+    return 1;
+}
+
+int
+oocairo_matrix_push (lua_State *L, cairo_matrix_t *matrix)
+{
+    create_lua_matrix(L, matrix);
     return 1;
 }
 

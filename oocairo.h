@@ -39,7 +39,16 @@
 
 int luaopen_oocairo (lua_State *L);
 
+int oocairo_pattern_push (lua_State *L, cairo_pattern_t *pattern);
+int oocairo_font_face_push (lua_State *L, cairo_font_face_t *face);
+int oocairo_scaled_font_push (lua_State *L, cairo_scaled_font_t *face);
+int oocairo_font_options_push (lua_State *L, cairo_font_options_t *options);
 int oocairo_surface_push (lua_State *L, cairo_surface_t *surface);
+int oocairo_context_push (lua_State *L, cairo_t *cr);
+int oocairo_matrix_push (lua_State *L, cairo_matrix_t *matrix);
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 10, 0)
+int oocairo_region_push (lua_State *L, cairo_region_t *region);
+#endif
 
 #endif  /* INC_LUA_OOCAIRO_H */
 /* vi:set ts=4 sw=4 expandtab: */
