@@ -299,7 +299,9 @@ if Cairo.check_version(1, 10, 0) then
     function test_subsurface()
         local surface = Cairo.image_surface_create("rgb24", 23, 45)
         local sub = surface:create_for_rectangle(10, 11, 12, 13)
-        assert_equal("subsurface", sub:get_type())
+        local sub_type = sub:get_type()
+        -- This if is needed because of cairo commit ba855a12e8d686f2137f82d3177
+        assert_true(sub_type == "subsurface" or sub_type == "image")
         assert_error(function() sub:create_for_rectangle(0, 0, -1, -1) end)
     end
 end
