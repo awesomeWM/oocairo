@@ -66,6 +66,15 @@ pattern_create_radial (lua_State *L) {
     return 1;
 }
 
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 12, 0)
+static int
+pattern_create_mesh (lua_State *L) {
+    cairo_pattern_t **obj = create_pattern_userdata(L);
+    *obj = cairo_pattern_create_mesh();
+    return 1;
+}
+#endif
+
 static int
 pattern_eq (lua_State *L) {
     cairo_pattern_t **obj1 = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
@@ -255,6 +264,126 @@ pattern_status (lua_State *L) {
     return push_cairo_status(L, cairo_pattern_status(*obj));
 }
 
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 12, 0)
+static int
+mesh_begin_patch (lua_State *L) {
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
+    cairo_mesh_pattern_begin_patch(*obj);
+    return 0;
+}
+
+static int
+mesh_curve_to (lua_State *L) {
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
+    cairo_mesh_pattern_curve_to(*obj, luaL_checknumber(L, 2), luaL_checknumber(L, 3),
+                   luaL_checknumber(L, 4), luaL_checknumber(L, 5),
+                   luaL_checknumber(L, 6), luaL_checknumber(L, 7));
+    return 0;
+}
+
+static int
+mesh_end_patch (lua_State *L) {
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
+    cairo_mesh_pattern_end_patch(*obj);
+    return 0;
+}
+
+static int
+mesh_get_control_point (lua_State *L) {
+    double x, y;
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
+    cairo_status_t status = cairo_mesh_pattern_get_control_point(*obj,
+            luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), &x, &y);
+    if (status != CAIRO_STATUS_SUCCESS) {
+        push_cairo_status(L, status);
+        lua_error(L);
+    }
+    lua_pushnumber(L, x);
+    lua_pushnumber(L, y);
+    return 2;
+}
+
+static int
+mesh_get_corner_color_rgba (lua_State *L) {
+    double r, g, b, a;
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
+    cairo_status_t status = cairo_mesh_pattern_get_corner_color_rgba(*obj,
+            luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), &r, &g, &b, &a);
+    if (status != CAIRO_STATUS_SUCCESS) {
+        push_cairo_status(L, status);
+        lua_error(L);
+    }
+    lua_pushnumber(L, r);
+    lua_pushnumber(L, g);
+    lua_pushnumber(L, b);
+    lua_pushnumber(L, a);
+    return 4;
+}
+
+static int
+mesh_get_patch_count (lua_State *L) {
+    unsigned int count;
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
+    cairo_status_t status = cairo_mesh_pattern_get_patch_count(*obj, &count);
+    if (status != CAIRO_STATUS_SUCCESS) {
+        push_cairo_status(L, status);
+        lua_error(L);
+    }
+    lua_pushinteger(L, count);
+    return 1;
+}
+
+static int
+mesh_get_path (lua_State *L) {
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
+    cairo_path_t **path = lua_newuserdata(L, sizeof(cairo_path_t *));
+    *path = 0;
+    luaL_getmetatable(L, OOCAIRO_MT_NAME_PATH);
+    lua_setmetatable(L, -2);
+    *path = cairo_mesh_pattern_get_path(*obj, luaL_checkinteger(L, 2));
+    return 1;
+}
+
+static int
+mesh_line_to (lua_State *L) {
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
+    cairo_mesh_pattern_line_to(*obj, luaL_checknumber(L, 2), luaL_checknumber(L, 3));
+    return 0;
+}
+
+static int
+mesh_move_to (lua_State *L) {
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
+    cairo_mesh_pattern_move_to(*obj, luaL_checknumber(L, 2), luaL_checknumber(L, 3));
+    return 0;
+}
+
+static int
+mesh_set_control_point (lua_State *L) {
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
+    cairo_mesh_pattern_set_control_point(*obj, luaL_checkinteger(L, 2),
+            luaL_checknumber(L, 3), luaL_checknumber(L, 4));
+    return 0;
+}
+
+static int
+mesh_set_corner_color_rgb (lua_State *L) {
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
+    cairo_mesh_pattern_set_corner_color_rgb(*obj, luaL_checkinteger(L, 2),
+            luaL_checknumber(L, 3), luaL_checknumber(L, 4), luaL_checknumber(L, 5));
+    return 0;
+}
+
+static int
+mesh_set_corner_color_rgba (lua_State *L) {
+    cairo_pattern_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_PATTERN);
+    cairo_mesh_pattern_set_corner_color_rgba(*obj, luaL_checkinteger(L, 2),
+            luaL_checknumber(L, 3), luaL_checknumber(L, 4),
+            luaL_checknumber(L, 5), luaL_checknumber(L, 6));
+    return 0;
+}
+#endif
+
 static const luaL_Reg
 pattern_methods[] = {
     { "__eq", pattern_eq },
@@ -273,6 +402,20 @@ pattern_methods[] = {
     { "set_extend", pattern_set_extend },
     { "set_filter", pattern_set_filter },
     { "set_matrix", pattern_set_matrix },
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 12, 0)
+    { "begin_patch", mesh_begin_patch },
+    { "curve_to", mesh_curve_to },
+    { "end_patch", mesh_end_patch },
+    { "get_control_point", mesh_get_control_point },
+    { "get_corner_color_rgba", mesh_get_corner_color_rgba },
+    { "get_patch_count", mesh_get_patch_count },
+    { "get_path", mesh_get_path },
+    { "line_to", mesh_line_to },
+    { "move_to", mesh_move_to },
+    { "set_control_point", mesh_set_control_point },
+    { "set_corner_color_rgb", mesh_set_corner_color_rgb },
+    { "set_corner_color_rgba", mesh_set_corner_color_rgba },
+#endif
     { "status", pattern_status },
     { 0, 0 }
 };

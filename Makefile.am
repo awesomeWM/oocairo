@@ -22,6 +22,7 @@ TESTS += test/font_face.lua
 TESTS += test/font_opt.lua
 TESTS += test/general.lua
 TESTS += test/matrix.lua
+TESTS += test/mesh_pattern.lua
 TESTS += test/path.lua
 TESTS += test/pattern.lua
 TESTS += test/pdf_surface.lua

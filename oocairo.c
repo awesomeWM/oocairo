@@ -858,6 +858,9 @@ constructor_funcs[] = {
     { "matrix_create", cairmat_create },
     { "pattern_create_for_surface", pattern_create_for_surface },
     { "pattern_create_linear", pattern_create_linear },
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 12, 0)
+    { "pattern_create_mesh", pattern_create_mesh },
+#endif
     { "pattern_create_radial", pattern_create_radial },
     { "pattern_create_rgb", pattern_create_rgb },
     { "pattern_create_rgba", pattern_create_rgba },
