@@ -449,6 +449,18 @@ if Cairo.check_version(1, 12, 0) then
             test(surface, Cairo.MIME_TYPE_URI, Cairo.MIME_TYPE_JP2)
         end
     end
+
+    function test_map_image ()
+        local surface = Cairo.image_surface_create("rgb24", 2, 2)
+
+        -- first unbounded
+        local img = surface:map_to_image()
+        surface:unmap_image(img)
+
+        -- then bounded
+        local img = surface:map_to_image({ x = 1, y = 1, width = 1, height = 1})
+        surface:unmap_image(img)
+    end
 end
 
 -- vi:ts=4 sw=4 expandtab

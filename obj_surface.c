@@ -752,6 +752,38 @@ supports_mime_type(lua_State *L)
     lua_pushboolean(L, cairo_surface_supports_mime_type(*obj, mime_type));
     return 1;
 }
+
+static int
+map_to_image(lua_State *L)
+{
+    cairo_rectangle_int_t rect;
+    cairo_rectangle_int_t *prect;
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
+    cairo_surface_t **res;
+
+    lua_settop(L, 2);
+    if (lua_isnil(L, 2)) {
+        prect = NULL;
+    } else {
+        prect = &rect;
+        from_lua_rectangle(L, prect, 2);
+    }
+
+    res = create_surface_userdata(L);
+    *res = cairo_surface_map_to_image(*obj, prect);
+    return 1;
+}
+
+static int
+unmap_image(lua_State *L)
+{
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
+    cairo_surface_t **img = luaL_checkudata(L, 2, OOCAIRO_MT_NAME_SURFACE);
+    /* unmap_image will drop a reference, so we need a new reference for it */
+    cairo_surface_reference(*img);
+    cairo_surface_unmap_image(*obj, *img);
+    return 0;
+}
 #endif
 
 static int
@@ -808,6 +840,10 @@ surface_methods[] = {
     { "status", surface_status },
 #ifdef CAIRO_HAS_PNG_FUNCTIONS
     { "write_to_png", surface_write_to_png },
+#endif
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 12, 0)
+    { "map_to_image", map_to_image },
+    { "unmap_image", unmap_image },
 #endif
     { 0, 0 }
 };
