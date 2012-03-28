@@ -318,6 +318,27 @@ surface_create_similar (lua_State *L) {
     return 1;
 }
 
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 12, 0)
+static int
+surface_create_similar_image (lua_State *L) {
+    cairo_surface_t **oldobj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
+    cairo_format_t format;
+    int width, height;
+    SurfaceUserdata *surface;
+
+    format = format_from_lua(L, 2);
+    width = luaL_checkint(L, 3);
+    luaL_argcheck(L, width >= 0, 3, "image width cannot be negative");
+    height = luaL_checkint(L, 4);
+    luaL_argcheck(L, height >= 0, 4, "image height cannot be negative");
+
+    surface = create_surface_userdata(L);
+    surface->surface = cairo_surface_create_similar_image(*oldobj,
+            format, width, height);
+    return 1;
+}
+#endif
+
 static int
 surface_eq (lua_State *L) {
     cairo_surface_t **obj1 = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);

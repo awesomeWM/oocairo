@@ -873,6 +873,9 @@ constructor_funcs[] = {
 #endif
     { "scaled_font_create", scaled_font_create },
     { "surface_create_similar", surface_create_similar },
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 12, 0)
+    { "surface_create_similar_image", surface_create_similar_image },
+#endif
 #ifdef CAIRO_HAS_SVG_SURFACE
     { "svg_surface_create", svg_surface_create },
     { "svg_get_versions", svg_get_versions },

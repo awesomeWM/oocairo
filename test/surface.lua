@@ -66,10 +66,10 @@ function test_image_surface_create_bad ()
     end)
 end
 
-function test_surface_create_similar ()
+local function do_test_surface_create_similar (creator, formats)
     local base = assert(Cairo.image_surface_create("rgb24", 23, 45))
-    for _, v in ipairs({ "color", "alpha", "color-alpha" }) do
-        local surface = Cairo.surface_create_similar(base, v, 23, 45)
+    for k, v in ipairs(formats) do
+        local surface = creator(base, k, 23, 45)
         assert_userdata(surface, "got userdata for " .. v)
         assert_equal("cairo surface object", surface._NAME,
                      "got surface object for " .. v)
@@ -77,23 +77,45 @@ function test_surface_create_similar ()
     end
 end
 
-function test_surface_create_similar_bad ()
+function test_surface_create_similar ()
+    do_test_surface_create_similar(Cairo.surface_create_similar,
+            { color = "color", alpha = "alpha", ["color-alpha"] = "color-alpha" })
+end
+
+if Cairo.check_version(1, 12, 0) then
+    function test_surface_create_similar_image ()
+        do_test_surface_create_similar(Cairo.surface_create_similar_image,
+            { argb32 = "color-alpha", rgb24 = "color", a8 = "alpha", a1 = "alpha" })
+    end
+end
+
+local function do_test_surface_create_similar_bad (creator)
     local base = assert(Cairo.image_surface_create("rgb24", 23, 45))
     assert_error("bad format", function ()
-        Cairo.surface_create_similar(base, "foo", 23, 45)
+        creator(base, "foo", 23, 45)
     end)
     assert_error("bad width type", function ()
-        Cairo.surface_create_similar(base, "color", "x", 23)
+        creator(base, "color", "x", 23)
     end)
     assert_error("negative width value", function ()
-        Cairo.surface_create_similar(base, "color", -23, 45)
+        creator(base, "color", -23, 45)
     end)
     assert_error("bad height type", function ()
-        Cairo.surface_create_similar(base, "color", 23, "x")
+        creator(base, "color", 23, "x")
     end)
     assert_error("negative height value", function ()
-        Cairo.surface_create_similar(base, "color", 23, -45)
+        creator(base, "color", 23, -45)
     end)
+end
+
+function test_surface_create_similar_bad ()
+    do_test_surface_create_similar_bad(Cairo.surface_create_similar)
+end
+
+if Cairo.check_version(1, 12, 0) then
+    function test_surface_create_similar_image_bad ()
+        do_test_surface_create_similar_bad(Cairo.surface_create_similar_image)
+    end
 end
 
 function test_device_offset ()
