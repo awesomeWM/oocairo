@@ -402,4 +402,31 @@ if Cairo.check_version(1, 10, 0) then
     end
 end
 
+if Cairo.check_version(1, 12, 0) then
+    function test_supports_mime_type ()
+        local function test(surface, supported, unsupported)
+            assert_true(surface:supports_mime_type(supported))
+            assert_false(surface:supports_mime_type(unsupported))
+        end
+
+        local surface = Cairo.image_surface_create("rgb24", 0, 0)
+        assert_false(surface:supports_mime_type(Cairo.MIME_TYPE_JPEG))
+
+        if Cairo.HAS_PS_SURFACE then
+            local surface = Cairo.ps_surface_create(tmpname(), 300, 200)
+            test(surface, Cairo.MIME_TYPE_JPEG, Cairo.MIME_TYPE_PNG)
+        end
+
+        if Cairo.HAS_PDF_SURFACE then
+            local surface = Cairo.pdf_surface_create(tmpname(), 300, 200)
+            test(surface, Cairo.MIME_TYPE_JP2, Cairo.MIME_TYPE_PNG)
+        end
+
+        if Cairo.HAS_SVG_SURFACE then
+            local surface = Cairo.svg_surface_create(tmpname(), 300, 200)
+            test(surface, Cairo.MIME_TYPE_URI, Cairo.MIME_TYPE_JP2)
+        end
+    end
+end
+
 -- vi:ts=4 sw=4 expandtab

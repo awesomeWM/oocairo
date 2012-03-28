@@ -722,6 +722,17 @@ get_mime_data(lua_State *L)
 }
 #endif
 
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 12, 0)
+static int
+supports_mime_type(lua_State *L)
+{
+    cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
+    const char *mime_type = luaL_checkstring(L, 2);
+    lua_pushboolean(L, cairo_surface_supports_mime_type(*obj, mime_type));
+    return 1;
+}
+#endif
+
 static int
 surface_status (lua_State *L) {
     cairo_surface_t **obj = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_SURFACE);
@@ -736,6 +747,9 @@ surface_methods[] = {
     { "create_for_rectangle", create_for_rectangle },
     { "set_mime_data", set_mime_data },
     { "get_mime_data", get_mime_data },
+#endif
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 12, 0)
+    { "supports_mime_type", supports_mime_type },
 #endif
     { "copy_page", surface_copy_page },
     { "finish", surface_finish },
