@@ -17,14 +17,15 @@ LDFLAGS="$LDFLAGS $LDFLAGS_NOUNDEFINED"
 
 # Lua gets different names in different distros :(
 PKG_PROG_PKG_CONFIG
-AC_MSG_CHECKING([for lua])
-for lua_name in lua lua5.1
-do
-  PKG_CHECK_EXISTS([$lua_name], [LUA_NAME=$lua_name ; break])
-done
+AC_CACHE_CHECK([for lua], [oocairo_cv_lua_name],
+    [for lua_name in lua lua5.1
+    do
+      PKG_CHECK_EXISTS([$lua_name], [oocairo_cv_lua_name=$lua_name ; break])
+    done
+    ])
+LUA_NAME=$oocairo_cv_lua_name
 AS_IF([test "x$LUA_NAME" = "x"],
       [AC_ERROR([Could not find lua via pkg-config!]) ])
-AC_MSG_RESULT([$LUA_NAME])
 
 AC_PROG_LN_S
 AC_PATH_PROG([POD2MAN], [pod2man], [notfound])
