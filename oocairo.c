@@ -41,6 +41,18 @@
 #error "This Lua binding requires Cairo version 1.6 or better."
 #endif
 
+#if LUA_VERSION_NUM >= 502
+#define lua_objlen(a, b)      lua_rawlen(a, b)
+
+static int luaL_typerror (lua_State *L, int narg, const char *tname) {
+    const char *msg = lua_pushfstring(L, "%s expected, got %s",
+                                      tname, luaL_typename(L, narg));
+    return luaL_argerror(L, narg, msg);
+}
+#else
+#define lua_rawlen(a, b) do_not_use_lua_rawlen_use_lua_objlen_instead;
+#endif
+
 static const int ENDIANNESS_TEST_VAL = 1;
 #define IS_BIG_ENDIAN (!(*(const char *) &ENDIANNESS_TEST_VAL))
 
@@ -785,6 +797,14 @@ write_chunk_to_fh (void *closure, const unsigned char *buf,
     return CAIRO_STATUS_SUCCESS;
 }
 
+#if LUA_VERSION_NUM >= 502
+static void
+get_gtk_module_function (lua_State *L, const char *name) {
+    /* FIXME: Implement this again */
+    (void) name;
+    luaL_error(L, "cannot access gtk with lua >= 5.2, TODO: Implement this again");
+}
+#else
 static void
 get_gtk_module_function (lua_State *L, const char *name) {
     lua_getfield(L, LUA_GLOBALSINDEX, "gtk");
@@ -797,6 +817,7 @@ get_gtk_module_function (lua_State *L, const char *name) {
                    name);
     lua_remove(L, -2);
 }
+#endif
 
 static int
 push_cairo_status (lua_State *L, cairo_status_t status) {
