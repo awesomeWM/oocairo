@@ -135,6 +135,16 @@ function test_operator ()
         cr:set_operator(v)
         assert_equal(v, cr:get_operator())
     end
+    if Cairo.check_version(1, 10, 0) then
+        for _, v in ipairs({
+            "multiply", "screen", "overlay", "darken", "lighten", "color-dodge",
+            "color-burn", "hard-light", "soft-light", "difference", "exclusion",
+            "hsl-hue", "hsl-saturation", "hsl-color", "hsl-luminosity",
+        }) do
+            cr:set_operator(v)
+            assert_equal(v, cr:get_operator())
+        end
+    end
 end
 
 function test_save_restore ()

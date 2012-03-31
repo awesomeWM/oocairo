@@ -164,6 +164,11 @@ static const char * const operator_names[] = {
     "source", "over", "in", "out", "atop",
     "dest", "dest-over", "dest-in", "dest-out", "dest-atop",
     "xor", "add", "saturate",
+#if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 10, 0)
+    "multiply", "screen", "overlay", "darken", "lighten", "color-dodge",
+    "color-burn", "hard-light", "soft-light", "difference", "exclusion",
+    "hsl-hue", "hsl-saturation", "hsl-color", "hsl-luminosity",
+#endif
     0
 };
 static const cairo_operator_t operator_values[] = {
@@ -172,7 +177,17 @@ static const cairo_operator_t operator_values[] = {
     CAIRO_OPERATOR_OUT, CAIRO_OPERATOR_ATOP,
     CAIRO_OPERATOR_DEST, CAIRO_OPERATOR_DEST_OVER, CAIRO_OPERATOR_DEST_IN,
     CAIRO_OPERATOR_DEST_OUT, CAIRO_OPERATOR_DEST_ATOP,
-    CAIRO_OPERATOR_XOR, CAIRO_OPERATOR_ADD, CAIRO_OPERATOR_SATURATE
+    CAIRO_OPERATOR_XOR, CAIRO_OPERATOR_ADD,
+#if CAIRO_VERSION < CAIRO_VERSION_ENCODE(1, 10, 0)
+    CAIRO_OPERATOR_SATURATE
+#else
+    CAIRO_OPERATOR_SATURATE, CAIRO_OPERATOR_MULTIPLY, CAIRO_OPERATOR_SCREEN,
+    CAIRO_OPERATOR_OVERLAY, CAIRO_OPERATOR_DARKEN, CAIRO_OPERATOR_LIGHTEN,
+    CAIRO_OPERATOR_COLOR_DODGE, CAIRO_OPERATOR_COLOR_BURN, CAIRO_OPERATOR_HARD_LIGHT,
+    CAIRO_OPERATOR_SOFT_LIGHT, CAIRO_OPERATOR_DIFFERENCE, CAIRO_OPERATOR_EXCLUSION,
+    CAIRO_OPERATOR_HSL_HUE, CAIRO_OPERATOR_HSL_SATURATION, CAIRO_OPERATOR_HSL_COLOR,
+    CAIRO_OPERATOR_HSL_LUMINOSITY
+#endif
 };
 ENUM_VAL_TO_LUA_STRING_FUNC(operator)
 ENUM_VAL_FROM_LUA_STRING_FUNC(operator)
