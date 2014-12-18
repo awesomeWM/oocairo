@@ -4,7 +4,8 @@ in PNG format, or for generating files in vector formats like SVG and PDF.
 It can also be used for drawing in a Gtk+ GUI application.
 
 
-== Documentation ==
+Documentation
+---------------
 
 Full reference documentation for all the functions and methods supported
 by this module are provided in the 'doc' directory in the source code in
@@ -13,7 +14,8 @@ POD and Unix manpage format, and on the website as web pages:
     http://www.daizucms.org/lua/library/oocairo/doc/
 
 
-== Examples ==
+Examples
+---------------
 
 There are example programs in the 'examples' directory of the source code,
 which demonstrate many of the features available.  Feel free to copy bits
@@ -33,7 +35,8 @@ but aren't in a position to run them yet, the output files are shown here:
     http://www.daizucms.org/lua/library/oocairo/example/
 
 
-== Using with Gtk+ ==
+Using with Gtk+
+---------------
 
 This module can now (as of version 1.2) be used to draw in a window in a
 graphical user interface created with the Lua-Gnome/Gtk package.  See the
@@ -42,7 +45,8 @@ uses most of the new features.  This new stuff has so far only been tested
 with lua-gtk-0.9.
 
 
-== Compiling ==
+Compiling
+---------------
 
 The supplied 'Makefile' or 'Makefile.osx' should work on Linux and MacOS X
 without changes (just run 'make'), although on some Linux distributions you
@@ -58,7 +62,8 @@ packages, or build your own if they don't work by running
 Let me know if you can provide compilation instructions for other platforms.
 
 
-== Installing ==
+Installing
+---------------
 
 There is a 'make install' target which will install the compiled library
 and manpages, by default under '/usr/local'.  You can install manually
@@ -66,7 +71,8 @@ just by copying the compiled library file to the appropriate place.  That
 should be enough to use the module.
 
 
-== Running tests ==
+Running tests
+---------------
 
 The module comes with a test suite in the 'test' directory, which at least
 on Linux systems can be run with 'make test'.  If there are any problems
