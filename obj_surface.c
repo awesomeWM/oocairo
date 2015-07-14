@@ -27,9 +27,9 @@ image_surface_create (lua_State *L) {
     SurfaceUserdata *surface;
 
     fmt = format_from_lua(L, 1);
-    width = luaL_checkint(L, 2);
+    width = luaL_checkinteger(L, 2);
     luaL_argcheck(L, width >= 0, 2, "image width cannot be negative");
-    height = luaL_checkint(L, 3);
+    height = luaL_checkinteger(L, 3);
     luaL_argcheck(L, height >= 0, 3, "image height cannot be negative");
 
     surface = create_surface_userdata(L);
@@ -47,11 +47,11 @@ image_surface_create_from_data (lua_State *L) {
 
     data = luaL_checklstring(L, 1, &data_len);
     fmt = format_from_lua(L, 2);
-    width = luaL_checkint(L, 3);
+    width = luaL_checkinteger(L, 3);
     luaL_argcheck(L, width >= 0, 3, "image width cannot be negative");
-    height = luaL_checkint(L, 4);
+    height = luaL_checkinteger(L, 4);
     luaL_argcheck(L, height >= 0, 4, "image height cannot be negative");
-    stride = luaL_checkint(L, 5);
+    stride = luaL_checkinteger(L, 5);
 
     /* Check that the stride is big enough for one row of pixels. */
     if (fmt == CAIRO_FORMAT_ARGB32 || fmt == CAIRO_FORMAT_RGB24)
@@ -307,9 +307,9 @@ surface_create_similar (lua_State *L) {
     SurfaceUserdata *surface;
 
     content = content_from_lua(L, 2);
-    width = luaL_checkint(L, 3);
+    width = luaL_checkinteger(L, 3);
     luaL_argcheck(L, width >= 0, 3, "image width cannot be negative");
-    height = luaL_checkint(L, 4);
+    height = luaL_checkinteger(L, 4);
     luaL_argcheck(L, height >= 0, 4, "image height cannot be negative");
 
     surface = create_surface_userdata(L);
@@ -327,9 +327,9 @@ surface_create_similar_image (lua_State *L) {
     SurfaceUserdata *surface;
 
     format = format_from_lua(L, 2);
-    width = luaL_checkint(L, 3);
+    width = luaL_checkinteger(L, 3);
     luaL_argcheck(L, width >= 0, 3, "image width cannot be negative");
-    height = luaL_checkint(L, 4);
+    height = luaL_checkinteger(L, 4);
     luaL_argcheck(L, height >= 0, 4, "image height cannot be negative");
 
     surface = create_surface_userdata(L);

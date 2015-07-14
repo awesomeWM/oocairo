@@ -86,8 +86,8 @@ region_gc (lua_State *L) {
 static int
 region_contains_point (lua_State *L) {
     cairo_region_t **ud = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_REGION);
-    int x = luaL_checkint(L, 2);
-    int y = luaL_checkint(L, 3);
+    int x = luaL_checkinteger(L, 2);
+    int y = luaL_checkinteger(L, 3);
     lua_pushboolean(L, cairo_region_contains_point(*ud, x, y));
     return 1;
 }
@@ -138,8 +138,8 @@ region_is_empty (lua_State *L) {
 static int
 region_translate (lua_State *L) {
     cairo_region_t **ud = luaL_checkudata(L, 1, OOCAIRO_MT_NAME_REGION);
-    int x = luaL_checkint(L, 2);
-    int y = luaL_checkint(L, 3);
+    int x = luaL_checkinteger(L, 2);
+    int y = luaL_checkinteger(L, 3);
     cairo_region_translate(*ud, x, y);
     return 0;
 }

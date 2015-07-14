@@ -37,7 +37,7 @@ path_each_iter (lua_State *L) {
     if (lua_isnoneornil(L, 2))
         i = 0;
     else {
-        i = luaL_checkint(L, 2);
+        i = luaL_checkinteger(L, 2);
         luaL_argcheck(L, i >= 0 && i < path->num_data, 2,
                       "path index out of range");
         i += path->data[i].header.length;
