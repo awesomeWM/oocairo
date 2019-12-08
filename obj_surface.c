@@ -769,7 +769,7 @@ map_to_image(lua_State *L)
         from_lua_rectangle(L, prect, 2);
     }
 
-    res = create_surface_userdata(L);
+    res = &create_surface_userdata(L)->surface;
     *res = cairo_surface_map_to_image(*obj, prect);
     return 1;
 }
