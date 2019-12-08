@@ -1,3 +1,19 @@
+1.5     2019-12-08
+
+* Add support for new API from cairo 1.10:
+   + Mime data
+   + Regions
+   + New operators
+* Add support for new API in cairo 1.12:
+   + Mesh patterns
+   + cairo_surface_supports_mime_type()
+   + cairo_create_similar_image()
+   + cairo_map_to_image()
+* Add support for Lua 5.2 and Lua 5.3.
+* Add C API for pushing cairo objects.
+* Fix test suite failure with cairo 1.12.
+* Set __name field in metatables for better Lua 5.3 error messages.
+
 1.4     2011-05-18
 
  * Fixed various minor problems with the build system.
