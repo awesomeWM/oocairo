@@ -953,6 +953,9 @@ create_object_metatable (lua_State *L, const char *mt_name,
         lua_pushliteral(L, "_NAME");
         lua_pushstring(L, debug_name);
         lua_rawset(L, -3);
+        lua_pushliteral(L, "__name");
+        lua_pushstring(L, debug_name);
+        lua_rawset(L, -3);
         add_funcs_to_table(L, methods);
         lua_pushliteral(L, "__index");
         lua_pushvalue(L, -2);
