@@ -16,7 +16,7 @@ include_HEADERS = oocairo.h
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = oocairo.pc
 
-TESTS_ENVIRONMENT = echo 'lunit.main({...})' | LUA_PATH='@srcdir@/?.lua' LUA_CPATH='.libs/lib?.so' lua -e 'srcdir="@srcdir@"' -llunit -
+LOG_COMPILER = "@abs_srcdir@/run-test.sh" "${abs_srcdir}"
 TESTS  = test/context.lua
 TESTS += test/font_face.lua
 TESTS += test/font_opt.lua
@@ -32,7 +32,7 @@ TESTS += test/surface.lua
 TESTS += test/svg_surface.lua
 TESTS += test/region.lua
 EXTRA_DIST += examples/images/pattern.png
-EXTRA_DIST += $(TESTS) lunit.lua test-setup.lua lunit-console.lua test-loading.lua
+EXTRA_DIST += $(TESTS) lunit.lua test-setup.lua lunit-console.lua test-loading.lua run-test.sh
 
 # Documentation
 EXTRA_DIST += doc/lua-oocairo.pod doc/lua-oocairo-context.pod doc/lua-oocairo-fontface.pod doc/lua-oocairo-fontopt.pod
