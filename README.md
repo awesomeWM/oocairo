@@ -75,7 +75,7 @@ Running tests
 ---------------
 
 The module comes with a test suite in the 'test' directory, which at least
-on Linux systems can be run with 'make test'.  If there are any problems
+on Linux systems can be run with 'make check'.  If there are any problems
 with the test programs being able to load your compiled 'oocairo' module,
 try adjusting the first few lines of 'test-setup.lua'.
 
