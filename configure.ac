@@ -19,7 +19,7 @@ LDFLAGS="$LDFLAGS $LDFLAGS_NOUNDEFINED"
 # Lua gets different names in different distros :(
 PKG_PROG_PKG_CONFIG
 AC_CACHE_CHECK([for lua], [oocairo_cv_lua_name],
-    [for lua_name in lua lua5.1 lua5.2
+    [for lua_name in lua lua5.1 lua5.2 lua5.3 luajit
     do
       PKG_CHECK_EXISTS([$lua_name], [oocairo_cv_lua_name=$lua_name ; break])
     done
