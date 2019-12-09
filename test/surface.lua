@@ -1,8 +1,21 @@
 require "test-setup"
-require "lunit"
+local lunit = require "lunit"
 local Cairo = require "oocairo"
 
-module("test.surface", lunit.testcase, package.seeall)
+local assert_error      = lunit.assert_error
+local assert_true       = lunit.assert_true
+local assert_false      = lunit.assert_false
+local assert_equal      = lunit.assert_equal
+local assert_userdata   = lunit.assert_userdata
+local assert_table      = lunit.assert_table
+local assert_number     = lunit.assert_number
+local assert_match      = lunit.assert_match
+local assert_string     = lunit.assert_string
+local assert_boolean    = lunit.assert_boolean
+local assert_not_equal  = lunit.assert_not_equal
+local assert_nil        = lunit.assert_nil
+
+local module = { _NAME="test.surface" }
 
 -- Some tests use this, but it isn't essential, so they will be skipped if
 -- the 'memoryfile' module isn't installed.
@@ -13,7 +26,7 @@ do
     if ok then MemFile = mod end
 end
 
-teardown = clean_up_temp_files
+module.teardown = clean_up_temp_files
 
 local FILENAME = (srcdir or ".") .. "/examples/images/pattern.png"
 local WIDTH, HEIGHT = 15, 10
@@ -27,7 +40,7 @@ local function check_image_surface (surface, desc)
     end
 end
 
-function test_image_surface_create ()
+function module.test_image_surface_create ()
     for format, content in pairs({
         rgb24 = "color", argb32 = "color-alpha",
         a8 = "alpha", a1 = "alpha"
@@ -42,13 +55,13 @@ function test_image_surface_create ()
     end
 end
 
-function test_double_gc ()
+function module.test_double_gc ()
     local surface = Cairo.image_surface_create("rgb24", 23, 45)
     surface:__gc()
     surface:__gc()
 end
 
-function test_image_surface_create_bad ()
+function module.test_image_surface_create_bad ()
     assert_error("bad format", function ()
         Cairo.image_surface_create("foo", 23, 45)
     end)
@@ -77,13 +90,13 @@ local function do_test_surface_create_similar (creator, formats)
     end
 end
 
-function test_surface_create_similar ()
+function module.test_surface_create_similar ()
     do_test_surface_create_similar(Cairo.surface_create_similar,
             { color = "color", alpha = "alpha", ["color-alpha"] = "color-alpha" })
 end
 
 if Cairo.check_version(1, 12, 0) then
-    function test_surface_create_similar_image ()
+    function module.test_surface_create_similar_image ()
         do_test_surface_create_similar(Cairo.surface_create_similar_image,
             { argb32 = "color-alpha", rgb24 = "color", a8 = "alpha", a1 = "alpha" })
     end
@@ -108,17 +121,17 @@ local function do_test_surface_create_similar_bad (creator)
     end)
 end
 
-function test_surface_create_similar_bad ()
+function module.test_surface_create_similar_bad ()
     do_test_surface_create_similar_bad(Cairo.surface_create_similar)
 end
 
 if Cairo.check_version(1, 12, 0) then
-    function test_surface_create_similar_image_bad ()
+    function module.test_surface_create_similar_image_bad ()
         do_test_surface_create_similar_bad(Cairo.surface_create_similar_image)
     end
 end
 
-function test_device_offset ()
+function module.test_device_offset ()
     local surface = Cairo.image_surface_create("rgb24", 23, 45)
     local x, y = surface:get_device_offset()
     assert_equal(0, x)
@@ -129,7 +142,7 @@ function test_device_offset ()
     assert_equal(3.2, y)
 end
 
-function test_fallback_resolution ()
+function module.test_fallback_resolution ()
     local surface = Cairo.image_surface_create("rgb24", 23, 45)
     if surface.get_fallback_resolution then
         local x, y = surface:get_fallback_resolution()
@@ -145,7 +158,7 @@ function test_fallback_resolution ()
 end
 
 if Cairo.HAS_SVG_SURFACE then
-    function test_not_image_surface ()
+    function module.test_not_image_surface ()
         local surface = Cairo.svg_surface_create(tmpname(), 300, 200)
         assert_error("get_width on non-image surface",
                      function () surface:get_width() end)
@@ -157,14 +170,14 @@ if Cairo.HAS_SVG_SURFACE then
     end
 end
 
-function test_not_pdf_or_ps_surface ()
+function module.test_not_pdf_or_ps_surface ()
     local surface = Cairo.image_surface_create("rgb24", 30, 20)
     assert_error("set_size on non-PDF or PostScript surface",
                  function () surface:set_size(40, 50) end)
 end
 
 if Cairo.HAS_PS_SURFACE then
-    function test_not_ps_surface ()
+    function module.test_not_ps_surface ()
         local surface = Cairo.image_surface_create("rgb24", 30, 20)
         assert_error("get_eps on non-PS surface",
                      function () surface:get_eps() end)
@@ -180,12 +193,12 @@ local function check_wood_image_surface (surface)
 end
 
 if Cairo.HAS_PNG_FUNCTIONS then
-    function test_create_from_png ()
+    function module.test_create_from_png ()
         local surface = Cairo.image_surface_create_from_png(FILENAME)
         check_wood_image_surface(surface)
     end
 
-    function test_create_from_png_error ()
+    function module.test_create_from_png_error ()
         assert_error("trying to load PNG file which doesn't exist", function ()
             Cairo.image_surface_create_from_png("nonexistent-file.png")
         end)
@@ -194,7 +207,7 @@ if Cairo.HAS_PNG_FUNCTIONS then
         end)
     end
 
-    function test_create_from_png_stream ()
+    function module.test_create_from_png_stream ()
         local fh = assert(io.open(FILENAME, "rb"))
         local surface = Cairo.image_surface_create_from_png(fh)
         fh:close()
@@ -203,7 +216,7 @@ if Cairo.HAS_PNG_FUNCTIONS then
 end
 
 if MemFile and Cairo.HAS_PNG_FUNCTIONS then
-    function test_create_from_png_string ()
+    function module.test_create_from_png_string ()
         local fh = assert(io.open(FILENAME, "rb"))
         local data = fh:read("*a")
         fh:close()
@@ -225,14 +238,14 @@ local function check_file_contains_png (filename)
 end
 
 if Cairo.HAS_PNG_FUNCTIONS then
-    function test_write_to_png ()
+    function module.test_write_to_png ()
         local surface = Cairo.image_surface_create("rgb24", 23, 45)
         local filename = tmpname()
         surface:write_to_png(filename)
         check_file_contains_png(filename)
     end
 
-    function test_write_to_png_stream ()
+    function module.test_write_to_png_stream ()
         local surface = Cairo.image_surface_create("rgb24", 23, 45)
         local filename = tmpname()
         local fh = assert(io.open(filename, "wb"))
@@ -243,7 +256,7 @@ if Cairo.HAS_PNG_FUNCTIONS then
 end
 
 if MemFile and Cairo.HAS_PNG_FUNCTIONS then
-    function test_write_to_png_string ()
+    function module.test_write_to_png_string ()
         local surface = Cairo.image_surface_create("rgb24", 23, 45)
         local fh = MemFile.open()
         surface:write_to_png(fh)
@@ -252,7 +265,7 @@ if MemFile and Cairo.HAS_PNG_FUNCTIONS then
     end
 end
 
-function test_font_options ()
+function module.test_font_options ()
     local surface = Cairo.image_surface_create("rgb24", 23, 45)
     local opt = surface:get_font_options()
     assert_userdata(opt)
@@ -260,7 +273,7 @@ function test_font_options ()
     assert_equal("default", opt:get_antialias())
 end
 
-function test_format_stride_for_width ()
+function module.test_format_stride_for_width ()
     -- Check the minimum values, because depending on platform there might
     -- be extra bytes for alignment.
     assert(Cairo.format_stride_for_width("a1", 10) >= 4)
@@ -269,7 +282,7 @@ function test_format_stride_for_width ()
     assert(Cairo.format_stride_for_width("argb32", 10) >= 40)
 end
 
-function test_byte_order ()
+function module.test_byte_order ()
     assert_string(Cairo.BYTE_ORDER)
     assert("argb" == Cairo.BYTE_ORDER or "bgra" == Cairo.BYTE_ORDER)
 end
@@ -290,7 +303,7 @@ local function check_pixel_in_data(data, stride, x, y, a, r, g, b)
     assert_equal(b, got_b, msg)
 end
 
-function test_get_data ()
+function module.test_get_data ()
     -- Test with a very small image surface, so that we can predict what
     -- each pixel will be.
     local surface = Cairo.image_surface_create("argb32", 3, 2)
@@ -318,7 +331,7 @@ function test_get_data ()
 end
 
 if Cairo.check_version(1, 10, 0) then
-    function test_subsurface()
+    function module.test_subsurface()
         local surface = Cairo.image_surface_create("rgb24", 23, 45)
         local sub = surface:create_for_rectangle(10, 11, 12, 13)
         local sub_type = sub:get_type()
@@ -329,7 +342,7 @@ if Cairo.check_version(1, 10, 0) then
 end
 
 if pcall(require, "gtk") then
-    function test_get_gdk_pixbuf_argb32 ()
+    function module.test_get_gdk_pixbuf_argb32 ()
         local surface = Cairo.image_surface_create("argb32", 23, 14)
         local pixbuf = surface:get_gdk_pixbuf()
         assert_equal(gtk.GDK_COLORSPACE_RGB, pixbuf:get_colorspace())
@@ -340,7 +353,7 @@ if pcall(require, "gtk") then
         assert_equal(14, pixbuf:get_height())
     end
 
-    function test_get_gdk_pixbuf_rgb24 ()
+    function module.test_get_gdk_pixbuf_rgb24 ()
         local surface = Cairo.image_surface_create("rgb24", 23, 14)
         local pixbuf = surface:get_gdk_pixbuf()
         assert_equal(gtk.GDK_COLORSPACE_RGB, pixbuf:get_colorspace())
@@ -351,14 +364,14 @@ if pcall(require, "gtk") then
         assert_equal(14, pixbuf:get_height())
     end
 
-    function test_get_gdk_pixbuf_a8 ()
+    function module.test_get_gdk_pixbuf_a8 ()
         local surface = Cairo.image_surface_create("a8", 23, 14)
         assert_error("GdkPixbuf from A8 image not supported",
                      function () surface:get_gdk_pixbuf() end)
     end
 end
 
-function test_equality ()
+function module.test_equality ()
     -- Create two userdatas containing the same pointer value (different
     -- objects in Lua, but the same objects in C, so should be equal).
     local surface1 = Cairo.image_surface_create("rgb24", 23, 45)
@@ -373,7 +386,7 @@ function test_equality ()
 end
 
 if Cairo.HAS_RECORDING_SURFACE then
-    function test_recording_surface ()
+    function module.test_recording_surface ()
         local function test(surface, expected_x, expected_y, expected_width, expected_height)
             local x, y, width, height = Cairo.recording_surface_ink_extents(surface)
             assert_equal(0, x)
@@ -405,7 +418,7 @@ if Cairo.HAS_RECORDING_SURFACE then
 end
 
 if Cairo.check_version(1, 10, 0) then
-    function test_mime_data ()
+    function module.test_mime_data ()
         local function test(mime_type, data)
             local surface = Cairo.image_surface_create("rgb24", 0, 0)
             assert_equal(surface:set_mime_data(mime_type, data), nil)
@@ -425,7 +438,7 @@ if Cairo.check_version(1, 10, 0) then
 end
 
 if Cairo.check_version(1, 12, 0) then
-    function test_supports_mime_type ()
+    function module.test_supports_mime_type ()
         local function test(surface, supported, unsupported)
             assert_true(surface:supports_mime_type(supported))
             assert_false(surface:supports_mime_type(unsupported))
@@ -450,7 +463,7 @@ if Cairo.check_version(1, 12, 0) then
         end
     end
 
-    function test_map_image ()
+    function module.test_map_image ()
         local surface = Cairo.image_surface_create("rgb24", 2, 2)
 
         -- first unbounded
@@ -462,5 +475,8 @@ if Cairo.check_version(1, 12, 0) then
         surface:unmap_image(img)
     end
 end
+
+lunit.testcase(module)
+return module
 
 -- vi:ts=4 sw=4 expandtab

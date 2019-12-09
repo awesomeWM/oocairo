@@ -2,6 +2,8 @@
 -- with libtool.
 package.cpath = ".libs/liblua-?.so;" .. package.cpath
 
+local lunit = require "lunit"
+
 local _tmp_filenames = {}
 function tmpname ()
     local filename = os.tmpname()

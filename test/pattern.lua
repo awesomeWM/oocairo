@@ -1,10 +1,23 @@
 require "test-setup"
-require "lunit"
+local lunit = require "lunit"
 local Cairo = require "oocairo"
 
-module("test.pattern", lunit.testcase, package.seeall)
+local assert_error      = lunit.assert_error
+local assert_true       = lunit.assert_true
+local assert_false      = lunit.assert_false
+local assert_equal      = lunit.assert_equal
+local assert_userdata   = lunit.assert_userdata
+local assert_table      = lunit.assert_table
+local assert_number     = lunit.assert_number
+local assert_match      = lunit.assert_match
+local assert_string     = lunit.assert_string
+local assert_boolean    = lunit.assert_boolean
+local assert_not_equal  = lunit.assert_not_equal
+local assert_nil        = lunit.assert_nil
 
-function test_solid_rgb ()
+local module = { _NAME="test.pattern" }
+
+function module.test_solid_rgb ()
     local pat = Cairo.pattern_create_rgb(0.25, 0.5, 0.75)
     assert_userdata(pat)
     assert_equal("cairo pattern object", pat._NAME)
@@ -18,7 +31,7 @@ function test_solid_rgb ()
     assert_equal(1, a)
 end
 
-function test_solid_rgba ()
+function module.test_solid_rgba ()
     local pat = Cairo.pattern_create_rgba(0.25, 0.5, 0.75, 0.125)
     assert_userdata(pat)
     assert_equal("cairo pattern object", pat._NAME)
@@ -32,7 +45,7 @@ function test_solid_rgba ()
     assert_equal(0.125, a)
 end
 
-function test_surface ()
+function module.test_surface ()
     local surface = Cairo.image_surface_create("rgb24", 23, 45)
     local pat = Cairo.pattern_create_for_surface(surface)
     assert_userdata(pat)
@@ -48,7 +61,7 @@ function test_surface ()
     assert_equal(45, ht)
 end
 
-function test_linear_gradient ()
+function module.test_linear_gradient ()
     local g = Cairo.pattern_create_linear(3, 4, 8, 9)
     assert_userdata(g)
     assert_equal("cairo pattern object", g._NAME)
@@ -62,7 +75,7 @@ function test_linear_gradient ()
     assert_equal(9, y1)
 end
 
-function test_radial_gradient ()
+function module.test_radial_gradient ()
     local g = Cairo.pattern_create_radial(3, 4, 5, 8, 9, 10)
     assert_userdata(g)
     assert_equal("cairo pattern object", g._NAME)
@@ -78,7 +91,7 @@ function test_radial_gradient ()
     assert_equal(10, r1)
 end
 
-function test_wrong_pattern_type ()
+function module.test_wrong_pattern_type ()
     local pat = Cairo.pattern_create_radial(3, 4, 5, 8, 9, 10)
     assert_error("not linear gradient, get points", function ()
         pat:get_linear_points()
@@ -103,7 +116,7 @@ local function check_color_stop (i, stop, offset, r, g, b, a)
     assert_equal(stop[5], a, "alpha for color stop " .. i)
 end
 
-function test_add_color_stop ()
+function module.test_add_color_stop ()
     local pat = Cairo.pattern_create_linear(3, 4, 8, 9)
     pat:add_color_stop_rgb(0, 0.25, 0.5, 0.75)
     pat:add_color_stop_rgb(0.125, 1, 0, 1)
@@ -119,7 +132,7 @@ function test_add_color_stop ()
     check_color_stop(4, stops[4], 1, 1, 1, 1, 1)
 end
 
-function test_extend ()
+function module.test_extend ()
     local pat = Cairo.pattern_create_linear(3, 4, 8, 9)
     assert_error("bad value", function () pat:set_extend("foo") end)
     assert_error("missing value", function () pat:set_extend(nil) end)
@@ -130,7 +143,7 @@ function test_extend ()
     end
 end
 
-function test_filter ()
+function module.test_filter ()
     local pat = Cairo.pattern_create_linear(3, 4, 8, 9)
     assert_error("bad value", function () pat:set_filter("foo") end)
     assert_error("missing value", function () pat:set_filter(nil) end)
@@ -143,7 +156,7 @@ function test_filter ()
     end
 end
 
-function test_not_gradient_pattern ()
+function module.test_not_gradient_pattern ()
     local pat = Cairo.pattern_create_rgb(0.25, 0.5, 0.75)
     assert_error("add_color_stop_rgb on non-gradient pattern",
                  function () pat:add_color_stop_rgb(0, 0.1, 0.2, 0.3) end)
@@ -151,7 +164,7 @@ function test_not_gradient_pattern ()
                  function () pat:add_color_stop_rgba(0, 0.1, 0.2, 0.3, 0.4) end)
 end
 
-function test_equality ()
+function module.test_equality ()
     -- Different userdatas, same Cairo object.
     local surface = Cairo.image_surface_create("rgb24", 23, 45)
     local pattern1 = Cairo.pattern_create_rgb(0.25, 0.5, 0.75)
@@ -165,10 +178,13 @@ function test_equality ()
     assert_false(pattern1 == pattern3)
 end
 
-function test_double_gc ()
+function module.test_double_gc ()
     local pattern = Cairo.pattern_create_rgb(0.25, 0.5, 0.75)
     pattern:__gc()
     pattern:__gc()
 end
+
+lunit.testcase(module)
+return module
 
 -- vi:ts=4 sw=4 expandtab

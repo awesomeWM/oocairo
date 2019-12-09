@@ -44,14 +44,28 @@ local error           = error
 local string_sub      = string.sub
 local string_format   = string.format
 
-
-module("lunit", package.seeall)     -- FIXME: Remove package.seeall
-
-local lunit = _M
+local lunit = {}
 
 local __failure__ = {}    -- Type tag for failed assertions
 
 local typenames = { "nil", "boolean", "number", "string", "table", "function", "thread", "userdata" }
+
+-- Type check functions
+
+for _, typename in ipairs(typenames) do
+  lunit["is_"..typename] = function(x)
+    return type(x) == typename
+  end
+end
+
+local is_nil      = lunit.is_nil
+local is_boolean  = lunit.is_boolean
+local is_number   = lunit.is_number
+local is_string   = lunit.is_string
+local is_table    = lunit.is_table
+local is_function = lunit.is_function
+local is_thread   = lunit.is_thread
+local is_userdata = lunit.is_userdata
 
 
 
@@ -113,23 +127,6 @@ do
 end
 
 
--- Type check functions
-
-for _, typename in ipairs(typenames) do
-  lunit["is_"..typename] = function(x)
-    return type(x) == typename
-  end
-end
-
-local is_nil      = is_nil
-local is_boolean  = is_boolean
-local is_number   = is_number
-local is_string   = is_string
-local is_table    = is_table
-local is_function = is_function
-local is_thread   = is_thread
-local is_userdata = is_userdata
-
 
 local function failure(name, usermsg, defaultmsg, ...)
   local errobj = {
@@ -143,25 +140,25 @@ end
 traceback_hide( failure )
 
 
-function fail(msg)
-  stats.assertions = stats.assertions + 1
+function lunit.fail(msg)
+  lunit.stats.assertions = lunit.stats.assertions + 1
   failure( "fail", msg, "failure" )
 end
-traceback_hide( fail )
+traceback_hide( lunit.fail )
 
 
-function assert(assertion, msg)
-  stats.assertions = stats.assertions + 1
+function lunit.assert(assertion, msg)
+  lunit.stats.assertions = lunit.stats.assertions + 1
   if not assertion then
     failure( "assert", msg, "assertion failed" )
   end
   return assertion
 end
-traceback_hide( assert )
+traceback_hide( lunit.assert )
 
 
-function assert_true(actual, msg)
-  stats.assertions = stats.assertions + 1
+function lunit.assert_true(actual, msg)
+  lunit.stats.assertions = lunit.stats.assertions + 1
   local actualtype = type(actual)
   if actualtype ~= "boolean" then
     failure( "assert_true", msg, "true expected but was a "..actualtype )
@@ -171,11 +168,11 @@ function assert_true(actual, msg)
   end
   return actual
 end
-traceback_hide( assert_true )
+traceback_hide( lunit.assert_true )
 
 
-function assert_false(actual, msg)
-  stats.assertions = stats.assertions + 1
+function lunit.assert_false(actual, msg)
+  lunit.stats.assertions = lunit.stats.assertions + 1
   local actualtype = type(actual)
   if actualtype ~= "boolean" then
     failure( "assert_false", msg, "false expected but was a "..actualtype )
@@ -185,11 +182,11 @@ function assert_false(actual, msg)
   end
   return actual
 end
-traceback_hide( assert_false )
+traceback_hide( lunit.assert_false )
 
 
-function assert_equal(expected, actual, msg)
-  stats.assertions = stats.assertions + 1
+function lunit.assert_equal(expected, actual, msg)
+  lunit.stats.assertions = lunit.stats.assertions + 1
   if expected ~= actual then
     local exp = (expected == nil) and "nil" or "'"..expected.."'"
     local got = (actual == nil) and "nil" or "'"..actual.."'"
@@ -197,21 +194,21 @@ function assert_equal(expected, actual, msg)
   end
   return actual
 end
-traceback_hide( assert_equal )
+traceback_hide( lunit.assert_equal )
 
 
-function assert_not_equal(unexpected, actual, msg)
-  stats.assertions = stats.assertions + 1
+function lunit.assert_not_equal(unexpected, actual, msg)
+  lunit.stats.assertions = lunit.stats.assertions + 1
   if unexpected == actual then
     failure( "assert_not_equal", msg, "'%s' not expected but was one", unexpected )
   end
   return actual
 end
-traceback_hide( assert_not_equal )
+traceback_hide( lunit.assert_not_equal )
 
 
-function assert_match(pattern, actual, msg)
-  stats.assertions = stats.assertions + 1
+function lunit.assert_match(pattern, actual, msg)
+  lunit.stats.assertions = lunit.stats.assertions + 1
   if not is_string(pattern) then
     failure( "assert_match", msg, "expected the pattern as a string but was '%s'", pattern )
   end
@@ -223,11 +220,11 @@ function assert_match(pattern, actual, msg)
   end
   return actual
 end
-traceback_hide( assert_match )
+traceback_hide( lunit.assert_match )
 
 
-function assert_not_match(pattern, actual, msg)
-  stats.assertions = stats.assertions + 1
+function lunit.assert_not_match(pattern, actual, msg)
+  lunit.stats.assertions = lunit.stats.assertions + 1
   if not is_string(pattern) then
     failure( "assert_not_match", msg, "expected the pattern as a string but was '%s'", pattern )
   end
@@ -239,11 +236,11 @@ function assert_not_match(pattern, actual, msg)
   end
   return actual
 end
-traceback_hide( assert_not_match )
+traceback_hide( lunit.assert_not_match )
 
 
-function assert_error(msg, func)
-  stats.assertions = stats.assertions + 1
+function lunit.assert_error(msg, func)
+  lunit.stats.assertions = lunit.stats.assertions + 1
   if func == nil then
     func, msg = msg, nil
   end
@@ -256,11 +253,11 @@ function assert_error(msg, func)
     failure( "assert_error", msg, "error expected but no error occurred" )
   end
 end
-traceback_hide( assert_error )
+traceback_hide( lunit.assert_error )
 
 
-function assert_pass(msg, func)
-  stats.assertions = stats.assertions + 1
+function lunit.assert_pass(msg, func)
+  lunit.stats.assertions = lunit.stats.assertions + 1
   if func == nil then
     func, msg = msg, nil
   end
@@ -273,7 +270,7 @@ function assert_pass(msg, func)
     failure( "assert_pass", msg, "no error expected but error was: '%s'", errmsg )
   end
 end
-traceback_hide( assert_pass )
+traceback_hide( lunit.assert_pass )
 
 
 -- lunit.assert_typename functions
@@ -281,7 +278,7 @@ traceback_hide( assert_pass )
 for _, typename in ipairs(typenames) do
   local assert_typename = "assert_"..typename
   lunit[assert_typename] = function(actual, msg)
-    stats.assertions = stats.assertions + 1
+    lunit.stats.assertions = lunit.stats.assertions + 1
     local actualtype = type(actual)
     if actualtype ~= typename then
       failure( assert_typename, msg, typename.." expected but was a "..actualtype )
@@ -297,9 +294,9 @@ end
 for _, typename in ipairs(typenames) do
   local assert_not_name = "assert_not_"..typename
   lunit[assert_not_name] = function(actual, msg)
-    stats.assertions = stats.assertions + 1
+    lunit.stats.assertions = lunit.stats.assertions + 1
     if type(actual) == typename then
-      failure( assert_not_typename, msg, typename.." not expected but was one" )
+      failure( lunit.assert_not_typename, msg, typename.." not expected but was one" )
     end
   end
   traceback_hide( lunit[assert_not_name] )
@@ -307,7 +304,7 @@ end
 
 
 function lunit.clearstats()
-  stats = {
+  lunit.stats = {
     assertions  = 0;
     passed      = 0;
     failed      = 0;
@@ -337,7 +334,7 @@ do
     if not ok then
       return error("lunit.loadrunner: Can't load test runner: "..runner, 0)
     end
-    return setrunner(runner)
+    return lunit.setrunner(runner)
   end
 
   function report(event, ...)
@@ -350,15 +347,15 @@ do
   function reporterrobj(context, tcname, testname, errobj)
     local fullname = tcname .. "." .. testname
     if context == "setup" then
-      fullname = fullname .. ":" .. setupname(tcname, testname)
+      fullname = fullname .. ":" .. lunit.setupname(tcname, testname)
     elseif context == "teardown" then
-      fullname = fullname .. ":" .. teardownname(tcname, testname)
+      fullname = fullname .. ":" .. lunit.teardownname(tcname, testname)
     end
     if errobj.type == __failure__ then
-      stats.failed = stats.failed + 1
+      lunit.stats.failed = lunit.stats.failed + 1
       report("fail", fullname, errobj.where, errobj.msg, errobj.usermsg)
     else
-      stats.errors = stats.errors + 1
+      lunit.stats.errors = lunit.stats.errors + 1
       report("err", fullname, errobj.msg, errobj.tb)
     end
   end
@@ -467,21 +464,21 @@ function lunit.runtest(tcname, testname)
 
   local tc = testcase(tcname)
 
-  local setup_ok    =              callit( "setup", tc[setupname(tcname)] )
+  local setup_ok    =              callit( "setup", tc[lunit.setupname(tcname)] )
   local test_ok     = setup_ok and callit( "test", tc[testname] )
-  local teardown_ok = setup_ok and callit( "teardown", tc[teardownname(tcname)] )
+  local teardown_ok = setup_ok and callit( "teardown", tc[lunit.teardownname(tcname)] )
 
   if setup_ok and test_ok and teardown_ok then
-    stats.passed = stats.passed + 1
+    lunit.stats.passed = lunit.stats.passed + 1
     report("pass", tcname, testname)
   end
 end
-traceback_hide(runtest)
+traceback_hide(lunit.runtest)
 
 
 
 function lunit.run()
-  clearstats()
+  lunit.clearstats()
   report("begin")
   for testcasename in lunit.testcases() do
     -- Run tests in the testcases.  Have to collect the names first in case
@@ -492,20 +489,20 @@ function lunit.run()
       tests[#tests + 1] = testname
     end
     for _, testname in ipairs(tests) do
-      runtest(testcasename, testname)
+      lunit.runtest(testcasename, testname)
     end
   end
   report("done")
 
-  if stats.failed > 0 or stats.errors > 0 then
+  if lunit.stats.failed > 0 or lunit.stats.errors > 0 then
     os.exit(1)
   end
 end
-traceback_hide(run)
+traceback_hide(lunit.run)
 
 
 function lunit.loadonly()
-  clearstats()
+  lunit.clearstats()
   report("begin")
   report("done")
 end
@@ -563,7 +560,7 @@ end
 
 -- Called from 'lunit' shell script.
 
-function main(argv)
+function lunit.main(argv)
   argv = argv or {}
 
   -- FIXME: Error handling and error messages aren't nice.
@@ -615,13 +612,15 @@ function main(argv)
     end
   end
 
-  loadrunner(runner or "lunit-console")
+  lunit.loadrunner(runner or "lunit-console")
 
   if doloadonly then
-    return loadonly()
+    return lunit.loadonly()
   else
-    return run(testpatterns)
+    return lunit.run(testpatterns)
   end
 end
 
-clearstats()
+lunit.clearstats()
+
+return lunit

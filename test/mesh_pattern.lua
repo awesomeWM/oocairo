@@ -1,15 +1,27 @@
 require "test-setup"
-require "lunit"
+local lunit = require "lunit"
 local Cairo = require "oocairo"
 
-module("test.mesh_pattern", lunit.testcase, package.seeall)
+local assert_error      = lunit.assert_error
+local assert_true       = lunit.assert_true
+local assert_false      = lunit.assert_false
+local assert_equal      = lunit.assert_equal
+local assert_userdata   = lunit.assert_userdata
+local assert_table      = lunit.assert_table
+local assert_number     = lunit.assert_number
+local assert_match      = lunit.assert_match
+local assert_string     = lunit.assert_string
+local assert_boolean    = lunit.assert_boolean
+local assert_not_equal  = lunit.assert_not_equal
+
+local module = { _NAME="test.mesh_pattern" }
 
 if Cairo.check_version(1, 12, 0) then
-    function setup ()
+    function module.setup ()
         pattern = Cairo.pattern_create_mesh()
     end
 
-    function teardown ()
+    function module.teardown ()
         if pattern then
             assert_equal(nil, pattern:status(), "Error status on mesh pattern")
         end
@@ -40,7 +52,7 @@ if Cairo.check_version(1, 12, 0) then
         pattern:end_patch()
     end
 
-    function test_solid_rgb ()
+    function module.test_solid_rgb ()
         local function check(r1, g1, b1, a1, r2, g2, b2, a2)
             assert_equal(r1, r2)
             assert_equal(g1, g2)
@@ -61,12 +73,12 @@ if Cairo.check_version(1, 12, 0) then
         check(1, 0, 0, 0,   pattern:get_corner_color_rgba(1, 3))
     end
 
-    function test_patch_count()
+    function module.test_patch_count()
         add_patches()
         assert_equal(2, pattern:get_patch_count())
     end
 
-    function test_control_point()
+    function module.test_control_point()
         local points = {
             { 1, 2 },
             { 42, 12 },
@@ -116,7 +128,7 @@ if Cairo.check_version(1, 12, 0) then
         end
     end
 
-    function test_each ()
+    function module.test_each ()
         pattern:begin_patch()
         pattern:move_to(1, 2)
         pattern:line_to(3, 4)
@@ -144,11 +156,14 @@ if Cairo.check_version(1, 12, 0) then
         assert_equal("cairo path object", path._NAME)
     end
 
-    function test_double_gc ()
+    function module.test_double_gc ()
         pattern:__gc()
         pattern:__gc()
         pattern = nil
     end
 end
+
+lunit.testcase(module)
+return module
 
 -- vi:ts=4 sw=4 expandtab

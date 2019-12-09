@@ -1,8 +1,13 @@
 require "test-setup"
-require "lunit"
+local lunit = require "lunit"
 local Cairo = require "oocairo"
 
-module("test.context", lunit.testcase, package.seeall)
+local assert_error    = lunit.assert_error
+local assert_equal    = lunit.assert_equal
+local assert_userdata = lunit.assert_userdata
+local assert_table    = lunit.assert_table
+
+local module = { _NAME = "test.context" }
 
 local PI = 2 * math.asin(1)
 local EPSILON = 0.000001
@@ -11,24 +16,27 @@ local function assert_about_equal (expected, got, msg)
     assert(got > (expected - EPSILON) and got < (expected + EPSILON), msg)
 end
 
-function setup ()
+local surface
+local cr
+
+function module.setup ()
     surface = Cairo.image_surface_create("rgb24", 23, 45)
     cr = Cairo.context_create(surface)
 end
-function teardown ()
+function module.teardown ()
     assert_equal(nil, cr:status(), "Error status on context")
     assert_equal(nil, surface:status(), "Error status on surface")
     surface = nil
     cr = nil
 end
 
-function test_double_gc ()
+function module.test_double_gc ()
     local cr = Cairo.context_create(surface)
     cr:__gc()
     cr:__gc()
 end
 
-function test_antialias ()
+function module.test_antialias ()
     assert_error("bad value", function () cr:set_antialias("foo") end)
     assert_error("missing value", function () cr:set_antialias(nil) end)
     assert_equal("default", cr:get_antialias(), "default intact after error")
@@ -44,7 +52,7 @@ function test_antialias ()
     assert_equal("default", cr:get_antialias())
 end
 
-function test_dash ()
+function module.test_dash ()
     for i, dashpat in ipairs{ {}, {3}, {3,6,9} } do
         for offset = 0, #dashpat do
             local msg = "dash pattern " .. i .. ", offset " .. offset
@@ -59,7 +67,7 @@ function test_dash ()
     end
 end
 
-function test_dash_bad ()
+function module.test_dash_bad ()
     assert_error("missing offset type", function () cr:set_dash({}, nil) end)
     assert_error("missing pattern", function () cr:set_dash(nil, 0) end)
     assert_error("bad offset type", function () cr:set_dash({}, "foo") end)
@@ -71,7 +79,7 @@ function test_dash_bad ()
     assert_equal(0, offset, "default offset intact after errors")
 end
 
-function test_fill_rule ()
+function module.test_fill_rule ()
     assert_error("bad value", function () cr:set_fill_rule("foo") end)
     assert_error("missing value", function () cr:set_fill_rule(nil) end)
     assert_equal("winding", cr:get_fill_rule(), "default intact after error")
@@ -81,7 +89,7 @@ function test_fill_rule ()
     end
 end
 
-function test_line_cap ()
+function module.test_line_cap ()
     assert_error("bad value", function () cr:set_line_cap("foo") end)
     assert_error("missing value", function () cr:set_line_cap(nil) end)
     assert_equal("butt", cr:get_line_cap(), "default intact after error")
@@ -91,7 +99,7 @@ function test_line_cap ()
     end
 end
 
-function test_line_join ()
+function module.test_line_join ()
     assert_error("bad value", function () cr:set_line_join("foo") end)
     assert_error("missing value", function () cr:set_line_join(nil) end)
     assert_equal("miter", cr:get_line_join(), "default intact after error")
@@ -101,7 +109,7 @@ function test_line_join ()
     end
 end
 
-function test_line_width ()
+function module.test_line_width ()
     assert_error("bad type", function () cr:set_line_width("foo") end)
     assert_error("missing value", function () cr:set_line_width(nil) end)
     assert_error("negative width", function () cr:set_line_width(-3) end)
@@ -112,7 +120,7 @@ function test_line_width ()
     end
 end
 
-function test_miter_limit ()
+function module.test_miter_limit ()
     assert_error("bad type", function () cr:set_miter_limit("foo") end)
     assert_error("missing value", function () cr:set_miter_limit(nil) end)
     assert_equal(10, cr:get_miter_limit(), "default intact after error")
@@ -122,7 +130,7 @@ function test_miter_limit ()
     end
 end
 
-function test_operator ()
+function module.test_operator ()
     assert_error("bad value", function () cr:set_operator("foo") end)
     assert_error("missing value", function () cr:set_operator(nil) end)
     assert_equal("over", cr:get_operator(), "default intact after error")
@@ -147,7 +155,7 @@ function test_operator ()
     end
 end
 
-function test_save_restore ()
+function module.test_save_restore ()
     cr:save()
     cr:set_line_width(3)
     cr:save()
@@ -158,7 +166,7 @@ function test_save_restore ()
     assert_equal(2, cr:get_line_width())
 end
 
-function test_source_rgb ()
+function module.test_source_rgb ()
     cr:set_source_rgb(0.1, 0.2, 0.3)
     assert_error("not enough args", function () cr:set_source_rgb(0.1, 0.2) end)
     assert_error("bad arg type 1", function () cr:set_source_rgb("x", 0, 0) end)
@@ -166,7 +174,7 @@ function test_source_rgb ()
     assert_error("bad arg type 3", function () cr:set_source_rgb(0, 0, "x") end)
 end
 
-function test_source_rgba ()
+function module.test_source_rgba ()
     cr:set_source_rgba(0.1, 0.2, 0.3, 0.4)
     assert_error("not enough args",
                  function () cr:set_source_rgba(0.1, 0.2, 0.3) end)
@@ -180,7 +188,7 @@ function test_source_rgba ()
                  function () cr:set_source_rgba(0, 0, 0, "x") end)
 end
 
-function test_source_gdk_color ()
+function module.test_source_gdk_color ()
     local c = {}
     if pcall(require, "gtk") then c = gtk.new"GdkColor" end
     c.red = 0
@@ -206,7 +214,7 @@ function test_source_gdk_color ()
     assert(a > 0.249 and a < 0.251)
 end
 
-function test_source ()
+function module.test_source ()
     local src = Cairo.pattern_create_rgb(0.25, 0.5, 0.75)
     cr:set_source(src)
     local gotsrc = cr:get_source()
@@ -219,27 +227,27 @@ function test_source ()
     assert_equal(0.75, b)
 end
 
-function test_target ()
+function module.test_target ()
     local targ = cr:get_target()
     assert_userdata(targ)
     assert_equal("cairo surface object", targ._NAME)
 end
 
-function test_group_target ()
+function module.test_group_target ()
     cr:push_group()
     local targ = cr:get_group_target()
     assert_userdata(targ)
     assert_equal("cairo surface object", targ._NAME)
 end
 
-function test_pop_group ()
+function module.test_pop_group ()
     cr:push_group()
     local pat = cr:pop_group()
     assert_userdata(pat)
     assert_equal("cairo pattern object", pat._NAME)
 end
 
-function test_tolerance ()
+function module.test_tolerance ()
     assert_error("bad type", function () cr:set_tolerance("foo") end)
     assert_error("missing value", function () cr:set_tolerance(nil) end)
     assert_equal(0.1, cr:get_tolerance(), "default intact after error")
@@ -249,7 +257,7 @@ function test_tolerance ()
     end
 end
 
-function test_transform ()
+function module.test_transform ()
     cr:translate(10, 20)
     local x, y = cr:user_to_device(3, 4)
     assert_equal(13, x)
@@ -301,20 +309,20 @@ function test_transform ()
     assert_equal(100, y)
 end
 
-function test_text_extents ()
+function module.test_text_extents ()
     check_text_extents(cr:text_extents("foo bar quux"))
 end
 
-function test_glyph_extents ()
+function module.test_glyph_extents ()
     local glyphs = { {73,10,20}, {82,30,40}, {91,50,60} }
     check_text_extents(cr:glyph_extents(glyphs))
 end
 
-function test_font_extents ()
+function module.test_font_extents ()
     check_font_extents(cr:font_extents())
 end
 
-function test_font_options ()
+function module.test_font_options ()
     local origopt = cr:get_font_options()
     assert_userdata(origopt)
     assert_equal("cairo font options object", origopt._NAME)
@@ -326,5 +334,8 @@ function test_font_options ()
     local adjusted = cr:get_font_options()
     assert_equal("none", adjusted:get_antialias())
 end
+
+lunit.testcase(module)
+return module
 
 -- vi:ts=4 sw=4 expandtab

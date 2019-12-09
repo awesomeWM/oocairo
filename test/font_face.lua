@@ -1,10 +1,21 @@
 require "test-setup"
-require "lunit"
+local lunit = require "lunit"
 local Cairo = require "oocairo"
 
-module("test.font_face", lunit.testcase, package.seeall)
+local assert_error    = lunit.assert_error
+local assert_true     = lunit.assert_true
+local assert_false    = lunit.assert_false
+local assert_equal    = lunit.assert_equal
+local assert_userdata = lunit.assert_userdata
+local assert_table    = lunit.assert_table
+local assert_number   = lunit.assert_number
+local assert_match    = lunit.assert_match
+local assert_string   = lunit.assert_string
+local assert_boolean  = lunit.assert_boolean
 
-function test_double_gc ()
+local module = { _NAME = "test.font_face" }
+
+function module.test_double_gc ()
     local surface = Cairo.image_surface_create("rgb24", 23, 45)
     local cr = Cairo.context_create(surface)
     local face = cr:get_font_face()
@@ -12,7 +23,7 @@ function test_double_gc ()
     face:__gc()
 end
 
-function test_select_get_set_font_face ()
+function module.test_select_get_set_font_face ()
     local surface = Cairo.image_surface_create("rgb24", 23, 45)
     local cr = Cairo.context_create(surface)
 
@@ -31,7 +42,7 @@ function test_select_get_set_font_face ()
     assert_equal(serif, cr:get_font_face())
 end
 
-function test_select_font_face ()
+function module.test_select_font_face ()
     local surface = Cairo.image_surface_create("rgb24", 23, 45)
     local cr = Cairo.context_create(surface)
     cr:select_font_face("sans", "italic", "bold")
@@ -74,7 +85,7 @@ function test_select_font_face ()
                  function () cr:select_font_face("sans", "normal", "foo") end)
 end
 
-function test_toy_create_and_accessors ()
+function module.test_toy_create_and_accessors ()
     if Cairo.toy_font_face_create then
         local font = Cairo.toy_font_face_create("serif", "italic", "bold")
         assert_userdata(font)
@@ -101,7 +112,7 @@ function test_toy_create_and_accessors ()
     end
 end
 
-function test_user_font ()
+function module.test_user_font ()
     if Cairo.user_font_face_create then
         -- Should work with only one callback defined.
         local font = Cairo.user_font_face_create({
@@ -183,7 +194,7 @@ function test_user_font ()
     end
 end
 
-function test_user_font_providing_text_clusters ()
+function module.test_user_font_providing_text_clusters ()
     if Cairo.user_font_face_create and Cairo.HAS_PDF_SURFACE then
         local function text_to_glyphs (font, text, want_clusters)
             assert_true(want_clusters)
@@ -202,7 +213,7 @@ function test_user_font_providing_text_clusters ()
     end
 end
 
-function test_user_font_err ()
+function module.test_user_font_err ()
     if Cairo.user_font_face_create then
         -- Options should be provided in a table.
         local ok, err = pcall(Cairo.user_font_face_create, "foo")
@@ -227,7 +238,7 @@ function test_user_font_err ()
     end
 end
 
-function test_equality ()
+function module.test_equality ()
     -- Different userdatas, same Cairo object.
     local surface = Cairo.image_surface_create("rgb24", 23, 45)
     local cr = Cairo.context_create(surface)
@@ -240,5 +251,8 @@ function test_equality ()
     local font3 = cr:get_font_face()
     assert_false(font1 == font3)
 end
+
+lunit.testcase(module)
+return module
 
 -- vi:ts=4 sw=4 expandtab
