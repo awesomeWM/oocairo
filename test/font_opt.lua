@@ -1,23 +1,35 @@
 require "test-setup"
-require "lunit"
+local lunit = require "lunit"
 local Cairo = require "oocairo"
 
-module("test.font_opt", lunit.testcase, package.seeall)
+local assert_error      = lunit.assert_error
+local assert_true       = lunit.assert_true
+local assert_false      = lunit.assert_false
+local assert_equal      = lunit.assert_equal
+local assert_userdata   = lunit.assert_userdata
+local assert_table      = lunit.assert_table
+local assert_number     = lunit.assert_number
+local assert_match      = lunit.assert_match
+local assert_string     = lunit.assert_string
+local assert_boolean    = lunit.assert_boolean
+local assert_not_equal  = lunit.assert_not_equal
 
-function test_create ()
+local module = { _NAME="test.font_opt" }
+
+function module.test_create ()
     local opt = Cairo.font_options_create()
     assert_userdata(opt)
     assert_equal("cairo font options object", opt._NAME)
     assert_equal(nil, opt:status())
 end
 
-function test_double_gc ()
+function module.test_double_gc ()
     local opt = Cairo.font_options_create()
     opt:__gc()
     opt:__gc()
 end
 
-function test_antialias ()
+function module.test_antialias ()
     local opt = Cairo.font_options_create()
     assert_error("bad value", function () opt:set_antialias("foo") end)
     assert_error("missing value", function () opt:set_antialias(nil) end)
@@ -34,7 +46,7 @@ function test_antialias ()
     assert_equal("none", opt:get_antialias())
 end
 
-function test_subpixel_order ()
+function module.test_subpixel_order ()
     local opt = Cairo.font_options_create()
     assert_error("bad value", function () opt:set_subpixel_order("foo") end)
     assert_error("missing value", function () opt:set_subpixel_order(nil) end)
@@ -45,7 +57,7 @@ function test_subpixel_order ()
     end
 end
 
-function test_hint_style ()
+function module.test_hint_style ()
     local opt = Cairo.font_options_create()
     assert_error("bad value", function () opt:set_hint_style("foo") end)
     assert_error("missing value", function () opt:set_hint_style(nil) end)
@@ -56,7 +68,7 @@ function test_hint_style ()
     end
 end
 
-function test_hint_metrics ()
+function module.test_hint_metrics ()
     local opt = Cairo.font_options_create()
     assert_error("bad value", function () opt:set_hint_metrics("foo") end)
     assert_error("missing value", function () opt:set_hint_metrics(nil) end)
@@ -67,7 +79,7 @@ function test_hint_metrics ()
     end
 end
 
-function test_hash_and_equality ()
+function module.test_hash_and_equality ()
     local opt1 = Cairo.font_options_create()
     local opt2 = Cairo.font_options_create()
     assert_number(opt1:hash())
@@ -83,7 +95,7 @@ function test_hash_and_equality ()
     assert_false(opt1 == opt2)
 end
 
-function test_copy ()
+function module.test_copy ()
     local opt1 = Cairo.font_options_create()
     opt1:set_antialias("gray")
     local opt2 = opt1:copy()
@@ -98,7 +110,7 @@ function test_copy ()
     assert_false(opt1 == opt2)
 end
 
-function test_merge ()
+function module.test_merge ()
     local opt1 = Cairo.font_options_create()
     local opt2 = Cairo.font_options_create()
 
@@ -116,5 +128,8 @@ function test_merge ()
     assert_equal("default", opt2:get_antialias())
     assert_equal("bgr", opt2:get_subpixel_order())
 end
+
+lunit.testcase(module)
+return module
 
 -- vi:ts=4 sw=4 expandtab

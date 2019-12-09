@@ -1,8 +1,21 @@
 require "test-setup"
-require "lunit"
+local lunit = require "lunit"
 local Cairo = require "oocairo"
 
-module("test.scaled_font", lunit.testcase, package.seeall)
+local assert_error      = lunit.assert_error
+local assert_true       = lunit.assert_true
+local assert_false      = lunit.assert_false
+local assert_equal      = lunit.assert_equal
+local assert_userdata   = lunit.assert_userdata
+local assert_table      = lunit.assert_table
+local assert_number     = lunit.assert_number
+local assert_match      = lunit.assert_match
+local assert_string     = lunit.assert_string
+local assert_boolean    = lunit.assert_boolean
+local assert_not_equal  = lunit.assert_not_equal
+local assert_nil        = lunit.assert_nil
+
+local module = { _NAME="test.scaled_font" }
 
 local function mk_surface_cr ()
     local surface = Cairo.image_surface_create("rgb24", 23, 45)
@@ -17,14 +30,14 @@ local function mk_scaled_font (face, size, ...)
     return Cairo.scaled_font_create(face, font_mat, ctm, ...)
 end
 
-function test_double_gc ()
+function module.test_double_gc ()
     local _, cr = mk_surface_cr()
     local font = cr:get_scaled_font()
     font:__gc()
     font:__gc()
 end
 
-function test_create ()
+function module.test_create ()
     local surface, cr = mk_surface_cr()
     cr:select_font_face("sans", "normal", "normal")
     local face = cr:get_font_face()
@@ -36,7 +49,7 @@ function test_create ()
     assert_string(font:get_type())
 end
 
-function test_get_set_on_context ()
+function module.test_get_set_on_context ()
     local surface, cr = mk_surface_cr()
     local origfont = cr:get_scaled_font()
     assert_userdata(origfont)
@@ -47,19 +60,19 @@ function test_get_set_on_context ()
     assert_true(cr:get_scaled_font() ~= origfont)
 end
 
-function test_font_extents ()
+function module.test_font_extents ()
     local surface, cr = mk_surface_cr()
     local font = mk_scaled_font(cr:get_font_face(), 23)
     check_font_extents(font:extents())
 end
 
-function test_text_extents ()
+function module.test_text_extents ()
     local surface, cr = mk_surface_cr()
     local font = mk_scaled_font(cr:get_font_face(), 23)
     check_text_extents(font:text_extents("foo bar quux"))
 end
 
-function test_glyph_extents ()
+function module.test_glyph_extents ()
     local surface, cr = mk_surface_cr()
     local font = mk_scaled_font(cr:get_font_face(), 23)
     local x, y = 10, 20
@@ -67,7 +80,7 @@ function test_glyph_extents ()
     check_text_extents(font:glyph_extents(glyphs))
 end
 
-function test_matrix ()
+function module.test_matrix ()
     local surface, cr = mk_surface_cr()
     local font = mk_scaled_font(cr:get_font_face(), 23)
 
@@ -86,7 +99,7 @@ function test_matrix ()
     end
 end
 
-function test_text_to_glyphs ()
+function module.test_text_to_glyphs ()
     local surface, cr = mk_surface_cr()
     local font = mk_scaled_font(cr:get_font_face(), 23)
 
@@ -118,7 +131,7 @@ function test_text_to_glyphs ()
     end
 end
 
-function test_font_options ()
+function module.test_font_options ()
     local origopt = Cairo.font_options_create()
     origopt:set_antialias("gray")
     origopt:set_subpixel_order("vbgr")
@@ -134,5 +147,8 @@ function test_font_options ()
     assert_equal(nil, font:status(), "Error status on scaled font")
     assert_equal(nil, gotopt:status(), "Error status on font options")
 end
+
+lunit.testcase(module)
+return module
 
 -- vi:ts=4 sw=4 expandtab

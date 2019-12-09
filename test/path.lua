@@ -1,27 +1,40 @@
 require "test-setup"
-require "lunit"
+local lunit = require "lunit"
 local Cairo = require "oocairo"
 
-module("test.path", lunit.testcase, package.seeall)
+local assert_error      = lunit.assert_error
+local assert_true       = lunit.assert_true
+local assert_false      = lunit.assert_false
+local assert_equal      = lunit.assert_equal
+local assert_userdata   = lunit.assert_userdata
+local assert_table      = lunit.assert_table
+local assert_number     = lunit.assert_number
+local assert_match      = lunit.assert_match
+local assert_string     = lunit.assert_string
+local assert_boolean    = lunit.assert_boolean
+local assert_not_equal  = lunit.assert_not_equal
+local assert_nil        = lunit.assert_nil
 
-function setup ()
+local module = { _NAME="test.path" }
+
+function module.setup ()
     surface = Cairo.image_surface_create("rgb24", 23, 45)
     cr = Cairo.context_create(surface)
 end
-function teardown ()
+function module.teardown ()
     assert_equal(nil, cr:status(), "Error status on context")
     assert_equal(nil, surface:status(), "Error status on surface")
     surface = nil
     cr = nil
 end
 
-function test_double_gc ()
+function module.test_double_gc ()
     local path = cr:copy_path()
     path:__gc()
     path:__gc()
 end
 
-function test_current_point ()
+function module.test_current_point ()
     assert_false(cr:has_current_point())
     local x, y = cr:get_current_point()
     assert_nil(x)
@@ -34,7 +47,7 @@ function test_current_point ()
     assert_equal(3.25, y)
 end
 
-function test_path_extents ()
+function module.test_path_extents ()
     local x1, y1, x2, y2 = cr:path_extents()
     assert_equal(0, x1)
     assert_equal(0, y1)
@@ -50,7 +63,7 @@ function test_path_extents ()
     assert_equal(7, y2)
 end
 
-function test_clipping ()
+function module.test_clipping ()
     local x1, y1, x2, y2 = cr:clip_extents()
 
     -- Wrapper functions to make this work with older cairo versions
@@ -93,7 +106,7 @@ function test_clipping ()
     assert_equal(45, y2)
 end
 
-function test_fill_extents ()
+function module.test_fill_extents ()
     cr:rectangle(5, 6, 11, 12)
     local x1, y1, x2, y2 = cr:fill_extents()
     assert_equal(5, x1)
@@ -102,7 +115,7 @@ function test_fill_extents ()
     assert_equal(18, y2)
 end
 
-function test_stroke_extents ()
+function module.test_stroke_extents ()
     cr:move_to(5, 9)
     cr:line_to(17, 9)
     cr:set_line_width(5)
@@ -127,7 +140,7 @@ local function check_path_iter (cmd, pt, expcmd, ...)
     end
 end
 
-function test_each ()
+function module.test_each ()
     cr:move_to(1, 2)
     cr:line_to(3, 4)
     cr:curve_to(5, 6, 7, 8, 9, 10)
@@ -163,7 +176,7 @@ function test_each ()
     assert_nil(i); assert_nil(cmd); assert_nil(pt)
 end
 
-function test_copy_path_flat ()
+function module.test_copy_path_flat ()
     cr:move_to(1, 2)
     cr:curve_to(5, 6, 7, 8, 9, 10)
 
@@ -176,7 +189,7 @@ function test_copy_path_flat ()
     end
 end
 
-function test_append_path ()
+function module.test_append_path ()
     cr:line_to(11, 12)
     cr:line_to(13, 14)
     local path = cr:copy_path()
@@ -200,5 +213,8 @@ function test_append_path ()
     i = iter(s, i)
     assert_nil(i)
 end
+
+lunit.testcase(module)
+return module
 
 -- vi:ts=4 sw=4 expandtab

@@ -49,10 +49,9 @@
 --]]
 
 
-require "lunit"
+local lunit = require "lunit"
 
-module( "lunit-console", package.seeall )
-
+local module = { _NAME = "lunit-console" }
 
 local function printformat(format, ...)
   io.write( string.format(format, ...) )
@@ -78,7 +77,7 @@ end
 local msgs = {}
 
 
-function begin()
+function module.begin()
   local total_tc = 0
   local total_tests = 0
 
@@ -93,18 +92,18 @@ function begin()
 end
 
 
-function run(testcasename, testname)
+function module.run(testcasename, testname)
   -- NOP
 end
 
 
-function err(fullname, message, traceback)
+function module.err(fullname, message, traceback)
   writestatus("E")
   msgs[#msgs+1] = "Error! ("..fullname.."):\n"..message.."\n\t"..table.concat(traceback, "\n\t") .. "\n"
 end
 
 
-function fail(fullname, where, message, usermessage)
+function module.fail(fullname, where, message, usermessage)
   writestatus("F")
   local text =  "Failure ("..fullname.."):\n"..
                 where..": "..message.."\n"
@@ -117,13 +116,13 @@ function fail(fullname, where, message, usermessage)
 end
 
 
-function pass(testcasename, testname)
+function module.pass(testcasename, testname)
   writestatus(".")
 end
 
 
 
-function done()
+function module.done()
   printformat("\n\n%d Assertions checked.\n", lunit.stats.assertions )
   print()
 
@@ -136,6 +135,6 @@ function done()
 end
 
 
-
+return module
 
 

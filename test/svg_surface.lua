@@ -1,13 +1,26 @@
 require "test-setup"
-require "lunit"
+local lunit = require "lunit"
 local Cairo = require "oocairo"
 
-module("test.svg_surface", lunit.testcase, package.seeall)
+local assert_error      = lunit.assert_error
+local assert_true       = lunit.assert_true
+local assert_false      = lunit.assert_false
+local assert_equal      = lunit.assert_equal
+local assert_userdata   = lunit.assert_userdata
+local assert_table      = lunit.assert_table
+local assert_number     = lunit.assert_number
+local assert_match      = lunit.assert_match
+local assert_string     = lunit.assert_string
+local assert_boolean    = lunit.assert_boolean
+local assert_not_equal  = lunit.assert_not_equal
+local assert_nil        = lunit.assert_nil
 
-teardown = clean_up_temp_files
+local module = { _NAME="test.svg_surface" }
+
+module.teardown = clean_up_temp_files
 
 if Cairo.HAS_SVG_SURFACE then
-    function test_svg_versions ()
+    function module.test_svg_versions ()
         local versions = Cairo.svg_get_versions()
         assert_table(versions)
         for k, v in pairs(versions) do
@@ -29,7 +42,7 @@ if Cairo.HAS_SVG_SURFACE then
         assert_match("<svg", data)
     end
 
-    function test_create ()
+    function module.test_create ()
         local filename = tmpname()
         local surface = Cairo.svg_surface_create(filename, 300, 200)
         check_svg_surface(surface)
@@ -38,7 +51,7 @@ if Cairo.HAS_SVG_SURFACE then
         check_file_contains_svg(filename)
     end
 
-    function test_create_stream ()
+    function module.test_create_stream ()
         local filename = tmpname()
         local fh = assert(io.open(filename, "wb"))
         local surface = Cairo.svg_surface_create(fh, 300, 200)
@@ -49,10 +62,13 @@ if Cairo.HAS_SVG_SURFACE then
         check_file_contains_svg(filename)
     end
 
-    function test_create_bad ()
+    function module.test_create_bad ()
         assert_error("wrong type instead of file/filename",
                      function () Cairo.svg_surface_create(true, 300, 200) end)
     end
 end
+
+lunit.testcase(module)
+return module
 
 -- vi:ts=4 sw=4 expandtab
