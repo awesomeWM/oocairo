@@ -68,7 +68,9 @@ image_surface_create_from_data (lua_State *L) {
 
     surface = create_surface_userdata(L);
     surface->image_buffer = malloc(data_len);
-    assert(surface->image_buffer);
+    if (!surface->image_buffer) {
+        return luaL_error(L, "out of memory");
+    }
     memcpy(surface->image_buffer, data, data_len);
     surface->surface = cairo_image_surface_create_for_data(
                             surface->image_buffer, fmt, width, height, stride);
@@ -474,7 +476,9 @@ surface_get_gdk_pixbuf (lua_State *L) {
         strideo = ((3 * width) + 7) & ~7;   /* align to 8 bytes */
     buffer_len = strideo * height;
     buffer = malloc(buffer_len);
-    assert(buffer);
+    if (!buffer) {
+        return luaL_error(L, "out of memory");
+    }
 
     rowpi = (const char *) cairo_image_surface_get_data(*surface);
     rowpo = buffer;
@@ -719,7 +723,7 @@ set_mime_data(lua_State *L)
         mime_data = luaL_checklstring(L, 3, &data_length);
         mime_priv = malloc(data_length);
         if (!mime_priv) {
-            return push_cairo_status(L, CAIRO_STATUS_NO_MEMORY);
+            return luaL_error(L, "out of memory");
         }
         memcpy(mime_priv, mime_data, data_length);
     }

@@ -511,7 +511,9 @@ from_lua_glyph_array (lua_State *L, cairo_glyph_t **glyphs, int *num_glyphs,
         return;
     }
     *glyphs = GLYPHS_ALLOC(*num_glyphs);
-    assert(*glyphs);
+    if (!*glyphs) {
+        return luaL_error(L, "out of memory");
+    }
 
     for (i = 0; i < *num_glyphs; ++i) {
         lua_rawgeti(L, pos, i + 1);
@@ -595,7 +597,9 @@ from_lua_clusters_table (lua_State *L, cairo_text_cluster_t **clusters,
         return;
     }
     *clusters = cairo_text_cluster_allocate(*num);
-    assert(*clusters);
+    if (!*clusters) {
+        return luaL_error(L, "out of memory");
+    }
 
     for (i = 0; i < *num; ++i) {
         lua_rawgeti(L, pos, i + 1);
@@ -795,8 +799,9 @@ free_surface_userdata (SurfaceUserdata *ud) {
 static char *
 my_strdup (const char *s) {
     char *copy = malloc(strlen(s) + 1);
-    assert(copy);
-    strcpy(copy, s);
+    if (copy) {
+        strcpy(copy, s);
+    }
     return copy;
 }
 

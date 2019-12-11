@@ -229,7 +229,9 @@ cr_get_dash (lua_State *L) {
     cnt = cairo_get_dash_count(*obj);
     if (cnt > 0) {
         dashes = malloc(sizeof(double) * cnt);
-        assert(dashes);
+        if (!dashes) {
+            return luaL_error(L, "out of memory");
+        }
     }
 
     cairo_get_dash(*obj, dashes, &offset);
@@ -642,7 +644,9 @@ cr_set_dash (lua_State *L) {
     num_dashes = lua_objlen(L, 2);
     if (num_dashes > 0) {
         dashes = malloc(sizeof(double) * num_dashes);
-        assert(dashes);
+        if (!dashes) {
+            return luaL_error(L, "out of memory");
+        }
         dashtotal = 0;
 
         for (i = 0; i < num_dashes; ++i) {
