@@ -52,6 +52,11 @@ if Cairo.check_version(1, 10, 0) then
         assert_equal(reg:contains_rectangle(rect), "overlap-in")
         rect.width = 8
         assert_equal(reg:contains_rectangle(rect), "overlap-part")
+        local ok, errmsg = pcall(function()
+            reg:contains_rectangle({ x = 0, y = 0 })
+        end)
+        assert_false(ok)
+        assert_match("bad argument %#1 to %'contains_rectangle%' %(invalid rectangle%)", errmsg)
     end
 
     function module.test_copy ()

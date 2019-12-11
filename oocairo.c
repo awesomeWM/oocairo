@@ -363,7 +363,10 @@ from_lua_rectangle (lua_State *L, cairo_rectangle_int_t *rect, int pos) {
 #define DO(t) \
     lua_pushstring(L, #t); \
     lua_gettable(L, pos); \
-    rect->t = luaL_checkinteger(L, -1); \
+    if (!lua_isnumber(L, -1)) { \
+        luaL_argerror(L, pos, "invalid rectangle"); \
+    } \
+    rect->t = lua_tointeger(L, -1); \
     lua_pop(L, 1)
     DO(x);
     DO(y);
