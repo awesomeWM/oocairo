@@ -371,6 +371,23 @@ from_lua_rectangle (lua_State *L, cairo_rectangle_int_t *rect, int pos) {
     DO(height);
 #undef DO
 }
+
+static int
+from_lua_rectangle2 (lua_State *L, cairo_rectangle_int_t *rect, int pos) {
+    if (lua_type(L, pos) != LUA_TTABLE) return 0;
+#define DO(t) \
+    lua_pushstring(L, #t); \
+    lua_gettable(L, pos); \
+    if (!lua_isnumber(L, -1)) return 0; \
+    rect->t = lua_tointeger(L, -1); \
+    lua_pop(L, 1)
+    DO(x);
+    DO(y);
+    DO(width);
+    DO(height);
+#undef DO
+    return 1;
+}
 #endif
 
 static void
