@@ -375,21 +375,25 @@ from_lua_rectangle (lua_State *L, cairo_rectangle_int_t *rect, int pos) {
 #undef DO
 }
 
-static int
-from_lua_rectangle2 (lua_State *L, cairo_rectangle_int_t *rect, int pos) {
-    if (lua_type(L, pos) != LUA_TTABLE) return 0;
+static void
+from_lua_rectangle_list_element (lua_State *L, cairo_rectangle_int_t *rect, int list_pos, int element_index) {
+    lua_rawgeti(L, list_pos, element_index); /* push rectangle from list */
+    if (lua_type(L, -1) != LUA_TTABLE) goto error;
 #define DO(t) \
     lua_pushstring(L, #t); \
-    lua_gettable(L, pos); \
-    if (!lua_isnumber(L, -1)) return 0; \
+    lua_gettable(L, -2); \
+    if (!lua_isnumber(L, -1)) goto error; \
     rect->t = lua_tointeger(L, -1); \
     lua_pop(L, 1)
     DO(x);
     DO(y);
     DO(width);
     DO(height);
+    lua_pop(L, 1); /* pop rectangle */
 #undef DO
-    return 1;
+    return;
+error:
+    luaL_argerror(L, list_pos, "list contains invalid rectangle");
 }
 #endif
 

@@ -48,12 +48,7 @@ region_create_rectangles (lua_State *L) {
     
     /* Now iterate over the table */
     for (i = 0; i < max_entries; ++i) {
-        lua_rawgeti(L, 1, i+1);
-        int ok = from_lua_rectangle2 (L, &rects[i], 3);
-        if (!ok) {
-            return luaL_argerror(L, 1, "list contains invalid rectangle");
-        }
-        lua_pop(L, 1);
+        from_lua_rectangle_list_element(L, &rects[i], 1, i+1);
     }
 
     cairo_region_t **reg = create_region_userdata(L);
