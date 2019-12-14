@@ -433,7 +433,9 @@ if Cairo.check_version(1, 10, 0) then
         test("test/data", "test data")
 
         local surface = Cairo.image_surface_create("rgb24", 0, 0)
-        assert_error(function () surface_set_mime_data(nil, "foo") end)
+        local ok, errmsg = pcall(function () surface:set_mime_data(nil, "foo") end)
+        assert_false(ok)
+        assert_match("bad argument %#1 to %'set_mime_data%' %(string expected%, got nil%)", errmsg)
     end
 end
 

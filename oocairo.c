@@ -53,6 +53,12 @@ static int luaL_typerror (lua_State *L, int narg, const char *tname) {
 #define lua_rawlen(a, b) do_not_use_lua_rawlen_use_lua_objlen_instead;
 #endif
 
+#if LUA_VERSION_NUM >= 503
+#define oocairo_lua_isinteger(L, idx) lua_isinteger(L, idx)
+#else
+#define oocairo_lua_isinteger(L, idx) lua_isnumber(L, idx)
+#endif
+
 static const int ENDIANNESS_TEST_VAL = 1;
 #define IS_BIG_ENDIAN (!(*(const char *) &ENDIANNESS_TEST_VAL))
 
@@ -363,12 +369,37 @@ from_lua_rectangle (lua_State *L, cairo_rectangle_int_t *rect, int pos) {
 #define DO(t) \
     lua_pushstring(L, #t); \
     lua_gettable(L, pos); \
-    rect->t = luaL_checkinteger(L, -1); \
+    if (!oocairo_lua_isinteger(L, -1)) { \
+        luaL_argerror(L, pos, "invalid rectangle: coordinates must be integer values"); \
+    } \
+    rect->t = lua_tointeger(L, -1); \
     lua_pop(L, 1)
     DO(x);
     DO(y);
     DO(width);
     DO(height);
+#undef DO
+}
+
+static void
+from_lua_rectangle_list_element (lua_State *L, cairo_rectangle_int_t *rect, int list_pos, int element_index) {
+    lua_rawgeti(L, list_pos, element_index); /* push rectangle from list */
+    if (lua_type(L, -1) != LUA_TTABLE) {
+        luaL_argerror(L, list_pos, "list contains invalid rectangle");
+    }
+#define DO(t) \
+    lua_pushstring(L, #t); \
+    lua_gettable(L, -2); \
+    if (!oocairo_lua_isinteger(L, -1)) { \
+        luaL_argerror(L, list_pos, "list contains invalid rectangle: coordinates must be integer values"); \
+    } \
+    rect->t = lua_tointeger(L, -1); \
+    lua_pop(L, 1)
+    DO(x);
+    DO(y);
+    DO(width);
+    DO(height);
+    lua_pop(L, 1); /* pop rectangle */
 #undef DO
 }
 #endif
@@ -494,7 +525,9 @@ from_lua_glyph_array (lua_State *L, cairo_glyph_t **glyphs, int *num_glyphs,
         return;
     }
     *glyphs = GLYPHS_ALLOC(*num_glyphs);
-    assert(*glyphs);
+    if (!*glyphs) {
+        return luaL_error(L, "out of memory");
+    }
 
     for (i = 0; i < *num_glyphs; ++i) {
         lua_rawgeti(L, pos, i + 1);
@@ -578,7 +611,9 @@ from_lua_clusters_table (lua_State *L, cairo_text_cluster_t **clusters,
         return;
     }
     *clusters = cairo_text_cluster_allocate(*num);
-    assert(*clusters);
+    if (!*clusters) {
+        return luaL_error(L, "out of memory");
+    }
 
     for (i = 0; i < *num; ++i) {
         lua_rawgeti(L, pos, i + 1);
@@ -778,8 +813,9 @@ free_surface_userdata (SurfaceUserdata *ud) {
 static char *
 my_strdup (const char *s) {
     char *copy = malloc(strlen(s) + 1);
-    assert(copy);
-    strcpy(copy, s);
+    if (copy) {
+        strcpy(copy, s);
+    }
     return copy;
 }
 

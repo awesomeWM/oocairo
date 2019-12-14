@@ -52,6 +52,11 @@ if Cairo.check_version(1, 10, 0) then
         assert_equal(reg:contains_rectangle(rect), "overlap-in")
         rect.width = 8
         assert_equal(reg:contains_rectangle(rect), "overlap-part")
+        local ok, errmsg = pcall(function()
+            reg:contains_rectangle({ x = 0, y = 0 })
+        end)
+        assert_false(ok)
+        assert_match("bad argument %#1 to %'contains_rectangle%' %(invalid rectangle%: coordinates must be integer values%)", errmsg)
     end
 
     function module.test_copy ()
@@ -136,6 +141,55 @@ if Cairo.check_version(1, 10, 0) then
         assert_equal(rect[2].y, 10)
         assert_equal(rect[2].width, 1)
         assert_equal(rect[2].height, 1)
+
+        local reg = Cairo.region_create_rectangles(rects, "unused")
+        local rect = reg:get_rectangles()
+        assert_equal(#rect, 2)
+        assert_equal(rect[1].x, 0)
+        assert_equal(rect[1].y, 0)
+        assert_equal(rect[1].width, 1)
+        assert_equal(rect[1].height, 1)
+        assert_equal(rect[2].x, 10)
+        assert_equal(rect[2].y, 10)
+        assert_equal(rect[2].width, 1)
+        assert_equal(rect[2].height, 1)
+
+        local rects = { rect1, rect2, unused = true }
+        local reg = Cairo.region_create_rectangles(rects)
+        local rect = reg:get_rectangles()
+        assert_equal(#rect, 2)
+        assert_equal(rect[1].x, 0)
+        assert_equal(rect[1].y, 0)
+        assert_equal(rect[1].width, 1)
+        assert_equal(rect[1].height, 1)
+        assert_equal(rect[2].x, 10)
+        assert_equal(rect[2].y, 10)
+        assert_equal(rect[2].width, 1)
+        assert_equal(rect[2].height, 1)
+
+        local rect3 = { x = 0, y = 0 }
+        local rects = { rect1, rect2, rect3 }
+        local ok, errmsg = pcall(function() 
+            Cairo.region_create_rectangles(rects) 
+        end)
+        assert_false(ok)
+        assert_match("bad argument %#1 to %'region_create_rectangles%' %(list contains invalid rectangle%: coordinates must be integer values%)", errmsg)
+
+        local rect3 = { x = 0, y = 0, width = 10, height = {} }
+        local rects = { rect1, rect2, rect3 }
+        local ok, errmsg = pcall(function() 
+            Cairo.region_create_rectangles(rects) 
+        end)
+        assert_false(ok)
+        assert_match("bad argument %#1 to %'region_create_rectangles%' %(list contains invalid rectangle%: coordinates must be integer values%)", errmsg)
+
+        local rects = { rect1, rect2, "" }
+        local ok, errmsg = pcall(function() 
+            Cairo.region_create_rectangles(rects) 
+        end)
+        assert_false(ok)
+        assert_match("bad argument %#1 to %'region_create_rectangles%' %(list contains invalid rectangle%)", errmsg)
+
     end
 end
 

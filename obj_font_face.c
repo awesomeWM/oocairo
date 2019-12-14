@@ -197,7 +197,9 @@ user_font_face_create (lua_State *L) {
 
     lua_createtable(L, 4, 0);
     info = malloc(sizeof(UserFontInfo));
-    assert(info);
+    if (!info) {
+        return luaL_error(L, "out of memory");
+    }
     info->L = L;
     info->ref = LUA_NOREF;
 
