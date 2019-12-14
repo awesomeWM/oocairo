@@ -53,6 +53,12 @@ static int luaL_typerror (lua_State *L, int narg, const char *tname) {
 #define lua_rawlen(a, b) do_not_use_lua_rawlen_use_lua_objlen_instead;
 #endif
 
+#if LUA_VERSION_NUM >= 503
+#define oocairo_lua_isinteger(L, idx) lua_isinteger(L, idx)
+#else
+#define oocairo_lua_isinteger(L, idx) lua_isnumber(L, idx)
+#endif
+
 static const int ENDIANNESS_TEST_VAL = 1;
 #define IS_BIG_ENDIAN (!(*(const char *) &ENDIANNESS_TEST_VAL))
 
@@ -363,8 +369,8 @@ from_lua_rectangle (lua_State *L, cairo_rectangle_int_t *rect, int pos) {
 #define DO(t) \
     lua_pushstring(L, #t); \
     lua_gettable(L, pos); \
-    if (!lua_isnumber(L, -1)) { \
-        luaL_argerror(L, pos, "invalid rectangle"); \
+    if (!oocairo_lua_isinteger(L, -1)) { \
+        luaL_argerror(L, pos, "invalid rectangle: coordinates must be integer values"); \
     } \
     rect->t = lua_tointeger(L, -1); \
     lua_pop(L, 1)
@@ -378,11 +384,15 @@ from_lua_rectangle (lua_State *L, cairo_rectangle_int_t *rect, int pos) {
 static void
 from_lua_rectangle_list_element (lua_State *L, cairo_rectangle_int_t *rect, int list_pos, int element_index) {
     lua_rawgeti(L, list_pos, element_index); /* push rectangle from list */
-    if (lua_type(L, -1) != LUA_TTABLE) goto error;
+    if (lua_type(L, -1) != LUA_TTABLE) {
+        luaL_argerror(L, list_pos, "list contains invalid rectangle");
+    }
 #define DO(t) \
     lua_pushstring(L, #t); \
     lua_gettable(L, -2); \
-    if (!lua_isnumber(L, -1)) goto error; \
+    if (!oocairo_lua_isinteger(L, -1)) { \
+        luaL_argerror(L, list_pos, "list contains invalid rectangle: coordinates must be integer values"); \
+    } \
     rect->t = lua_tointeger(L, -1); \
     lua_pop(L, 1)
     DO(x);
@@ -391,9 +401,6 @@ from_lua_rectangle_list_element (lua_State *L, cairo_rectangle_int_t *rect, int 
     DO(height);
     lua_pop(L, 1); /* pop rectangle */
 #undef DO
-    return;
-error:
-    luaL_argerror(L, list_pos, "list contains invalid rectangle");
 }
 #endif
 
