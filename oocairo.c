@@ -526,7 +526,8 @@ from_lua_glyph_array (lua_State *L, cairo_glyph_t **glyphs, int *num_glyphs,
     }
     *glyphs = GLYPHS_ALLOC(*num_glyphs);
     if (!*glyphs) {
-        return luaL_error(L, "out of memory");
+        luaL_error(L, "out of memory");
+        return;
     }
 
     for (i = 0; i < *num_glyphs; ++i) {
