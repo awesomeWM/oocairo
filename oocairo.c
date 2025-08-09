@@ -612,7 +612,8 @@ from_lua_clusters_table (lua_State *L, cairo_text_cluster_t **clusters,
     }
     *clusters = cairo_text_cluster_allocate(*num);
     if (!*clusters) {
-        return luaL_error(L, "out of memory");
+        luaL_error(L, "out of memory");
+        return;
     }
 
     for (i = 0; i < *num; ++i) {
